@@ -1,1 +1,1 @@
-"File 2 content" 
+"file2" 
