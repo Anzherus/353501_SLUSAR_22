@@ -1,0 +1,71 @@
+{% extends "clinic/base.html" %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Личный кабинет врача</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="card-img-top" alt="Фото врача">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.get_full_name }}</h5>
+                    <p class="card-text"><b>Email:</b> {{ user.email }}</p>
+                    <p class="card-text"><b>Специализация:</b> {{ doctor.specialization }}</p>
+                    <p class="card-text"><b>Опыт:</b> {{ doctor.experience }} лет</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Записи к вам</h5>
+                    {% if appointments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Клиент</th>
+                                    <th>Услуга</th>
+                                    <th>Дата и время</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in appointments %}
+                                <tr>
+                                    <td>{{ a.client.user.get_full_name }}</td>
+                                    <td>{{ a.service.name }}</td>
+                                    <td>{{ a.date_time|date:"d.m.Y H:i" }}</td>
+                                    <td>{{ a.get_status_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Нет записей.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Отзывы</h5>
+                    {% if reviews %}
+                        {% for r in reviews %}
+                        <div class="mb-3 border-bottom pb-2">
+                            <b>Оценка:</b> {{ r.rating }}<br>
+                            <b>Клиент:</b> {{ r.client.user.get_full_name }}<br>
+                            <span class="text-muted">{{ r.created_at|date:"d.m.Y H:i" }}</span>
+                            <p>{{ r.text }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <p class="text-muted">Нет отзывов.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

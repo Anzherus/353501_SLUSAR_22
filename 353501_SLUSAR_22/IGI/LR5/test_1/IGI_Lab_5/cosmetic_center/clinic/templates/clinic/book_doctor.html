@@ -1,0 +1,75 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Запись к {{ doctor.user.get_full_name }} - Косметологический Центр{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 2rem auto;">
+    <h1 style="color: var(--primary); margin-bottom: 2rem;">Запись к врачу: {{ doctor.user.get_full_name }}</h1>
+    
+    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+        <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+            <div style="flex: 0 0 150px;">
+                {% if doctor.photo %}
+                    <img src="{{ doctor.photo.url }}" alt="{{ doctor.user.get_full_name }}" style="width: 100%; border-radius: 10px;">
+                {% else %}
+                    <img src="{% static 'images/default-doctor.jpg' %}" alt="{{ doctor.user.get_full_name }}" style="width: 100%; border-radius: 10px;">
+                {% endif %}
+            </div>
+            <div>
+                <h3 style="margin-bottom: 0.5rem;">Информация о враче</h3>
+                <p style="color: #666;">Специализация: {{ doctor.specialization }}</p>
+                <p style="color: #666;">Опыт работы: {{ doctor.experience }} лет</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="card" style="padding: 2rem;">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" style="color: #dc3545; margin-bottom: 1rem; padding: 0.5rem; border: 1px solid #dc3545; border-radius: 4px;">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% for field in form %}
+        <div style="margin-bottom: 1.5rem;">
+            <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+            <div style="color: #dc3545; margin-top: 0.5rem;">
+                {{ field.errors }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+            <a href="{% url 'doctors' %}" class="btn btn-outline">Назад к врачам</a>
+            <button type="submit" class="btn">Записаться</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    textarea {
+        resize: vertical;
+    }
+</style>
+{% endblock %} 

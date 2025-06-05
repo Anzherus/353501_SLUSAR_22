@@ -1,0 +1,75 @@
+{% extends "clinic/base.html" %}
+{% block title %}{{ service.name }} - Услуга{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title mb-4">{{ service.name }}</h1>
+                    
+                    {% if service.image %}
+                    <img src="{{ service.image.url }}" class="img-fluid rounded mb-4" alt="{{ service.name }}">
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <h3>Описание</h3>
+                        <p>{{ service.description }}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3>Цена</h3>
+                        <div class="price-section">
+                            <p class="h4 text-primary mb-3">{{ service.price }} BYN</p>
+                            
+                            <div class="currency-converter">
+                                <h5>Цена в других валютах:</h5>
+                                <div class="row">
+                                    {% for currency, price in currencies.items %}
+                                    {% if price %}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="currency-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
+                                            <div class="currency-symbol">
+                                                {% if currency == 'USD' %}💵
+                                                {% elif currency == 'EUR' %}💶
+                                                {% elif currency == 'GBP' %}💷
+                                                {% elif currency == 'JPY' %}💴
+                                                {% elif currency == 'CNY' %}💰
+                                                {% endif %}
+                                            </div>
+                                            <div class="currency-price">
+                                                {{ price }} {{ currency }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    * Курсы валют обновляются ежечасно
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3>Длительность</h3>
+                        <p>{{ service.duration }}</p>
+                    </div>
+                    
+                    {% if user.is_authenticated and user.client %}
+                    <div class="mt-4">
+                        <a href="{% url 'book_appointment' service.id %}" class="btn btn-primary">Записаться</a>
+                    </div>
+                    {% else %}
+                    <div class="mt-4">
+                        <p class="text-muted">Для записи необходимо <a href="{% url 'login' %}">войти</a> в систему</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,42 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Управление промокодами - Косметологический Центр{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Управление промокодами</h2>
+        <a href="{% url 'manage_promos' %}" class="btn">Добавить промокод</a>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for promo_code in promo_codes %}
+        <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0; color: var(--primary);">{{ promo_code.code }}</h3>
+                <span style="font-weight: bold; background-color: var(--light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem;">
+                    {{ promo_code.discount }}%
+                </span>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <p style="margin-bottom: 0.5rem;"><i class="fas fa-calendar" style="color: var(--primary); margin-right: 0.5rem;"></i> Действует до: {{ promo_code.expiry_date|date:"d.m.Y" }}</p>
+                <p style="margin-bottom: 0.5rem;"><i class="fas fa-users" style="color: var(--primary); margin-right: 0.5rem;"></i> Использований: {{ promo_code.usage_count }}/{{ promo_code.max_uses|default:"∞" }}</p>
+                <p><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 0.5rem;"></i> Статус: {% if promo_code.is_active %}Активен{% else %}Неактивен{% endif %}</p>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{% url 'delete_promo_code' promo_code.id %}" class="btn" style="background-color: #dc3545;">Удалить</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px; grid-column: 1 / -1;">
+            <i class="fas fa-tags" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h3>Нет промокодов</h3>
+            <p>Создайте свой первый промокод</p>
+            <a href="{% url 'manage_promos' %}" class="btn" style="margin-top: 1rem;">Добавить промокод</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

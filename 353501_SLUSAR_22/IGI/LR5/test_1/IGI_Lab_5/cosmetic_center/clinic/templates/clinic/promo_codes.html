@@ -1,0 +1,128 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Промокоды - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="promo-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/promo-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Промокоды и акции</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Специальные предложения и скидки для наших клиентов</p>
+    </div>
+</section>
+
+<section class="promo-content">
+    <div class="container">
+        <div style="margin-bottom: 3rem;">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Активные промокоды</h2>
+
+            {% if active_promos %}
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    {% for promo in active_promos %}
+                    <div class="card" style="padding: 1.5rem; border: 2px dashed var(--primary); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 10px; right: 10px; background-color: var(--primary); color: white; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem;">
+                            -{{ promo.discount }}%
+                        </div>
+
+                        <h3 style="margin-top: 0; color: var(--primary);">{{ promo.name }}</h3>
+                        <p style="margin-bottom: 1rem;">{{ promo.description }}</p>
+
+                        <div style="background-color: var(--light); padding: 0.8rem; border-radius: 5px; margin-bottom: 1rem;">
+                            <p style="margin: 0; font-weight: bold; text-align: center; font-size: 1.2rem;">
+                                <span style="color: var(--primary);">Промокод: </span>{{ promo.code }}
+                            </p>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <div>
+                                <p style="margin: 0; font-size: 0.9rem;"><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Действует до: {{ promo.end_date|date:"d.m.Y" }}</p>
+                            </div>
+                            <div>
+                                <p style="margin: 0; font-size: 0.9rem;"><i class="fas fa-tag" style="color: var(--primary);"></i> Осталось: {{ promo.remaining_uses }} шт.</p>
+                            </div>
+                        </div>
+
+                        {% if promo.services.all %}
+                        <div style="margin-bottom: 1rem;">
+                            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;"><i class="fas fa-spa" style="color: var(--primary);"></i> Применимо к:</p>
+                            <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem;">
+                                {% for service in promo.services.all %}
+                                <li>{{ service.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <button class="btn copy-promo" data-code="{{ promo.code }}" style="width: 100%;">Скопировать код</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px;">
+                    <i class="fas fa-tags" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Нет активных промокодов</h3>
+                    <p>В данный момент нет доступных промокодов. Следите за нашими новостями!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Архив промокодов</h2>
+
+            {% if expired_promos %}
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    {% for promo in expired_promos %}
+                    <div class="card" style="padding: 1.5rem; opacity: 0.7; position: relative;">
+                        <div style="position: absolute; top: 10px; right: 10px; background-color: #999; color: white; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem;">
+                            -{{ promo.discount }}%
+                        </div>
+
+                        <h3 style="margin-top: 0; color: var(--primary);">{{ promo.name }}</h3>
+                        <p style="margin-bottom: 1rem;">{{ promo.description }}</p>
+
+                        <div style="background-color: #f0f0f0; padding: 0.8rem; border-radius: 5px; margin-bottom: 1rem;">
+                            <p style="margin: 0; font-weight: bold; text-align: center; font-size: 1.2rem; color: #999;">
+                                {{ promo.code }}
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--danger);"><i class="fas fa-calendar-times" style="color: var(--danger);"></i> Истек: {{ promo.end_date|date:"d.m.Y" }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px;">
+                    <i class="fas fa-archive" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Архив промокодов пуст</h3>
+                    <p>Здесь будут отображаться ваши использованные промокоды</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const copyButtons = document.querySelectorAll('.copy-promo');
+
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const code = this.getAttribute('data-code');
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = this.textContent;
+                    this.textContent = 'Скопировано!';
+                    this.style.backgroundColor = 'var(--success)';
+
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.backgroundColor = '';
+                    }, 2000);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

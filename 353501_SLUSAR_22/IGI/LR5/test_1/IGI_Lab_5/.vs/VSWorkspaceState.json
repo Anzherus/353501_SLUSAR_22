@@ -1,0 +1,18 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\cosmetic_center",
+    "\\cosmetic_center\\clinic",
+    "\\cosmetic_center\\clinic\\templates",
+    "\\cosmetic_center\\clinic\\templates\\registration",
+    "\\cosmetic_center\\cosmetic_center",
+    "\\cosmetic_center\\cosmetic_center\\migrations",
+    "\\cosmetic_center\\doctors",
+    "\\cosmetic_center\\media",
+    "\\cosmetic_center\\static",
+    "\\cosmetic_center\\staticfiles",
+    "\\cosmetic_center\\staticfiles\\admin"
+  ],
+  "SelectedNode": "\\cosmetic_center\\clinic\\templates\\clinic\\profile.html",
+  "PreviewInSolutionExplorer": false
+}

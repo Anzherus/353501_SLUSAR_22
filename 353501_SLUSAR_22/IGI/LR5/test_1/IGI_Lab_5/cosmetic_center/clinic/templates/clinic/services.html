@@ -1,0 +1,123 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Услуги - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="services-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/services-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Наши услуги</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Широкий спектр косметологических процедур для здоровья и красоты вашей кожи</p>
+    </div>
+</section>
+
+<section class="services-filter" style="margin-bottom: 3rem;">
+    <div class="container">
+        <form method="get" class="filter-form" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: center;">
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+                <select name="category" class="form-control">
+                    <option value="">Все категории</option>
+                    {% for spec in specializations %}
+                    <option value="{{ spec.id }}" {% if category == spec.id|stringformat:"s" %}selected{% endif %}>{{ spec.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+                <select name="sort" class="form-control">
+                    <option value="">Сортировка</option>
+                    <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>По цене (дешевые)</option>
+                    <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>По цене (дорогие)</option>
+                    <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>По названию (А-Я)</option>
+                    <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>По названию (Я-А)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+                <input type="text" name="search" class="form-control" placeholder="Поиск по услугам..." value="{{ search_query }}">
+            </div>
+
+            <button type="submit" class="btn" style="min-width: 120px;">Применить</button>
+            <a href="{% url 'services' %}" class="btn btn-outline">Сбросить</a>
+        </form>
+    </div>
+</section>
+
+<section class="services-list">
+    <div class="container">
+        {% if services %}
+        <div class="grid">
+            {% for service in services %}
+            <div class="card">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.name }}" class="card-img">
+                {% else %}
+                <div style="height: 200px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-spa" style="font-size: 3rem; color: #ccc;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">{{ service.name }}</h3>
+                    <p class="card-text">{{ service.short_description }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+                        <div>
+                            <span style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">{{ service.price }} руб.</span>
+                            <span style="display: block; font-size: 0.9rem; color: #666;">{{ service.duration }} мин.</span>
+                        </div>
+                        <div>
+                            <a href="{% url 'service-detail' service.id %}" class="btn">Подробнее</a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'book-appointment' service.id %}" class="btn btn-outline" style="margin-left: 0.5rem;">Записаться</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        {% if is_paginated %}
+        <div style="display: flex; justify-content: center; margin-top: 2rem;">
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="btn btn-outline">&laquo; первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">предыдущая</a>
+                {% endif %}
+
+                <span class="current" style="margin: 0 1rem; display: inline-flex; align-items: center;">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">последняя &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div style="text-align: center; padding: 3rem; background-color: white; border-radius: 10px;">
+            <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h3>Услуги не найдены</h3>
+            <p>Попробуйте изменить параметры поиска</p>
+            <a href="{% url 'services' %}" class="btn" style="margin-top: 1rem;">Показать все услуги</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="consultation" style="background-color: var(--primary); color: white; padding: 3rem 0; margin-top: 4rem;">
+    <div class="container">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="margin-bottom: 1rem;">Нужна консультация?</h2>
+                <p>Наши специалисты помогут подобрать оптимальные процедуры для решения ваших задач</p>
+            </div>
+            <div>
+                <a href="{% url 'contacts' %}" class="btn" style="background-color: white; color: var(--primary);">Записаться на консультацию</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

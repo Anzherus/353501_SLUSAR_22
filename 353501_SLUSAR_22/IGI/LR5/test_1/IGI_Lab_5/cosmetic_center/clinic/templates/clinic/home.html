@@ -1,0 +1,163 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Главная - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/hero-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 5rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Красота и здоровье вашей кожи</h1>
+        <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 2rem;">Профессиональный уход за кожей от ведущих специалистов с медицинским образованием</p>
+        <a href="{% url 'services' %}" class="btn" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Наши услуги</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <i class="fas fa-certificate" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Квалифицированные специалисты</h3>
+                <p>Все наши врачи имеют высшее медицинское образование и регулярно повышают квалификацию</p>
+            </div>
+
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Безопасность</h3>
+                <p>Используем только сертифицированные препараты и стерильные инструменты</p>
+            </div>
+
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <i class="fas fa-heart" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Индивидуальный подход</h3>
+                <p>Персональные программы ухода за кожей для каждого клиента</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="popular-services" style="margin: 4rem 0;">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Популярные услуги</h2>
+
+        <div class="grid">
+            {% for service in popular_services %}
+            <div class="card">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.name }}" class="card-img">
+                {% else %}
+                <div style="height: 200px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-spa" style="font-size: 3rem; color: #ccc;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">{{ service.name }}</h3>
+                    <p class="card-text">{{ service.short_description|default:service.description|truncatechars:100 }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold; color: var(--primary);">{{ service.price }} руб.</span>
+                        <a href="{% url 'service-detail' service.id %}" class="btn">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'services' %}" class="btn">Все услуги</a>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials" style="background-color: var(--light); padding: 4rem 0;">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Отзывы наших клиентов</h2>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            {% for review in latest_reviews %}
+            <div class="card">
+                <div class="card-body">
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                            <i class="fas fa-user" style="font-size: 1.5rem; color: #666;"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin: 0;">{{ review.client_name }}</h4>
+                            <div style="color: var(--warning);">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ review.text }}</p>
+                    <small style="color: #999; display: block; margin-top: 1rem;">{{ review.created_at|date:"d.m.Y" }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Последняя новость -->
+{% if latest_news %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Последняя новость</h2>
+                <div class="row">
+                    {% if latest_news.image %}
+                    <div class="col-md-4">
+                        <img src="{{ latest_news.image.url }}" class="img-fluid rounded" alt="{{ latest_news.title }}">
+                    </div>
+                    {% endif %}
+                    <div class="col">
+                        <h3>{{ latest_news.title }}</h3>
+                        <p class="text-muted">
+                            <small>Опубликовано: {{ latest_news.created_at|date:"d.m.Y H:i" }}</small>
+                        </p>
+                        <p>{{ latest_news.content|truncatewords:50 }}</p>
+                        <a href="{% url 'news_detail' latest_news.id %}" class="btn btn-primary">Читать далее</a>
+                        <a href="{% url 'news_list' %}" class="btn btn-secondary">Все новости</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Календарь записи -->
+<section class="booking-calendar" style="margin: 4rem 0;">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Записаться на приём</h2>
+        
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Доступные даты для записи</h3>
+                <div class="row">
+                    {% for date in available_dates %}
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="date-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">
+                                {{ date|date:"d" }}
+                            </div>
+                            <div style="color: #666;">
+                                {{ date|date:"F" }}
+                            </div>
+                            <div style="color: #999; font-size: 0.9rem;">
+                                {{ date|date:"l" }}
+                            </div>
+                            <a href="{% url 'services' %}" class="btn btn-sm btn-outline-primary mt-2">Записаться</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

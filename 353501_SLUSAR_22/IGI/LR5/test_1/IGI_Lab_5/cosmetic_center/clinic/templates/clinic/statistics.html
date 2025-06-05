@@ -1,0 +1,416 @@
+﻿{% extends "clinic/base.html" %}
+
+{% block title %}Статистика - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="stats-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/stats-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Статистика центра</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Аналитика работы косметологического центра</p>
+    </div>
+</section>
+
+<section class="stats-content">
+    <div class="container">
+        <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+            <div class="btn-group" style="display: flex; border-radius: 5px; overflow: hidden;">
+                <button id="general-btn" class="btn" style="border-radius: 0; border-right: 1px solid white; background-color: var(--primary);">Общая</button>
+                <button id="services-btn" class="btn btn-outline" style="border-radius: 0; border-right: 1px solid white;">Услуги</button>
+                <button id="doctors-btn" class="btn btn-outline" style="border-radius: 0;">Врачи</button>
+            </div>
+        </div>
+
+        <div id="general-stats">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Общая статистика</h2>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <i class="fas fa-users" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Клиенты</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: var(--primary);">{{ stats.total_clients }}</p>
+                    <p>зарегистрированных клиентов</p>
+                </div>
+
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <i class="fas fa-calendar-check" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Записи</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: var(--primary);">{{ stats.total_appointments }}</p>
+                    <p>всего записей, из них {{ stats.completed_appointments }} завершено</p>
+                </div>
+
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <i class="fas fa-money-bill-wave" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Доход</h3>
+                    <p style="font-size: 2rem; font-weight: bold; color: var(--primary);">{{ stats.total_revenue }} руб.</p>
+                    <p>общий доход за все время</p>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Распределение записей по месяцам</h3>
+                <div style="height: 300px;">
+                    <!-- Здесь будет график -->
+                    <canvas id="appointmentsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.5rem;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Возраст клиентов</h3>
+                    <div style="height: 250px;">
+                        <!-- Здесь будет график -->
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <p>Средний возраст: {{ stats.avg_client_age|floatformat:1 }} лет</p>
+                        <p>Медиана: {{ stats.median_client_age|floatformat:1 }} лет</p>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Пол клиентов</h3>
+                    <div style="height: 250px;">
+                        <!-- Здесь будет график -->
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <p>Женщины: {{ stats.female_clients_percentage|floatformat:1 }}%</p>
+                        <p>Мужчины: {{ stats.male_clients_percentage|floatformat:1 }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="services-stats" style="display: none;">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Статистика по услугам</h2>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Популярность услуг</h3>
+                <div style="height: 400px;">
+                    <!-- Здесь будет график -->
+                    <canvas id="popularServicesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Доход по услугам</h3>
+                <div style="height: 400px;">
+                    <!-- Здесь будет график -->
+                    <canvas id="revenueServicesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Топ-5 услуг</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: var(--primary); color: white;">
+                            <th style="padding: 0.75rem; text-align: left;">Услуга</th>
+                            <th style="padding: 0.75rem; text-align: right;">Количество</th>
+                            <th style="padding: 0.75rem; text-align: right;">Доход</th>
+                            <th style="padding: 0.75rem; text-align: right;">Средний рейтинг</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in stats.top_services %}
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 0.75rem;">{{ service.name }}</td>
+                            <td style="padding: 0.75rem; text-align: right;">{{ service.appointment_count }}</td>
+                            <td style="padding: 0.75rem; text-align: right;">{{ service.total_revenue }} руб.</td>
+                            <td style="padding: 0.75rem; text-align: right;">
+                                {% if service.avg_rating %}
+                                    {{ service.avg_rating|floatformat:1 }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="doctors-stats" style="display: none;">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Статистика по врачам</h2>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Загруженность врачей</h3>
+                <div style="height: 400px;">
+                    <!-- Здесь будет график -->
+                    <canvas id="doctorsWorkloadChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Рейтинги врачей</h3>
+                <div style="height: 400px;">
+                    <!-- Здесь будет график -->
+                    <canvas id="doctorsRatingChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Топ-5 врачей</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: var(--primary); color: white;">
+                            <th style="padding: 0.75rem; text-align: left;">Врач</th>
+                            <th style="padding: 0.75rem; text-align: right;">Количество приемов</th>
+                            <th style="padding: 0.75rem; text-align: right;">Доход</th>
+                            <th style="padding: 0.75rem; text-align: right;">Средний рейтинг</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in stats.top_doctors %}
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 0.75rem;">Доктор {{ doctor.user.get_full_name }}</td>
+                            <td style="padding: 0.75rem; text-align: right;">{{ doctor.appointment_count }}</td>
+                            <td style="padding: 0.75rem; text-align: right;">{{ doctor.total_revenue }} руб.</td>
+                            <td style="padding: 0.75rem; text-align: right;">
+                                {% if doctor.avg_rating %}
+                                    {{ doctor.avg_rating|floatformat:1 }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Переключение между разделами статистики
+        const generalBtn = document.getElementById('general-btn');
+        const servicesBtn = document.getElementById('services-btn');
+        const doctorsBtn = document.getElementById('doctors-btn');
+
+        const generalSection = document.getElementById('general-stats');
+        const servicesSection = document.getElementById('services-stats');
+        const doctorsSection = document.getElementById('doctors-stats');
+
+        function showSection(section, btn) {
+            generalSection.style.display = 'none';
+            servicesSection.style.display = 'none';
+            doctorsSection.style.display = 'none';
+
+            generalBtn.classList.remove('btn');
+            generalBtn.classList.add('btn-outline');
+            servicesBtn.classList.remove('btn');
+            servicesBtn.classList.add('btn-outline');
+            doctorsBtn.classList.remove('btn');
+            doctorsBtn.classList.add('btn-outline');
+
+            section.style.display = 'block';
+            btn.classList.remove('btn-outline');
+            btn.classList.add('btn');
+        }
+
+        generalBtn.addEventListener('click', function() {
+            showSection(generalSection, generalBtn);
+        });
+
+        servicesBtn.addEventListener('click', function() {
+            showSection(servicesSection, servicesBtn);
+        });
+
+        doctorsBtn.addEventListener('click', function() {
+            showSection(doctorsSection, doctorsBtn);
+        });
+
+        // Графики
+        if (document.getElementById('appointmentsChart')) {
+            const appointmentsCtx = document.getElementById('appointmentsChart').getContext('2d');
+            new Chart(appointmentsCtx, {
+                type: 'line',
+                data: {
+                    labels: {{ stats.months|safe }},
+                    datasets: [{
+                        label: 'Количество записей',
+                        data: {{ stats.appointments_per_month }},
+                        borderColor: 'rgba(142, 68, 173, 1)',
+                        backgroundColor: 'rgba(142, 68, 173, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('ageChart')) {
+            const ageCtx = document.getElementById('ageChart').getContext('2d');
+            new Chart(ageCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ stats.age_groups_labels|safe }},
+                    datasets: [{
+                        label: 'Количество клиентов',
+                        data: {{ stats.clients_by_age }},
+                        backgroundColor: 'rgba(142, 68, 173, 0.7)',
+                        borderColor: 'rgba(142, 68, 173, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('genderChart')) {
+            const genderCtx = document.getElementById('genderChart').getContext('2d');
+            new Chart(genderCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Женщины', 'Мужчины'],
+                    datasets: [{
+                        data: [{{ stats.female_clients_percentage }}, {{ stats.male_clients_percentage }}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        if (document.getElementById('popularServicesChart')) {
+            const popularServicesCtx = document.getElementById('popularServicesChart').getContext('2d');
+            new Chart(popularServicesCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ stats.services_names|safe }},
+                    datasets: [{
+                        label: 'Количество записей',
+                        data: {{ stats.services_appointments }},
+                        backgroundColor: 'rgba(142, 68, 173, 0.7)',
+                        borderColor: 'rgba(142, 68, 173, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('revenueServicesChart')) {
+            const revenueServicesCtx = document.getElementById('revenueServicesChart').getContext('2d');
+            new Chart(revenueServicesCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ stats.services_names|safe }},
+                    datasets: [{
+                        label: 'Доход (руб.)',
+                        data: {{ stats.services_revenue }},
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('doctorsWorkloadChart')) {
+            const doctorsWorkloadCtx = document.getElementById('doctorsWorkloadChart').getContext('2d');
+            new Chart(doctorsWorkloadCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ stats.doctors_names|safe }},
+                    datasets: [{
+                        label: 'Количество приемов',
+                        data: {{ stats.doctors_appointments }},
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        if (document.getElementById('doctorsRatingChart')) {
+            const doctorsRatingCtx = document.getElementById('doctorsRatingChart').getContext('2d');
+            new Chart(doctorsRatingCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ stats.doctors_names|safe }},
+                    datasets: [{
+                        label: 'Средний рейтинг',
+                        data: {{ stats.doctors_ratings }},
+                        backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                        borderColor: 'rgba(241, 196, 15, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

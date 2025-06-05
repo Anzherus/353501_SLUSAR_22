@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Вы вышли из аккаунта{% endblock %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Вы успешно вышли из аккаунта</h2>
+    <p>Спасибо, что воспользовались нашим сервисом!</p>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Войти снова</a>
+</div>
+{% endblock %} 
