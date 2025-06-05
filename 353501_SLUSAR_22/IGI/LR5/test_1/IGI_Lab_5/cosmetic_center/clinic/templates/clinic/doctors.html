@@ -1,0 +1,78 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Наши специалисты - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="doctors-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/doctors-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Наши специалисты</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Профессиональные врачи-косметологи с медицинским образованием и большим опытом работы</p>
+    </div>
+</section>
+
+<section class="doctors-list">
+    <div class="container">
+        <div class="grid">
+            {% for doctor in doctors %}
+            <div class="card">
+                {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" alt="{{ doctor.user.get_full_name }}" class="card-img" style="height: 300px; object-fit: cover;">
+                {% else %}
+                <div style="height: 300px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user-md" style="font-size: 3rem; color: #ccc;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">Доктор {{ doctor.user.get_full_name }}</h3>
+                    <p style="color: var(--primary); font-weight: 500; margin-bottom: 0.5rem;">{{ doctor.specialization }}</p>
+                    <p style="margin-bottom: 1rem;">
+                        <i class="fas fa-award" style="color: var(--warning);"></i>
+                        Опыт работы: {{ doctor.experience }} лет
+                    </p>
+
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="margin-right: 1rem;">
+                            {% if doctor.avg_rating %}
+                                {% with doctor.avg_rating|floatformat:1 as rating %}
+                                <div style="display: flex; align-items: center;">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= rating|add:"0" %}
+                                            <i class="fas fa-star" style="color: var(--warning);"></i>
+                                        {% else %}
+                                            <i class="far fa-star" style="color: var(--warning);"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span style="margin-left: 0.5rem;">{{ rating }}</span>
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                                <span style="color: #999;">Нет оценок</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <i class="fas fa-comment-alt" style="color: var(--primary);"></i>
+                            {{ doctor.reviews_count }} отзывов
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <a href="{% url 'doctor-detail' doctor.id %}" class="btn">Подробнее</a>
+                        <a href="{% url 'book-doctor' doctor.id %}" class="btn btn-outline" style="margin-left: 0.5rem;">Записаться</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="doctor-cta" style="background-color: var(--light); padding: 3rem 0; margin-top: 3rem;">
+    <div class="container">
+        <div style="text-align: center;">
+            <h2 style="margin-bottom: 1rem;">Не можете выбрать специалиста?</h2>
+            <p style="max-width: 600px; margin: 0 auto 1.5rem;">Оставьте заявку, и наш администратор поможет подобрать врача, который лучше всего подходит для решения ваших задач</p>
+            <a href="{% url 'contacts' %}" class="btn">Помощь в выборе врача</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

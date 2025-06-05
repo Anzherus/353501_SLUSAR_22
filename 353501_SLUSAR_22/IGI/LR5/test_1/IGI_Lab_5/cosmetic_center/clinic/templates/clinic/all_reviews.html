@@ -1,0 +1,18 @@
+{% extends "clinic/base.html" %}
+{% block title %}Отзывы клиентов{% endblock %}
+{% block content %}
+<h2 class="mb-4">Отзывы клиентов</h2>
+<div class="grid">
+    {% for review in reviews %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ review.client.user.get_full_name }} о докторе {{ review.doctor.user.get_full_name }}</h5>
+                <p class="card-text">{{ review.text }}</p>
+                <small class="text-muted">Оценка: {{ review.rating }} / 5</small>
+            </div>
+        </div>
+    {% empty %}
+        <p>Пока нет отзывов.</p>
+    {% endfor %}
+</div>
+{% endblock %} 

@@ -1,0 +1,303 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Регистрация - Косметологический Центр{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h1 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-logo {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .password-strength {
+        height: 5px;
+        background-color: #eee;
+        margin-top: 0.5rem;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .password-strength-bar {
+        height: 100%;
+        width: 0%;
+        background-color: var(--danger);
+        transition: all 0.3s ease;
+    }
+
+    .password-hints {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .password-hints ul {
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .password-hints li {
+        margin-bottom: 0.3rem;
+    }
+
+    .password-hints .valid {
+        color: var(--success);
+    }
+
+    .password-hints .invalid {
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-header">
+        <div class="auth-logo">
+            <i class="fas fa-spa"></i>
+        </div>
+        <h1>Регистрация</h1>
+        <p>Создайте учетную запись для доступа ко всем возможностям</p>
+    </div>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" id="signup-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_first_name">Имя</label>
+            <input type="text" id="id_first_name" name="first_name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_last_name">Фамилия</label>
+            <input type="text" id="id_last_name" name="last_name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">Email</label>
+            <input type="email" id="id_email" name="email" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone">Телефон</label>
+            <input type="tel" id="id_phone" name="phone" class="form-control" pattern="\+375\s\(\d{2}\)\s\d{3}-\d{2}-\d{2}" placeholder="+375 (29) 123-45-67" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_birth_date">Дата рождения</label>
+            <input type="date" id="id_birth_date" name="birth_date" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_gender">Пол</label>
+            <select id="id_gender" name="gender" class="form-control" required>
+                <option value="" selected disabled>Выберите пол</option>
+                <option value="M">Мужской</option>
+                <option value="F">Женский</option>
+                <option value="O">Другой</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="id_password1">Пароль</label>
+            <input type="password" id="id_password1" name="password1" class="form-control" required>
+            <div class="password-strength">
+                <div class="password-strength-bar" id="password-strength-bar"></div>
+            </div>
+            <div class="password-hints">
+                <p>Пароль должен содержать:</p>
+                <ul>
+                    <li id="length-hint" class="invalid">Минимум 8 символов</li>
+                    <li id="uppercase-hint" class="invalid">Хотя бы одну заглавную букву</li>
+                    <li id="number-hint" class="invalid">Хотя бы одну цифру</li>
+                    <li id="special-hint" class="invalid">Хотя бы один специальный символ</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_password2">Подтверждение пароля</label>
+            <input type="password" id="id_password2" name="password2" class="form-control" required>
+            <div id="password-match" style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--danger);"></div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1.5rem;">
+            <button type="submit" class="btn" style="width: 100%;">Зарегистрироваться</button>
+        </div>
+    </form>
+
+    <div class="auth-footer">
+        <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a></p>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Маска для телефона
+        const phoneInput = document.getElementById('id_phone');
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            e.target.value = !x[2] ? x[1] : '+375 (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+        });
+
+        // Валидация даты рождения (18+)
+        const birthDateInput = document.getElementById('id_birth_date');
+        birthDateInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                alert('Вы должны быть старше 18 лет для регистрации в системе.');
+                this.value = '';
+            }
+        });
+
+        // Проверка сложности пароля
+        const passwordInput = document.getElementById('id_password1');
+        const passwordBar = document.getElementById('password-strength-bar');
+        const lengthHint = document.getElementById('length-hint');
+        const uppercaseHint = document.getElementById('uppercase-hint');
+        const numberHint = document.getElementById('number-hint');
+        const specialHint = document.getElementById('special-hint');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+
+            // Проверка длины
+            if (password.length >= 8) {
+                strength += 1;
+                lengthHint.classList.remove('invalid');
+                lengthHint.classList.add('valid');
+            } else {
+                lengthHint.classList.remove('valid');
+                lengthHint.classList.add('invalid');
+            }
+
+            // Проверка на заглавные буквы
+            if (/[A-ZА-Я]/.test(password)) {
+                strength += 1;
+                uppercaseHint.classList.remove('invalid');
+                uppercaseHint.classList.add('valid');
+            } else {
+                uppercaseHint.classList.remove('valid');
+                uppercaseHint.classList.add('invalid');
+            }
+
+            // Проверка на цифры
+            if (/\d/.test(password)) {
+                strength += 1;
+                numberHint.classList.remove('invalid');
+                numberHint.classList.add('valid');
+            } else {
+                numberHint.classList.remove('valid');
+                numberHint.classList.add('invalid');
+            }
+
+            // Проверка на спецсимволы
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                strength += 1;
+                specialHint.classList.remove('invalid');
+                specialHint.classList.add('valid');
+            } else {
+                specialHint.classList.remove('valid');
+                specialHint.classList.add('invalid');
+            }
+
+            // Обновление индикатора силы
+            const width = strength * 25;
+            passwordBar.style.width = width + '%';
+
+            if (strength <= 1) {
+                passwordBar.style.backgroundColor = 'var(--danger)';
+            } else if (strength <= 3) {
+                passwordBar.style.backgroundColor = 'var(--warning)';
+            } else {
+                passwordBar.style.backgroundColor = 'var(--success)';
+            }
+        });
+
+        // Проверка совпадения паролей
+        const password2Input = document.getElementById('id_password2');
+        const passwordMatch = document.getElementById('password-match');
+
+        password2Input.addEventListener('input', function() {
+            if (passwordInput.value !== this.value) {
+                passwordMatch.textContent = 'Пароли не совпадают';
+                passwordMatch.style.color = 'var(--danger)';
+            } else {
+                passwordMatch.textContent = 'Пароли совпадают';
+                passwordMatch.style.color = 'var(--success)';
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "clinic/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h2>Редактирование промокода</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.code.label_tag }}
+                {{ form.code }}
+                {% if form.code.errors %}
+                    <div class="error">{{ form.code.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.discount.label_tag }}
+                    {{ form.discount }}
+                    {% if form.discount.errors %}
+                        <div class="error">{{ form.discount.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.max_uses.label_tag }}
+                    {{ form.max_uses }}
+                    {% if form.max_uses.errors %}
+                        <div class="error">{{ form.max_uses.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.start_date.label_tag }}
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                        <div class="error">{{ form.start_date.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.end_date.label_tag }}
+                    {{ form.end_date }}
+                    {% if form.end_date.errors %}
+                        <div class="error">{{ form.end_date.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.services.label_tag }}
+                {{ form.services }}
+                {% if form.services.errors %}
+                    <div class="error">{{ form.services.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.is_active.label_tag }}
+                {{ form.is_active }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="{% url 'manage_promos' %}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}

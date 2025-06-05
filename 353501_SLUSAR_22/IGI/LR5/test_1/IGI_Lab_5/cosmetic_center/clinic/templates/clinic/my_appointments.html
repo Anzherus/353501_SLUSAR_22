@@ -1,0 +1,185 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Мои записи - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="appointments-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/appointments-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Мои записи</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Здесь вы можете просмотреть свои предстоящие и завершенные визиты</p>
+    </div>
+</section>
+
+<section class="appointments-content">
+    <div class="container">
+        <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+            <div class="btn-group" style="display: flex; border-radius: 5px; overflow: hidden;">
+                <button id="upcoming-btn" class="btn" style="border-radius: 0; border-right: 1px solid white; background-color: var(--primary);">Предстоящие</button>
+                <button id="completed-btn" class="btn btn-outline" style="border-radius: 0;">Завершенные</button>
+                <button id="cancelled-btn" class="btn btn-outline" style="border-radius: 0;">Отмененные</button>
+            </div>
+        </div>
+
+        <div id="upcoming-appointments">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Предстоящие записи</h2>
+
+            {% if upcoming_appointments %}
+                <div class="grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                    {% for appointment in upcoming_appointments %}
+                    <div class="card" style="padding: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0; color: var(--primary);">{{ appointment.service.name }}</h3>
+                            <span style="font-weight: bold; background-color: var(--light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem;">
+                                {{ appointment.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 0.5rem;"></i> Дата: {{ appointment.date_time|date:"d.m.Y" }}</p>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Время: {{ appointment.date_time|time:"H:i" }}</p>
+                                {% if appointment.doctor %}
+                                <p><i class="fas fa-user-md" style="color: var(--primary); margin-right: 0.5rem;"></i> Врач: {{ appointment.doctor.user.get_full_name }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-wallet" style="color: var(--primary); margin-right: 0.5rem;"></i> Стоимость: {{ appointment.service.price }} руб.</p>
+                                <p><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Длительность: {{ appointment.service.duration }} мин.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px;">
+                    <i class="fas fa-calendar-check" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Нет предстоящих записей</h3>
+                    <p>У вас нет запланированных визитов в ближайшее время</p>
+                    <a href="{% url 'services' %}" class="btn" style="margin-top: 1rem;">Записаться на прием</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="completed-appointments" style="display: none;">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Завершенные записи</h2>
+
+            {% if completed_appointments %}
+                <div class="grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                    {% for appointment in completed_appointments %}
+                    <div class="card" style="padding: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0; color: var(--primary);">{{ appointment.service.name }}</h3>
+                            <span style="font-weight: bold; background-color: var(--light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem;">
+                                {{ appointment.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 0.5rem;"></i> Дата: {{ appointment.date_time|date:"d.m.Y" }}</p>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Время: {{ appointment.date_time|time:"H:i" }}</p>
+                                {% if appointment.doctor %}
+                                <p><i class="fas fa-user-md" style="color: var(--primary); margin-right: 0.5rem;"></i> Врач: {{ appointment.doctor.user.get_full_name }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-wallet" style="color: var(--primary); margin-right: 0.5rem;"></i> Стоимость: {{ appointment.service.price }} руб.</p>
+                                <p><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Длительность: {{ appointment.service.duration }} мин.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px;">
+                    <i class="fas fa-calendar-check" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Нет завершенных записей</h3>
+                    <p>У вас пока нет завершенных визитов</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="cancelled-appointments" style="display: none;">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Отмененные записи</h2>
+
+            {% if cancelled_appointments %}
+                <div class="grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                    {% for appointment in cancelled_appointments %}
+                    <div class="card" style="padding: 1.5rem; opacity: 0.7;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0; color: var(--primary);">{{ appointment.service.name }}</h3>
+                            <span style="font-weight: bold; background-color: var(--light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem;">
+                                {{ appointment.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-calendar-alt" style="color: var(--primary); margin-right: 0.5rem;"></i> Дата: {{ appointment.date_time|date:"d.m.Y" }}</p>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Время: {{ appointment.date_time|time:"H:i" }}</p>
+                                {% if appointment.doctor %}
+                                <p><i class="fas fa-user-md" style="color: var(--primary); margin-right: 0.5rem;"></i> Врач: {{ appointment.doctor.user.get_full_name }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><i class="fas fa-wallet" style="color: var(--primary); margin-right: 0.5rem;"></i> Стоимость: {{ appointment.service.price }} руб.</p>
+                                <p><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Длительность: {{ appointment.service.duration }} мин.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; background-color: white; border-radius: 10px;">
+                    <i class="fas fa-calendar-check" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Нет отмененных записей</h3>
+                    <p>Вы не отменяли свои записи</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const upcomingBtn = document.getElementById('upcoming-btn');
+        const completedBtn = document.getElementById('completed-btn');
+        const cancelledBtn = document.getElementById('cancelled-btn');
+
+        const upcomingSection = document.getElementById('upcoming-appointments');
+        const completedSection = document.getElementById('completed-appointments');
+        const cancelledSection = document.getElementById('cancelled-appointments');
+
+        function showSection(section, btn) {
+            upcomingSection.style.display = 'none';
+            completedSection.style.display = 'none';
+            cancelledSection.style.display = 'none';
+
+            upcomingBtn.classList.remove('btn');
+            upcomingBtn.classList.add('btn-outline');
+            completedBtn.classList.remove('btn');
+            completedBtn.classList.add('btn-outline');
+            cancelledBtn.classList.remove('btn');
+            cancelledBtn.classList.add('btn-outline');
+
+            section.style.display = 'block';
+            btn.classList.remove('btn-outline');
+            btn.classList.add('btn');
+        }
+
+        upcomingBtn.addEventListener('click', function() {
+            showSection(upcomingSection, upcomingBtn);
+        });
+
+        completedBtn.addEventListener('click', function() {
+            showSection(completedSection, completedBtn);
+        });
+
+        cancelledBtn.addEventListener('click', function() {
+            showSection(cancelledSection, cancelledBtn);
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

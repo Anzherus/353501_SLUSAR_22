@@ -1,0 +1,69 @@
+﻿{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}О нас - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="about-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/about-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">О нашем центре</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Профессиональный подход к красоте и здоровью вашей кожи</p>
+    </div>
+</section>
+
+<section class="about-content">
+    <div class="container">
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+            <div>
+                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Наша история</h2>
+                <p style="margin-bottom: 1.5rem;">Косметологический центр «Эстетика» был основан в 2010 году с целью предоставления высококачественных косметологических услуг с использованием современных технологий и препаратов.</p>
+                <p style="margin-bottom: 1.5rem;">За годы работы мы помогли тысячам клиентов обрести уверенность в себе и решить различные проблемы с кожей.</p>
+                <p>Наша миссия — сочетание медицинского подхода с эстетическими решениями для достижения наилучших результатов.</p>
+            </div>
+            <div>
+                <img src="{% static 'images/Centr_Cosmetologii.png' %}" alt="Центр косметологии" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            </div>
+        </div>
+
+        <div style="margin-top: 4rem;">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Наши принципы</h2>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="card" style="padding: 2rem; text-align: center;">
+                    <i class="fas fa-heartbeat" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Безопасность</h3>
+                    <p>Все процедуры выполняются сертифицированными специалистами с медицинским образованием</p>
+                </div>
+                <div class="card" style="padding: 2rem; text-align: center;">
+                    <i class="fas fa-flask" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Инновации</h3>
+                    <p>Используем только проверенные и эффективные методики и препараты</p>
+                </div>
+                <div class="card" style="padding: 2rem; text-align: center;">
+                    <i class="fas fa-user-md" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Индивидуальный подход</h3>
+                    <p>Для каждого клиента разрабатывается персональная программа ухода</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 4rem; background-color: var(--light); padding: 3rem; border-radius: 10px;">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Наши реквизиты</h2>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Юридическая информация</h3>
+                    <p><strong>Название:</strong> ООО "Эстетика"</p>
+                    <p><strong>ИНН:</strong> 1234567890</p>
+                    <p><strong>ОГРН:</strong> 1234567890123</p>
+                    <p><strong>Юридический адрес:</strong> г. Минск, ул. Примерная, д. 123</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Лицензии и сертификаты</h3>
+                    <p>Лицензия на осуществление медицинской деятельности № ЛО-77-01-012345</p>
+                    <p>Сертификаты соответствия на все используемые препараты</p>
+                    <p>Дипломы и сертификаты наших специалистов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

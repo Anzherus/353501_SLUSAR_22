@@ -1,0 +1,97 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Отладочная информация -->
+    {% if debug %}
+    <div class="alert alert-info">
+        <p>Debug info:</p>
+        <p>Latest news exists: {{ latest_news|yesno:"Yes,No" }}</p>
+        {% if latest_news %}
+        <p>Title: {{ latest_news.title }}</p>
+        <p>Created at: {{ latest_news.created_at }}</p>
+        <p>Is published: {{ latest_news.is_published|yesno:"Yes,No" }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Последняя новость -->
+    {% if latest_news %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Последняя новость</h2>
+                    <div class="row">
+                        {% if latest_news.image %}
+                        <div class="col-md-4">
+                            <img src="{{ latest_news.image.url }}" class="img-fluid rounded" alt="{{ latest_news.title }}">
+                        </div>
+                        {% endif %}
+                        <div class="col">
+                            <h3>{{ latest_news.title }}</h3>
+                            <p class="text-muted">
+                                <small>Опубликовано: {{ latest_news.created_at|date:"d.m.Y H:i" }}</small>
+                            </p>
+                            <p>{{ latest_news.content|truncatewords:50 }}</p>
+                            <a href="{% url 'news_detail' latest_news.id %}" class="btn btn-primary">Читать далее</a>
+                            <a href="{% url 'news_list' %}" class="btn btn-secondary">Все новости</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Наши врачи -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Наши врачи</h2>
+            <div class="row">
+                {% for doctor in doctors %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if doctor.photo %}
+                        <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor.user.get_full_name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ doctor.user.get_full_name }}</h5>
+                            <p class="card-text">{{ doctor.specialization }}</p>
+                            <p class="card-text"><small class="text-muted">Опыт: {{ doctor.experience }} лет</small></p>
+                            <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Наши услуги -->
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Наши услуги</h2>
+            <div class="row">
+                {% for service in services %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ service.name }}</h5>
+                            <p class="card-text">{{ service.description|truncatewords:20 }}</p>
+                            <p class="card-text">
+                                <strong>Цена:</strong> {{ service.price }} руб.<br>
+                                <small class="text-muted">Длительность: {{ service.duration }}</small>
+                            </p>
+                            <a href="{% url 'service_detail' service.id %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

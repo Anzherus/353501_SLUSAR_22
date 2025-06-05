@@ -1,0 +1,21 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Удаление промокода - Косметологический Центр{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
+        <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Удаление промокода</h2>
+        
+        <p style="margin-bottom: 1.5rem;">Вы уверены, что хотите удалить промокод "{{ promo_code.code }}"?</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn" style="background-color: #dc3545;">Удалить</button>
+                <a href="{% url 'manage_promos' %}" class="btn btn-outline">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

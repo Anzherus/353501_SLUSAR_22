@@ -1,0 +1,25 @@
+{% extends 'clinic/base.html' %}
+
+{% block title %}Удаление новости{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title mb-4">Удаление новости</h1>
+                    
+                    <p class="mb-4">Вы уверены, что хотите удалить новость "{{ news.title }}"?</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <a href="{% url 'news_detail' news.id %}" class="btn btn-secondary">Отмена</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

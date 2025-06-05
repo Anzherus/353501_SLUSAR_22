@@ -1,0 +1,31 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Добавление промокода - Косметологический Центр{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
+        <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Добавление промокода</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div style="margin-bottom: 1rem;">
+                <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div style="color: #dc3545; font-size: 0.9rem; margin-top: 0.25rem;">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn">Создать промокод</button>
+                <a href="{% url 'manage_promos' %}" class="btn btn-outline">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

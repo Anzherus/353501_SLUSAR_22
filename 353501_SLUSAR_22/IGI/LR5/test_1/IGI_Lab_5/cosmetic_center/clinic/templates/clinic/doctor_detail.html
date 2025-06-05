@@ -1,0 +1,47 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}{{ doctor.user.get_full_name }} - Косметологический Центр{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 2rem auto;">
+    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+        <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+            <div style="flex: 0 0 300px;">
+                {% if doctor.photo %}
+                    <img src="{{ doctor.photo.url }}" alt="{{ doctor.user.get_full_name }}" style="width: 100%; border-radius: 10px;">
+                {% else %}
+                    <img src="{% static 'images/default-doctor.jpg' %}" alt="{{ doctor.user.get_full_name }}" style="width: 100%; border-radius: 10px;">
+                {% endif %}
+            </div>
+            <div style="flex: 1;">
+                <h1 style="color: var(--primary); margin-bottom: 1rem;">{{ doctor.user.get_full_name }}</h1>
+                <p style="color: #666; margin-bottom: 1rem;">Специализация: {{ doctor.specialization }}</p>
+                <p style="color: #666; margin-bottom: 1rem;">Опыт работы: {{ doctor.experience }} лет</p>
+                
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">О враче</h3>
+                    <p>{{ doctor.bio }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h3 style="margin-bottom: 1rem;">Услуги</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+                {% for service in doctor.services.all %}
+                <div class="card" style="padding: 1rem;">
+                    <h4 style="margin-bottom: 0.5rem;">{{ service.name }}</h4>
+                    <p style="color: #666;">{{ service.short_description }}</p>
+                    <p style="color: var(--primary); font-weight: bold;">{{ service.price }} руб.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="{% url 'book-doctor' doctor.id %}" class="btn">Записаться на приём</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
