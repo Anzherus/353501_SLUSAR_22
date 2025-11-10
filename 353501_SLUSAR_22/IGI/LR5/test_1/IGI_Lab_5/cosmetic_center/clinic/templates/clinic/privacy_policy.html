@@ -1,0 +1,686 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Политика конфиденциальности - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Политика конфиденциальности и обработки персональных данных косметологического центра «Эстетика». Защита ваших данных и соблюдение законодательства.{% endblock %}
+
+{% block content %}
+
+<!-- Privacy policy section -->
+<section class="privacy-policy-section" aria-labelledby="privacy-heading">
+    <div class="container">
+        <header class="policy-header">
+            <h1 id="privacy-heading">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                Политика конфиденциальности
+            </h1>
+            <p class="policy-subtitle">Защита ваших персональных данных — наш приоритет</p>
+        </header>
+        
+        <div class="policy-content">
+            {% if policy %}
+                <article class="policy-article" itemscope itemtype="http://schema.org/Article">
+                    <header class="article-header">
+                        <h2 itemprop="headline">{{ policy.title }}</h2>
+                        <div class="article-meta">
+                            <time datetime="{{ policy.updated_at|date:'Y-m-d H:i' }}" itemprop="dateModified">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                Последнее обновление: {{ policy.updated_at|date:"d.m.Y H:i" }}
+                            </time>
+                        </div>
+                    </header>
+                    
+                    <div class="article-content" itemprop="articleBody">
+                        {{ policy.content|linebreaks }}
+                    </div>
+                </article>
+            {% else %}
+                <article class="policy-article" itemscope itemtype="http://schema.org/Article">
+                    <header class="article-header">
+                        <h2 itemprop="headline">Политика конфиденциальности</h2>
+                        <div class="article-meta">
+                            <time datetime="{% now 'Y-m-d' %}" itemprop="datePublished">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                Действует с: {% now "d.m.Y" %}
+                            </time>
+                        </div>
+                    </header>
+                    
+                    <div class="article-content" itemprop="articleBody">
+                        <section class="policy-section">
+                            <h3 id="general-provisions">
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                1. Общие положения
+                            </h3>
+                            <p>Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006. №152-ФЗ «О персональных данных» и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных Косметологического центра «Эстетика» (далее — Оператор).</p>
+                            
+                            <div class="highlight-box">
+                                <p><strong>Оператор:</strong> Косметологический центр «Эстетика»</p>
+                                <p><strong>Адрес:</strong> г. Минск, ул. Примерная, д. 123</p>
+                                <p><strong>Телефон:</strong> <a href="tel:+375291234567">+375 (29) 123-45-67</a></p>
+                                <p><strong>Email:</strong> <a href="mailto:info@estetika.by">info@estetika.by</a></p>
+                            </div>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="processing-purposes">
+                                <i class="fas fa-bullseye" aria-hidden="true"></i>
+                                2. Цели обработки персональных данных
+                            </h3>
+                            <p>Персональные данные обрабатываются в следующих целях:</p>
+                            <ul class="policy-list">
+                                <li>Предоставление косметологических услуг и процедур</li>
+                                <li>Запись на прием к специалистам</li>
+                                <li>Информирование о новых услугах, акциях и специальных предложениях</li>
+                                <li>Обработка заказов и заявок клиентов</li>
+                                <li>Ведение клиентской базы и истории посещений</li>
+                                <li>Обеспечение безопасности и предотвращение мошенничества</li>
+                                <li>Соблюдение требований законодательства</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="data-categories">
+                                <i class="fas fa-database" aria-hidden="true"></i>
+                                3. Категории обрабатываемых персональных данных
+                            </h3>
+                            <p>Мы обрабатываем следующие категории персональных данных:</p>
+                            
+                            <div class="data-categories">
+                                <div class="category-group">
+                                    <h4>Основные данные:</h4>
+                                    <ul class="policy-list">
+                                        <li>Фамилия, имя, отчество</li>
+                                        <li>Дата рождения</li>
+                                        <li>Пол</li>
+                                        <li>Номер телефона</li>
+                                        <li>Адрес электронной почты</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="category-group">
+                                    <h4>Дополнительные данные:</h4>
+                                    <ul class="policy-list">
+                                        <li>Адрес проживания</li>
+                                        <li>Медицинские данные, необходимые для оказания услуг</li>
+                                        <li>Информация о предпочтениях в услугах</li>
+                                        <li>История посещений и процедур</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="processing-terms">
+                                <i class="fas fa-clock" aria-hidden="true"></i>
+                                4. Сроки обработки персональных данных
+                            </h3>
+                            <p>Персональные данные обрабатываются в течение срока, необходимого для достижения целей обработки:</p>
+                            <ul class="policy-list">
+                                <li><strong>Активные клиенты:</strong> в течение всего периода обслуживания</li>
+                                <li><strong>Неактивные клиенты:</strong> не более 5 лет с момента последнего обращения</li>
+                                <li><strong>Медицинские данные:</strong> в соответствии с требованиями медицинского законодательства</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="data-rights">
+                                <i class="fas fa-user-shield" aria-hidden="true"></i>
+                                5. Права субъекта персональных данных
+                            </h3>
+                            <p>Вы имеете следующие права в отношении ваших персональных данных:</p>
+                            <ul class="policy-list">
+                                <li>Получать информацию об обработке ваших персональных данных</li>
+                                <li>Требовать уточнения, блокирования или уничтожения персональных данных</li>
+                                <li>Отзывать согласие на обработку персональных данных</li>
+                                <li>Получать копию обрабатываемых персональных данных</li>
+                                <li>Обращаться в уполномоченный орган по защите прав субъектов персональных данных</li>
+                            </ul>
+                            
+                            <div class="contact-info-box">
+                                <h4>Для реализации ваших прав обращайтесь:</h4>
+                                <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+375291234567">+375 (29) 123-45-67</a></p>
+                                <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:privacy@estetika.by">privacy@estetika.by</a></p>
+                            </div>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="security-measures">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                                6. Меры по обеспечению безопасности
+                            </h3>
+                            <p>Мы принимаем необходимые правовые, организационные и технические меры для защиты персональных данных:</p>
+                            <ul class="policy-list">
+                                <li>Шифрование данных при передаче и хранении</li>
+                                <li>Ограничение доступа к персональным данным</li>
+                                <li>Регулярное обновление систем безопасности</li>
+                                <li>Обучение сотрудников правилам работы с персональными данными</li>
+                                <li>Мониторинг и аудит доступа к данным</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="cookies">
+                                <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+                                7. Использование файлов cookie
+                            </h3>
+                            <p>Наш сайт использует файлы cookie для улучшения пользовательского опыта:</p>
+                            <ul class="policy-list">
+                                <li><strong>Необходимые cookie:</strong> обеспечивают базовую функциональность сайта</li>
+                                <li><strong>Аналитические cookie:</strong> помогают понять, как пользователи взаимодействуют с сайтом</li>
+                                <li><strong>Функциональные cookie:</strong> запоминают ваши предпочтения</li>
+                            </ul>
+                            <p>Вы можете управлять настройками cookie в вашем браузере.</p>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="third-parties">
+                                <i class="fas fa-share-alt" aria-hidden="true"></i>
+                                8. Передача данных третьим лицам
+                            </h3>
+                            <p>Мы не передаем ваши персональные данные третьим лицам, за исключением случаев:</p>
+                            <ul class="policy-list">
+                                <li>Получения вашего явного согласия</li>
+                                <li>Требований законодательства</li>
+                                <li>Обеспечения безопасности и предотвращения мошенничества</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="contact-info">
+                                <i class="fas fa-address-book" aria-hidden="true"></i>
+                                9. Контактная информация
+                            </h3>
+                            <p>По вопросам обработки персональных данных вы можете обратиться:</p>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <i class="fas fa-phone" aria-hidden="true"></i>
+                                    <div>
+                                        <strong>Телефон:</strong>
+                                        <a href="tel:+375291234567">+375 (29) 123-45-67</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                                    <div>
+                                        <strong>Email:</strong>
+                                        <a href="mailto:info@estetika.by">info@estetika.by</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                    <div>
+                                        <strong>Адрес:</strong>
+                                        г. Минск, ул. Примерная, д. 123, Бизнес центр "Эстетика", 4 этаж
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section class="policy-section">
+                            <h3 id="changes">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                10. Изменения в политике
+                            </h3>
+                            <p>Мы можем обновлять данную политику конфиденциальности. О существенных изменениях мы уведомим вас по email или через уведомления на сайте.</p>
+                            <p>Рекомендуем периодически проверять данную страницу для ознакомления с актуальной версией политики.</p>
+                        </section>
+                    </div>
+                    
+                    <footer class="article-footer">
+                        <div class="policy-footer-info">
+                            <div class="version-info">
+                                <i class="fas fa-tag" aria-hidden="true"></i>
+                                <span>Версия 1.0</span>
+                            </div>
+                            <div class="last-updated">
+                                <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                                <span>Последнее обновление: {% now "d.m.Y" %}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-actions">
+                            <button class="btn btn-outline-primary" onclick="printPolicy()" aria-label="Распечатать политику">
+                                <i class="fas fa-print" aria-hidden="true"></i>
+                                Распечатать
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="downloadPolicy()" aria-label="Скачать политику">
+                                <i class="fas fa-download" aria-hidden="true"></i>
+                                Скачать PDF
+                            </button>
+                        </div>
+                    </footer>
+                </article>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Policy functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Highlight current section on scroll
+    const sections = document.querySelectorAll('.policy-section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('highlighted');
+            } else {
+                entry.target.classList.remove('highlighted');
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+});
+
+// Print policy
+function printPolicy() {
+    const printWindow = window.open('', '_blank');
+    const policy = document.querySelector('.policy-article');
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Политика конфиденциальности - Косметологический центр «Эстетика»</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+                    h1, h2, h3 { color: #8e44ad; }
+                    .policy-section { margin: 2rem 0; }
+                    .policy-list { margin: 1rem 0; }
+                    .highlight-box { background: #f8f9fa; padding: 1rem; border-left: 4px solid #8e44ad; margin: 1rem 0; }
+                    .contact-details { margin: 1rem 0; }
+                    .contact-item { margin: 0.5rem 0; }
+                </style>
+            </head>
+            <body>
+                ${policy.innerHTML}
+            </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.print();
+}
+
+// Download policy as PDF (placeholder)
+function downloadPolicy() {
+    showNotification('Функция скачивания PDF будет доступна в ближайшее время', 'info');
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* Policy header */
+.policy-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.policy-header h1 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.policy-subtitle {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+}
+
+/* Policy content */
+.policy-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.policy-article {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.article-header {
+    background: var(--primary);
+    color: var(--white);
+    padding: 2rem;
+    text-align: center;
+}
+
+.article-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.8rem;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.article-content {
+    padding: 2rem;
+}
+
+/* Policy sections */
+.policy-section {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.policy-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.policy-section.highlighted {
+    background: rgba(142, 68, 173, 0.05);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+}
+
+.policy-section h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.3rem;
+}
+
+.policy-section h4 {
+    color: var(--dark);
+    margin: 1.5rem 0 0.75rem 0;
+    font-size: 1.1rem;
+}
+
+.policy-list {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.policy-list li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+/* Highlight boxes */
+.highlight-box {
+    background: rgba(142, 68, 173, 0.1);
+    border: 1px solid rgba(142, 68, 173, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.highlight-box p {
+    margin-bottom: 0.5rem;
+}
+
+.highlight-box p:last-child {
+    margin-bottom: 0;
+}
+
+/* Data categories */
+.data-categories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.category-group {
+    background: var(--light);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.category-group h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+/* Contact info */
+.contact-info-box {
+    background: var(--light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.contact-info-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.contact-item i {
+    color: var(--primary);
+    width: 20px;
+    text-align: center;
+}
+
+.contact-item a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
+/* Article footer */
+.article-footer {
+    background: var(--light);
+    padding: 2rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.policy-footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.version-info,
+.last-updated {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.policy-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.policy-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .policy-header h1 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .article-content {
+        padding: 1.5rem;
+    }
+    
+    .data-categories {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .policy-footer-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .policy-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .policy-actions .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .article-header {
+        padding: 1.5rem;
+    }
+    
+    .article-content {
+        padding: 1rem;
+    }
+    
+    .policy-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .policy-section.highlighted {
+        padding: 1rem;
+    }
+    
+    .article-footer {
+        padding: 1.5rem;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

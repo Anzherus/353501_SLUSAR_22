@@ -2,347 +2,448 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <!-- Meta tags for SEO and social media -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Косметологический центр «Эстетика» - профессиональные косметологические услуги, современное оборудование, квалифицированные специалисты. Запись на прием онлайн.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}косметология, красота, уход за кожей, косметолог, эстетика, процедуры, услуги{% endblock %}">
+    <meta name="author" content="Косметологический центр «Эстетика»">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph meta tags for social media sharing -->
+    <meta property="og:title" content="{% block og_title %}Косметологический Центр «Эстетика»{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Косметологический центр «Эстетика» - профессиональные косметологические услуги, современное оборудование, квалифицированные специалисты. Запись на прием онлайн.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}">
+    <meta property="og:site_name" content="Косметологический центр «Эстетика»">
+    <meta property="og:locale" content="ru_RU">
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Косметологический Центр «Эстетика»{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Косметологический центр «Эстетика» - профессиональные косметологические услуги, современное оборудование, квалифицированные специалисты. Запись на прием онлайн.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- Page title -->
     <title>{% block title %}Косметологический Центр «Эстетика»{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/auth.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        :root {
-            --primary: #8e44ad;
-            --secondary: #9b59b6;
-            --light: #f5f5f5;
-            --dark: #333;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f9f9f9;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-links a:hover {
-            color: rgba(255,255,255,0.8);
-            transform: translateY(-2px);
-        }
-
-        .user-greeting {
-            margin-left: auto;
-            margin-right: 2rem;
-            color: white;
-            font-weight: 500;
-        }
-
-        main {
-            min-height: calc(100vh - 200px);
-            padding: 2rem 0;
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: var(--primary);
-        }
-
-        .copyright {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Карточки услуг/врачей */
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-
-        .card-text {
-            color: #666;
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.6rem 1.2rem;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        /* Система уведомлений */
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-        }
-
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.2);
-            border-left: 4px solid var(--success);
-            color: var(--success);
-        }
-
-        .alert-danger {
-            background-color: rgba(231, 76, 60, 0.2);
-            border-left: 4px solid var(--danger);
-            color: var(--danger);
-        }
-
-        /* Сетка */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        /* Формы */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    
+    <!-- Favicon and app icons -->
+    <link rel="icon" href="/media/company/logo.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="/media/company/logo.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'images/apple-touch-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/apple-touch-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/apple-touch-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/apple-touch-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'images/apple-touch-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/apple-touch-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/apple-touch-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon-180x180.png' %}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- External CSS libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Bootstrap отключен согласно заданию -->
+    
+        <!-- Custom CSS - Оптимизированные стили -->
+        <link rel="stylesheet" href="{% static 'css/unified-styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/components.css' %}">
+        <link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+        <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+        <link rel="stylesheet" href="{% static 'css/pages-styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/final-improvements.css' %}">
+        <link rel="stylesheet" href="{% static 'css/loader-animation.css' %}">
+        <link rel="stylesheet" href="{% static 'css/pure-css-animation.css' %}">
+    
+    <!-- Additional CSS for specific pages -->
     {% block extra_css %}{% endblock %}
+    
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MedicalBusiness",
+        "name": "Косметологический центр «Эстетика»",
+        "description": "Профессиональные косметологические услуги от квалифицированных специалистов",
+        "url": "{{ request.scheme }}://{{ request.get_host }}",
+        "telephone": "+375 (29) XXX-XX-XX",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "ул. Примерная, д. 1",
+            "addressLocality": "Минск",
+            "addressCountry": "BY"
+        },
+        "openingHours": [
+            "Mo-Fr 09:00-21:00",
+            "Sa-Su 10:00-18:00"
+        ],
+        "priceRange": "$$",
+        "medicalSpecialty": "Cosmetic Surgery",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Косметологические услуги",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "MedicalProcedure",
+                        "name": "Косметологические процедуры"
+                    }
+                }
+            ]
+        }
+    }
+    </script>
 </head>
 <body>
-    <header>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+    
+    <!-- Header with navigation -->
+    <header role="banner">
         <div class="container">
-            <nav>
-                <a href="{% url 'home' %}" class="logo">
-                    <i class="fas fa-spa"></i> Эстетика
+            <nav class="navbar" role="navigation" aria-label="Основная навигация">
+                <!-- Company logo -->
+                <a href="{% url 'home' %}" class="logo" aria-label="Главная страница косметологического центра Эстетика">
+                    <i class="fas fa-spa" aria-hidden="true"></i>
+                    <span>Эстетика</span>
                 </a>
-                <div class="nav-links">
-                    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
-                    <a href="{% url 'services' %}"><i class="fas fa-concierge-bell"></i> Услуги</a>
-                    <a href="{% url 'doctors' %}"><i class="fas fa-user-md"></i> Врачи</a>
-                    <a href="{% url 'about' %}"><i class="fas fa-info-circle"></i> О нас</a>
-                    <a href="{% url 'contacts' %}"><i class="fas fa-address-book"></i> Контакты</a>
-                    <a href="{% url 'all_reviews' %}"><i class="fas fa-comments"></i> Отзывы</a>
-                    <a href="{% url 'news_list' %}"><i class="fas fa-newspaper"></i> Новости</a>
+                
+                <!-- Desktop navigation menu -->
+                <div class="nav-links" role="menubar">
+                    <a href="{% url 'home' %}" role="menuitem" aria-label="Главная страница">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                        <span>Главная</span>
+                    </a>
+                    <a href="{% url 'services' %}" role="menuitem" aria-label="Наши услуги">
+                        <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                        <span>Услуги</span>
+                    </a>
+                    <a href="{% url 'products' %}" role="menuitem" aria-label="Каталог товаров">
+                        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                        <span>Товары</span>
+                    </a>
+                    <a href="{% url 'doctors' %}" role="menuitem" aria-label="Наши врачи">
+                        <i class="fas fa-user-md" aria-hidden="true"></i>
+                        <span>Врачи</span>
+                    </a>
+                    <a href="{% url 'about' %}" role="menuitem" aria-label="О нашей компании">
+                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                        <span>О нас</span>
+                    </a>
+                    <a href="{% url 'contacts' %}" role="menuitem" aria-label="Контактная информация">
+                        <i class="fas fa-address-book" aria-hidden="true"></i>
+                        <span>Контакты</span>
+                    </a>
+                    <a href="{% url 'all_reviews' %}" role="menuitem" aria-label="Отзывы клиентов">
+                        <i class="fas fa-comments" aria-hidden="true"></i>
+                        <span>Отзывы</span>
+                    </a>
+                    
+                    <!-- Additional links dropdown -->
+                    <div class="dropdown" role="menu">
+                        <a href="#" class="dropdown-toggle" role="menuitem" aria-haspopup="true" aria-expanded="false" onclick="toggleDropdown(event)">
+                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                            <span>Еще</span>
+                        </a>
+                        <div class="dropdown-menu" id="moreDropdown" role="menu" aria-label="Дополнительные разделы">
+                            <a href="{% url 'news_list' %}" role="menuitem" aria-label="Новости и статьи">
+                                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                                <span>Новости</span>
+                            </a>
+                            <a href="{% url 'faq' %}" role="menuitem" aria-label="Часто задаваемые вопросы">
+                                <i class="fas fa-question-circle" aria-hidden="true"></i>
+                                <span>FAQ</span>
+                            </a>
+                            <a href="{% url 'vacancies' %}" role="menuitem" aria-label="Вакансии">
+                                <i class="fas fa-briefcase" aria-hidden="true"></i>
+                                <span>Вакансии</span>
+                            </a>
+                            <a href="{% url 'privacy_policy' %}" role="menuitem" aria-label="Политика конфиденциальности">
+                                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                <span>Политика конфиденциальности</span>
+                            </a>
+                            <a href="{% url 'demo' %}" role="menuitem" aria-label="Демонстрация CSS техник">
+                                <i class="fas fa-palette" aria-hidden="true"></i>
+                                <span>CSS Демо</span>
+                            </a>
+                        </div>
+                    </div>
 
+                    <!-- User authentication section -->
                     {% if user.is_authenticated %}
-                        <span class="user-greeting">
-                            <i class="fas fa-user-circle"></i>
-                            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
-                        </span>
-                        <a href="{% url 'profile' %}"><i class="fas fa-user-cog"></i> Профиль</a>
-                        <a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Выход</a>
+                        <!-- Shopping cart -->
+                        <a href="{% url 'cart' %}" role="menuitem" aria-label="Корзина покупок">
+                            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                            <span>Корзина</span>
+                            {% if cart_items_count > 0 %}
+                                <span class="cart-count" aria-label="Количество товаров в корзине">{{ cart_items_count }}</span>
+                            {% endif %}
+                        </a>
+                        
+                        <!-- User menu dropdown -->
+                        <div class="user-menu" role="menu">
+                            <span class="user-greeting" role="menuitem" aria-haspopup="true" aria-expanded="false" onclick="toggleUserDropdown()">
+                                <i class="fas fa-user-circle" aria-hidden="true"></i>
+                                <span>{% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </span>
+                            <div class="user-dropdown" id="userDropdown" role="menu" aria-label="Меню пользователя">
+                                <a href="{% url 'profile' %}" role="menuitem" aria-label="Мой профиль">
+                                    <i class="fas fa-user-cog" aria-hidden="true"></i>
+                                    <span>Профиль</span>
+                                </a>
+                                <a href="{% url 'my_appointments' %}" role="menuitem" aria-label="Мои записи">
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    <span>Мои записи</span>
+                                </a>
+                                <a href="{% url 'logout' %}" role="menuitem" aria-label="Выйти из системы">
+                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                    <span>Выход</span>
+                                </a>
+                            </div>
+                        </div>
                     {% else %}
-                        <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Вход</a>
-                        <a href="{% url 'signup' %}"><i class="fas fa-user-plus"></i> Регистрация</a>
+                        <!-- Login and registration links -->
+                        <a href="{% url 'login' %}" role="menuitem" aria-label="Войти в систему">
+                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                            <span>Вход</span>
+                        </a>
+                        <a href="{% url 'signup' %}" role="menuitem" aria-label="Зарегистрироваться">
+                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                            <span>Регистрация</span>
+                        </a>
                     {% endif %}
                 </div>
+
+                <!-- Mobile menu toggle button -->
+                <button class="mobile-menu-toggle" aria-label="Открыть мобильное меню" aria-expanded="false" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    <!-- Mobile menu overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
+    
+    <!-- Mobile navigation menu -->
+    <nav class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Мобильная навигация">
+        <div class="mobile-menu-header">
+            <h3 style="color: white; margin: 0;">Меню</h3>
+            <button class="mobile-menu-close" aria-label="Закрыть мобильное меню" onclick="closeMobileMenu()">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="nav-links" role="menubar">
+            <a href="{% url 'home' %}" role="menuitem" aria-label="Главная страница">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                <span>Главная</span>
+            </a>
+            <a href="{% url 'services' %}" role="menuitem" aria-label="Наши услуги">
+                <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                <span>Услуги</span>
+            </a>
+            <a href="{% url 'products' %}" role="menuitem" aria-label="Каталог товаров">
+                <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                <span>Товары</span>
+            </a>
+            <a href="{% url 'doctors' %}" role="menuitem" aria-label="Наши врачи">
+                <i class="fas fa-user-md" aria-hidden="true"></i>
+                <span>Врачи</span>
+            </a>
+            <a href="{% url 'about' %}" role="menuitem" aria-label="О нашей компании">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <span>О нас</span>
+            </a>
+            <a href="{% url 'contacts' %}" role="menuitem" aria-label="Контактная информация">
+                <i class="fas fa-address-book" aria-hidden="true"></i>
+                <span>Контакты</span>
+            </a>
+            <a href="{% url 'all_reviews' %}" role="menuitem" aria-label="Отзывы клиентов">
+                <i class="fas fa-comments" aria-hidden="true"></i>
+                <span>Отзывы</span>
+            </a>
+            <a href="{% url 'news_list' %}" role="menuitem" aria-label="Новости и статьи">
+                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                <span>Новости</span>
+            </a>
+            <a href="{% url 'faq' %}" role="menuitem" aria-label="Часто задаваемые вопросы">
+                <i class="fas fa-question-circle" aria-hidden="true"></i>
+                <span>FAQ</span>
+            </a>
+            <a href="{% url 'vacancies' %}" role="menuitem" aria-label="Вакансии">
+                <i class="fas fa-briefcase" aria-hidden="true"></i>
+                <span>Вакансии</span>
+            </a>
+            <a href="{% url 'privacy_policy' %}" role="menuitem" aria-label="Политика конфиденциальности">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <span>Политика конфиденциальности</span>
+            </a>
+            <a href="{% url 'demo' %}" role="menuitem" aria-label="Демонстрация CSS техник">
+                <i class="fas fa-palette" aria-hidden="true"></i>
+                <span>CSS Демо</span>
+            </a>
+            <a href="{% url 'promo_codes' %}" role="menuitem" aria-label="Промокоды и купоны">
+                <i class="fas fa-tags" aria-hidden="true"></i>
+                <span>Промокоды</span>
+            </a>
 
-        {% block content %}{% endblock %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'cart' %}" role="menuitem" aria-label="Корзина покупок">
+                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                    <span>Корзина</span>
+                    {% if cart_items_count > 0 %}
+                        <span class="cart-count" aria-label="Количество товаров в корзине">{{ cart_items_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{% url 'profile' %}" role="menuitem" aria-label="Мой профиль">
+                    <i class="fas fa-user-cog" aria-hidden="true"></i>
+                    <span>Профиль</span>
+                </a>
+                <a href="{% url 'my_appointments' %}" role="menuitem" aria-label="Мои записи">
+                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                    <span>Мои записи</span>
+                </a>
+                <a href="{% url 'logout' %}" role="menuitem" aria-label="Выйти из системы">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                    <span>Выход</span>
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" role="menuitem" aria-label="Войти в систему">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <span>Вход</span>
+                </a>
+                <a href="{% url 'signup' %}" role="menuitem" aria-label="Зарегистрироваться">
+                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                    <span>Регистрация</span>
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Banners are now displayed on the main page -->
+
+    <!-- Main content area -->
+    <main id="main-content" role="main">
+        <div class="container">
+            <!-- System messages -->
+            {% if messages %}
+                <div role="alert" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Page content -->
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
-    <footer>
+    <!-- Footer -->
+    <footer role="contentinfo">
         <div class="container">
             <div class="footer-content">
+                <!-- Company information -->
                 <div class="footer-section">
-                    <h3><i class="fas fa-spa"></i> Косметологический Центр «Эстетика»</h3>
+                    <h3>
+                        <i class="fas fa-spa" aria-hidden="true"></i>
+                        Косметологический Центр «Эстетика»
+                    </h3>
                     <p>Современные косметологические услуги от профессионалов с медицинским образованием.</p>
+                    <address>
+                        <strong>Адрес:</strong><br>
+                        ул. Примерная, д. 1, Минск, Беларусь<br>
+                        <strong>Телефон:</strong> <a href="tel:+375291234567">+375 (29) 123-45-67</a><br>
+                        <strong>Email:</strong> <a href="mailto:info@estetika.by">info@estetika.by</a>
+                    </address>
                 </div>
 
+                <!-- Working hours -->
                 <div class="footer-section">
-                    <h3><i class="fas fa-clock"></i> Часы работы</h3>
-                    <p>Пн-Пт: 9:00 - 21:00</p>
-                    <p>Сб-Вс: 10:00 - 18:00</p>
+                    <h3>
+                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        Часы работы
+                    </h3>
+                    <dl>
+                        <dt>Понедельник - Пятница:</dt>
+                        <dd>9:00 - 21:00</dd>
+                        <dt>Суббота - Воскресенье:</dt>
+                        <dd>10:00 - 18:00</dd>
+                    </dl>
                 </div>
 
+                <!-- Social media links -->
                 <div class="footer-section">
-                    <h3><i class="fas fa-share-alt"></i> Соцсети</h3>
+                    <h3>
+                        <i class="fas fa-share-alt" aria-hidden="true"></i>
+                        Соцсети
+                    </h3>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="Наш Instagram" rel="noopener noreferrer">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" aria-label="Наш Facebook" rel="noopener noreferrer">
+                            <i class="fab fa-facebook" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" aria-label="Наш Telegram" rel="noopener noreferrer">
+                            <i class="fab fa-telegram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" aria-label="Наш WhatsApp" rel="noopener noreferrer">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-
+            <!-- Copyright notice -->
             <div class="copyright">
-                <p>&copy; {% now "Y" %} Косметологический Центр «Эстетика». Все права защищены.</p>
+                <p>
+                    &copy; {% now "Y" %} Косметологический Центр «Эстетика». 
+                    Все права защищены. 
+                    <a href="{% url 'privacy_policy' %}">Политика конфиденциальности</a>
+                </p>
             </div>
         </div>
     </footer>
 
+    <!-- External JavaScript libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/loader-control.js' %}"></script>
+    <script src="{% static 'js/page-transition-loader.js' %}"></script>
+    
+    <!-- Additional JavaScript for specific pages -->
     {% block extra_js %}{% endblock %}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Skip link styles for accessibility -->
+    <style>
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary);
+            color: rgb(255, 255, 255);
+            padding: 8px;
+            text-decoration: none;
+            z-index: 10000;
+            border-radius: 4px;
+        }
+        .skip-link:focus {
+            top: 6px;
+        }
+    </style>
 </body>
 </html>

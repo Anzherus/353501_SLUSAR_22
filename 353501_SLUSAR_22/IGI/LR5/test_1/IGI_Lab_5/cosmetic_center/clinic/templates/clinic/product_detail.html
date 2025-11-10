@@ -1,0 +1,261 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}{{ product.short_description|default:product.description|truncatechars:160 }}{% endblock %}
+
+{% block meta_keywords %}{{ product.name }}, косметология, товары, {{ product.category.name }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb navigation -->
+<nav aria-label="Хлебные крошки" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}" aria-label="Главная страница">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                Главная
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'products' %}" aria-label="Каталог товаров">
+                <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                Товары
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+    </ol>
+</nav>
+
+<!-- Product detail section -->
+<section class="product-detail-section" aria-labelledby="product-heading">
+    <div class="container">
+        <div class="product-container">
+            <!-- Product images -->
+            <div class="product-image-section">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-main-image" id="mainImage">
+                {% else %}
+                    <div class="product-main-image placeholder">
+                        <i class="fas fa-image" aria-hidden="true"></i>
+                        <span>Изображение недоступно</span>
+                    </div>
+                {% endif %}
+                
+                {% if product.images.all %}
+                    <div class="product-thumbnails">
+                        {% for image in product.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="product-thumbnail" onclick="changeMainImage('{{ image.image.url }}')">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Product information -->
+            <div class="product-info-section">
+                <header class="product-header">
+                    <h1 id="product-heading" class="product-title" itemprop="name">{{ product.name }}</h1>
+                    <div class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        <span itemprop="price">{{ product.price|floatformat:0 }}</span> BYN
+                        <meta itemprop="priceCurrency" content="BYN">
+                    </div>
+                    <div class="product-category">{{ product.category.name }}</div>
+                </header>
+                
+                <div class="product-description" itemprop="description">
+                    {{ product.description|linebreaks }}
+                </div>
+                
+                {% if product.specifications %}
+                    <div class="product-specs">
+                        <h3>Характеристики:</h3>
+                        <ul class="spec-list">
+                            {% for spec in product.specifications %}
+                                <li>
+                                    <span class="spec-label">{{ spec.name }}:</span>
+                                    <span class="spec-value">{{ spec.value }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <div class="product-stock">
+                    <div class="stock-indicator {% if product.stock_quantity > 10 %}in-stock{% elif product.stock_quantity > 0 %}low-stock{% else %}out-of-stock{% endif %}"></div>
+                    <span class="stock-text">
+                        {% if product.stock_quantity > 10 %}
+                            В наличии ({{ product.stock_quantity }} шт.)
+                        {% elif product.stock_quantity > 0 %}
+                            Мало на складе ({{ product.stock_quantity }} шт.)
+                        {% else %}
+                            Нет в наличии
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="product-actions">
+                    {% if product.stock_quantity > 0 %}
+                        <button class="add-to-cart-btn" onclick="addToCart({{ product.id }})" aria-label="Добавить {{ product.name }} в корзину">
+                            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                            Добавить в корзину
+                        </button>
+                    {% else %}
+                        <button class="add-to-cart-btn" disabled aria-label="Товар недоступен">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                            Нет в наличии
+                        </button>
+                    {% endif %}
+                    
+                    <button class="wishlist-btn" onclick="toggleWishlist({{ product.id }})" aria-label="Добавить в избранное">
+                        <i class="fas fa-heart" aria-hidden="true"></i>
+                    </button>
+                    
+                    <button class="share-btn" onclick="shareProduct()" aria-label="Поделиться товаром">
+                        <i class="fas fa-share-alt" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related products -->
+        {% if related_products %}
+            <section class="related-products-section" aria-labelledby="related-heading">
+                <h2 id="related-heading" class="section-title">Похожие товары</h2>
+                <div class="related-products-grid">
+                    {% for related in related_products %}
+                        <article class="related-product-card" itemscope itemtype="http://schema.org/Product">
+                            {% if related.image %}
+                                <img src="{{ related.image.url }}" alt="{{ related.name }}" class="related-product-image" itemprop="image">
+                            {% endif %}
+                            <div class="related-product-content">
+                                <h3 class="related-product-title" itemprop="name">{{ related.name }}</h3>
+                                <div class="related-product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <span itemprop="price">{{ related.price|floatformat:0 }}</span> BYN
+                                </div>
+                                <button class="related-product-btn" onclick="addToCart({{ related.id }})" aria-label="Добавить {{ related.name }} в корзину">
+                                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                    В корзину
+                                </button>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Product image functionality
+function changeMainImage(imageSrc) {
+    document.getElementById('mainImage').src = imageSrc;
+    
+    // Update active thumbnail
+    document.querySelectorAll('.product-thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+// Add to cart functionality
+function addToCart(productId) {
+    // This would typically send an AJAX request to add the product to cart
+    fetch(`/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Товар добавлен в корзину!', 'success');
+            updateCartCount();
+        } else {
+            showNotification(data.message || 'Ошибка при добавлении товара', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Ошибка при добавлении товара', 'error');
+    });
+}
+
+// Toggle wishlist functionality
+function toggleWishlist(productId) {
+    // This would typically send an AJAX request to toggle wishlist
+    showNotification('Функция избранного будет доступна в ближайшее время', 'info');
+}
+
+// Share product functionality
+function shareProduct() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ product.name }}',
+            text: '{{ product.description|truncatechars:100 }}',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showNotification('Ссылка скопирована в буфер обмена!', 'success');
+        }).catch(err => {
+            console.log('Error copying to clipboard:', err);
+            showNotification('Не удалось скопировать ссылку', 'error');
+        });
+    }
+}
+
+// Update cart count
+function updateCartCount() {
+    // This would typically fetch the current cart count
+    // For now, we'll just show a success message
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

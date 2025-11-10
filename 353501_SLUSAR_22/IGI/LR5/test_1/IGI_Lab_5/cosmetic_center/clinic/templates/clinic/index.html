@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Отладочная информация -->
+    <!-- Debug information -->
     {% if debug %}
     <div class="alert alert-info">
         <p>Debug info:</p>
@@ -85,7 +85,7 @@
                                 <strong>Цена:</strong> {{ service.price }} руб.<br>
                                 <small class="text-muted">Длительность: {{ service.duration }}</small>
                             </p>
-                            <a href="{% url 'service_detail' service.id %}" class="btn btn-primary">Подробнее</a>
+                            <a href="{% url 'service-detail' service.id %}" class="btn btn-primary">Подробнее</a>
                         </div>
                     </div>
                 </div>

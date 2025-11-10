@@ -1,0 +1,778 @@
+/* ========================================
+   КОМПОНЕНТЫ - КОСМЕТОЛОГИЧЕСКИЙ ЦЕНТР
+   Стили для всех компонентов сайта с подробными комментариями
+   ======================================== */
+
+/* ========================================
+   1. HERO СЕКЦИЯ (Главный баннер)
+   ======================================== */
+.hero-section {
+    position: relative;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    padding: 4rem 0;
+    overflow: hidden;
+}
+
+/* Анимированный фон */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    animation: heroGlow 8s ease-in-out infinite;
+}
+
+@keyframes heroGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   2. СЕКЦИИ (Общие стили)
+   ======================================== */
+.services-section,
+.news-section,
+.doctors-section,
+.products-section {
+    padding: 5rem 0;
+    background: var(--bg-primary);
+}
+
+/* Чередующиеся фоны секций */
+.services-section:nth-of-type(even),
+.news-section:nth-of-type(even) {
+    background: var(--bg-secondary);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    position: relative;
+    display: inline-block;
+}
+
+/* Декоративная линия под заголовком */
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--bg-gradient);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   3. КАРТОЧКИ УСЛУГ
+   ======================================== */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.service-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-light);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект при наведении */
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-cosmetic);
+}
+
+/* Декоративный элемент */
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--bg-gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover::before {
+    transform: scaleX(1);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: var(--bg-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--text-white);
+    transition: all 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+    transform: rotate(360deg) scale(1.1);
+}
+
+.service-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.service-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.service-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.service-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    border-radius: var(--border-radius-small);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.service-btn:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* ========================================
+   4. КАРТОЧКИ НОВОСТЕЙ
+   ======================================== */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.news-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.news-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover .news-image {
+    transform: scale(1.05);
+}
+
+.news-content {
+    padding: 1.5rem;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.news-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.news-category {
+    padding: 0.25rem 0.75rem;
+    background: var(--accent-light);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--primary);
+}
+
+/* ========================================
+   5. КАРТОЧКИ ВРАЧЕЙ
+   ======================================== */
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.doctor-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.doctor-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-cosmetic);
+}
+
+.doctor-photo {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.doctor-card:hover .doctor-photo {
+    transform: scale(1.1);
+}
+
+.doctor-info {
+    padding: 1.5rem;
+}
+
+.doctor-name {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.doctor-specialty {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.doctor-experience {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   6. КАТАЛОГ ТОВАРОВ (CSS Grid)
+   ======================================== */
+.products-grid,
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.product-card,
+.catalog-item {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.product-card:hover,
+.catalog-item:hover {
+    transform: translateY(-10px) rotate(1deg);
+    box-shadow: var(--shadow-heavy);
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-name {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.product-price {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.product-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* ========================================
+   7. ПАРТНЕРЫ (Круглые блоки)
+   ======================================== */
+.partners-section {
+    padding: 4rem 0;
+    background: var(--bg-secondary);
+}
+
+.partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+}
+
+.circle-partner,
+.partner-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--bg-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-white);
+    box-shadow: var(--shadow-cosmetic);
+    transition: all 0.3s ease;
+    padding: 1rem;
+}
+
+.circle-partner:hover,
+.partner-circle:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: var(--shadow-heavy);
+}
+
+/* ========================================
+   8. ФОРМЫ
+   ======================================== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--bg-light);
+    border-radius: var(--border-radius-small);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Состояния полей формы */
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+.form-control:required {
+    border-left: 3px solid var(--primary);
+}
+
+.form-control:optional {
+    border-left: 3px solid var(--lavender);
+}
+
+.form-control:disabled {
+    background: var(--bg-light);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.form-control:invalid {
+    border-color: var(--coral);
+}
+
+.form-control:valid {
+    border-color: #32cd32;
+}
+
+/* ========================================
+   9. ТАБЛИЦЫ
+   ======================================== */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+}
+
+.data-table caption {
+    caption-side: top;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-primary);
+}
+
+.data-table thead {
+    background: var(--bg-gradient);
+    color: var(--text-white);
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.data-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+/* Чередующиеся строки */
+.data-table tbody tr:nth-child(odd) {
+    background: var(--bg-primary);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+.data-table tbody tr:hover {
+    background: var(--accent-light);
+    transform: scale(1.01);
+    box-shadow: var(--shadow-light);
+}
+
+/* Пустые ячейки */
+.data-table td:empty::before {
+    content: "—";
+    color: var(--text-light);
+}
+
+/* ========================================
+   10. СПИСКИ С КАСТОМНЫМИ МАРКЕРАМИ
+   ======================================== */
+.cosmetic-list,
+.cosmetic-list-demo {
+    list-style: none;
+    padding-left: 0;
+}
+
+.cosmetic-list li,
+.cosmetic-list-demo li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+/* Кастомные маркеры */
+.cosmetic-list li::before,
+.cosmetic-list-demo li::before {
+    content: "💄";
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+}
+
+/* Альтернативные маркеры */
+.cosmetic-list li:nth-child(2n)::before {
+    content: "✨";
+}
+
+.cosmetic-list li:nth-child(3n)::before {
+    content: "🌸";
+}
+
+/* Первый и последний элементы */
+.cosmetic-list li:first-child {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.cosmetic-list li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* ========================================
+   11. ЦИТАТЫ И БЛОКИ
+   ======================================== */
+blockquote {
+    position: relative;
+    margin: 2rem 0;
+    padding: 2rem 2rem 2rem 3rem;
+    background: var(--bg-secondary);
+    border-left: 5px solid var(--primary);
+    border-radius: var(--border-radius);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+/* Кавычки для русского языка */
+blockquote:lang(ru)::before {
+    content: "«";
+    position: absolute;
+    top: 1rem;
+    left: 0.5rem;
+    font-size: 4rem;
+    color: var(--primary);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+}
+
+blockquote:lang(ru)::after {
+    content: "»";
+    position: absolute;
+    bottom: 0;
+    right: 0.5rem;
+    font-size: 4rem;
+    color: var(--primary);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+}
+
+/* Кавычки для английского языка */
+blockquote:lang(en)::before {
+    content: "\201C";                /* Левая двойная кавычка */
+    position: absolute;
+    top: 1rem;
+    left: 0.5rem;
+    font-size: 4rem;
+    color: var(--primary);
+    opacity: 0.3;
+}
+
+blockquote:lang(en)::after {
+    content: "\201D";                /* Правая двойная кавычка */
+    position: absolute;
+    bottom: 0;
+    right: 0.5rem;
+    font-size: 4rem;
+    color: var(--primary);
+    opacity: 0.3;
+}
+
+/* ========================================
+   12. ПОЗИЦИОНИРОВАНИЕ
+   ======================================== */
+.positioned-demo {
+    position: relative;
+    min-height: 300px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+}
+
+.article-positioned {
+    position: relative;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    padding: 2rem;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-cosmetic);
+}
+
+/* ========================================
+   13. ТРАНСФОРМАЦИЯ ЛОГОТИПА
+   ======================================== */
+.logo-transform {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    border-radius: var(--border-radius);
+    font-size: 1.5rem;
+    font-weight: 700;
+    transform: rotate(-2deg);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-medium);
+}
+
+.logo-transform:hover {
+    transform: rotate(2deg) scale(1.1);
+    box-shadow: var(--shadow-heavy);
+}
+
+/* ========================================
+   14. СЕРТИФИКАТ
+   ======================================== */
+.certificate-demo {
+    position: relative;
+    padding: 3rem;
+    background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 100%);
+    border: 10px solid transparent;
+    border-image: linear-gradient(45deg, var(--gold), var(--primary)) 1;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-heavy);
+}
+
+.certificate-title {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ========================================
+   15. АДАПТИВНОСТЬ
+   ======================================== */
+
+/* Планшеты */
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 2.5rem; }
+    .section-title { font-size: 2.2rem; }
+    .services-grid,
+    .news-grid,
+    .doctors-grid,
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    .circle-partner,
+    .partner-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 480px) {
+    .hero-content h1 { font-size: 2rem; }
+    .section-title { font-size: 1.8rem; }
+    .hero-cta { flex-direction: column; }
+    .services-grid,
+    .news-grid,
+    .doctors-grid,
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .circle-partner,
+    .partner-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 0.85rem;
+    }
+}

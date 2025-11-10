@@ -1,0 +1,140 @@
+/**
+ * CSS styles for Services page
+ * Contains all styles specific to the services page
+ */
+
+/* Сетка услуг */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2.5rem;
+    margin-top: 4rem;
+}
+
+.service-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-large);
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(233, 30, 99, 0.1);
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(233, 30, 99, 0.05), transparent);
+    transition: left 0.5s;
+}
+
+.service-card:hover::before {
+    left: 100%;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-cosmetic);
+}
+
+.service-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--bg-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    color: var(--text-white);
+    font-size: 2.5rem;
+    box-shadow: var(--shadow-medium);
+}
+
+.service-title {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-secondary);
+}
+
+.service-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.service-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 2rem;
+}
+
+.service-btn {
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.service-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    color: var(--text-white);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .services-title {
+        font-size: 2rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .service-details {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .service-actions {
+        flex-direction: column;
+    }
+    
+    .service-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .services-page {
+        padding: 1rem 0;
+    }
+    
+    .services-header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .service-card {
+        padding: 1.5rem;
+    }
+}

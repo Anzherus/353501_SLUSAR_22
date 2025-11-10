@@ -1,4 +1,4 @@
-﻿<{% extends "clinic/base.html" %}
+﻿{% extends "clinic/base.html" %}
 
 {% block title %}Добавить отзыв - Косметологический Центр{% endblock %}
 
@@ -15,68 +15,186 @@
         <div class="card" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
             <form method="post">
                 {% csrf_token %}
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-                <div class="form-group">
-                    <label for="id_doctor">Врач (если применимо)</label>
-                    <select name="doctor" id="id_doctor" class="form-control">
-                        <option value="">-- Не указывать --</option>
-                        {% for doctor in doctors %}
-                            <option value="{{ doctor.id }}">Доктор {{ doctor.user.get_full_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="id_service">Услуга (если применимо)</label>
-                    <select name="service" id="id_service" class="form-control">
-                        <option value="">-- Не указывать --</option>
-                        {% for service in services %}
-                            <option value="{{ service.id }}">{{ service.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="id_rating">Оценка</label>
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                        {% for i in "12345" %}
-                            <input type="radio" name="rating" id="rating_{{ forloop.counter }}" value="{{ forloop.counter }}" style="display: none;">
-                            <label for="rating_{{ forloop.counter }}" style="cursor: pointer;">
-                                <i class="far fa-star" style="font-size: 2rem; color: var(--warning);"></i>
-                            </label>
-                        {% endfor %}
+                {% for field in form %}
+                    <div class="form-group mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
+                {% endfor %}
 
-                <div class="form-group">
-                    <label for="id_text">Текст отзыва</label>
-                    <textarea name="text" id="id_text" class="form-control" rows="5" required></textarea>
-                </div>
-
-                <div style="display: flex; justify-content: center; margin-top: 2rem;">
-                    <button type="submit" class="btn">Отправить отзыв</button>
+                <div class="form-group" style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                    <a href="{% url 'all_reviews' %}" class="btn btn-secondary">Отмена</a>
                 </div>
             </form>
         </div>
     </div>
 </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const stars = document.querySelectorAll('input[name="rating"]');
-        const starLabels = document.querySelectorAll('label[for^="rating_"]');
+<style>
+/* Стили для радио-кнопок рейтинга */
+.rating-options {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
 
-        stars.forEach((star, index) => {
-            star.addEventListener('change', function() {
-                starLabels.forEach((label, i) => {
-                    if (i <= index) {
-                        label.innerHTML = '<i class="fas fa-star" style="font-size: 2rem; color: var(--warning);"></i>';
-                    } else {
-                        label.innerHTML = '<i class="far fa-star" style="font-size: 2rem; color: var(--warning);"></i>';
-                    }
-                });
+.rating-options input[type="radio"] {
+    display: none;
+}
+
+.rating-options label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ffc107;
+    transition: color 0.3s ease;
+}
+
+.rating-options label:hover,
+.rating-options input:checked + label {
+    color: #ffc107;
+}
+
+/* Стили для формы */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Стили для сообщений */
+.alert {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Стили для кнопок */
+.btn {
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка звезд рейтинга
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingLabels = document.querySelectorAll('label[for^="rating_"]');
+    
+    ratingInputs.forEach((input, index) => {
+        input.addEventListener('change', function() {
+            // Обновляем отображение звезд
+            ratingLabels.forEach((label, i) => {
+                const icon = label.querySelector('i');
+                if (i <= index) {
+                    icon.className = 'fas fa-star';
+                } else {
+                    icon.className = 'far fa-star';
+                }
             });
         });
     });
+    
+    // Валидация формы
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const rating = document.querySelector('input[name="rating"]:checked');
+        const text = document.querySelector('textarea[name="text"]');
+        
+        if (!rating) {
+            e.preventDefault();
+            alert('Пожалуйста, выберите оценку');
+            return;
+        }
+        
+        if (!text.value.trim()) {
+            e.preventDefault();
+            alert('Пожалуйста, напишите текст отзыва');
+            text.focus();
+            return;
+        }
+    });
+});
 </script>
 {% endblock %}

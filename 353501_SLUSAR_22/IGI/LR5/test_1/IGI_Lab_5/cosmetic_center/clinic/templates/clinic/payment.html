@@ -1,0 +1,284 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Оплата заказа - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Оформление и оплата заказа в косметологическом центре «Эстетика». Безопасная оплата товаров.{% endblock %}
+
+{% block content %}
+
+<!-- Payment section -->
+<section class="payment-section" aria-labelledby="payment-heading">
+    <div class="container">
+        <header class="payment-header">
+            <h1 id="payment-heading" class="payment-title">
+                <i class="fas fa-credit-card" aria-hidden="true"></i>
+                Оформление заказа
+            </h1>
+            <p class="payment-subtitle">Завершите оформление заказа и произведите оплату</p>
+        </header>
+        
+        <div class="payment-content">
+            <!-- Payment form -->
+            <form class="payment-form" method="post" id="paymentForm" action="{% url 'payment' %}" data-skip-validation>
+                {% csrf_token %}
+                
+                <!-- Personal information -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                        Личная информация
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name" class="form-label">Имя *</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="first_name" 
+                                   name="first_name" 
+                                   value="{{ user.first_name|default:'' }}"
+                                   required 
+                                   aria-describedby="first_name_help">
+                            <small id="first_name_help" class="form-text">Ваше имя</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name" class="form-label">Фамилия *</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="last_name" 
+                                   name="last_name" 
+                                   value="{{ user.last_name|default:'' }}"
+                                   required 
+                                   aria-describedby="last_name_help">
+                            <small id="last_name_help" class="form-text">Ваша фамилия</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email" 
+                               name="email" 
+                               value="{{ user.email|default:'' }}"
+                               required 
+                               aria-describedby="email_help">
+                        <small id="email_help" class="form-text">Email для подтверждения заказа</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Телефон *</label>
+                        <input type="tel" 
+                               class="form-control" 
+                               id="phone" 
+                               name="phone" 
+                               placeholder="+375 (29) 123-45-67"
+                               required 
+                               aria-describedby="phone_help">
+                        <small id="phone_help" class="form-text">Контактный телефон</small>
+                    </div>
+                </div>
+                
+                <!-- Delivery information -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-truck" aria-hidden="true"></i>
+                        Информация о доставке
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="delivery_address" class="form-label">Адрес доставки *</label>
+                        <textarea class="form-control" 
+                                  id="delivery_address" 
+                                  name="delivery_address" 
+                                  rows="3" 
+                                  required 
+                                  aria-describedby="address_help"
+                                  placeholder="г. Минск, ул. Примерная, д. 1, кв. 1"></textarea>
+                        <small id="address_help" class="form-text">Полный адрес доставки</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery_date" class="form-label">Желаемая дата доставки</label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="delivery_date" 
+                               name="delivery_date" 
+                               aria-describedby="date_help">
+                        <small id="date_help" class="form-text">Выберите удобную дату</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery_notes" class="form-label">Комментарии к заказу</label>
+                        <textarea class="form-control" 
+                                  id="delivery_notes" 
+                                  name="delivery_notes" 
+                                  rows="3" 
+                                  aria-describedby="notes_help"
+                                  placeholder="Дополнительные пожелания по доставке"></textarea>
+                        <small id="notes_help" class="form-text">Необязательно</small>
+                    </div>
+                </div>
+                
+                <!-- Payment methods -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-credit-card" aria-hidden="true"></i>
+                        Способ оплаты
+                    </h2>
+                    
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="card" class="payment-radio" checked>
+                            <div class="payment-method-content">
+                                <div class="payment-method-icon">
+                                    <i class="fas fa-credit-card" aria-hidden="true"></i>
+                                </div>
+                                <div class="payment-method-name">Банковская карта</div>
+                                <div class="payment-method-desc">Visa, MasterCard, МИР</div>
+                            </div>
+                        </label>
+                        
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="cash" class="payment-radio">
+                            <div class="payment-method-content">
+                                <div class="payment-method-icon">
+                                    <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                                </div>
+                                <div class="payment-method-name">Наличными</div>
+                                <div class="payment-method-desc">При получении</div>
+                            </div>
+                        </label>
+                        
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="online" class="payment-radio">
+                            <div class="payment-method-content">
+                                <div class="payment-method-icon">
+                                    <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                                </div>
+                                <div class="payment-method-name">Онлайн</div>
+                                <div class="payment-method-desc">Безналичный расчет</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Terms and conditions -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="terms_accepted" required>
+                            Я согласен с <a href="{% url 'privacy_policy' %}" target="_blank">условиями обработки персональных данных</a> *
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="newsletter" checked>
+                            Подписаться на рассылку новостей и акций
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+                    Подтвердить заказ
+                </button>
+            </form>
+            
+            <!-- Order summary -->
+            <aside class="order-summary">
+                <h2 class="summary-title">Сводка заказа</h2>
+                
+                <div class="summary-items">
+                    {% for item in cart_items %}
+                        <div class="summary-item">
+                            <div class="item-info">
+                                <div class="item-name">{{ item.product.name }}</div>
+                                <div class="item-details">Количество: {{ item.quantity }} × {{ item.product.price|floatformat:0 }} BYN</div>
+                            </div>
+                            <div class="item-price">{{ item.total_price|floatformat:0 }} BYN</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="summary-total">
+                    <div class="total-row">
+                        <span class="total-label">Товаров:</span>
+                        <span class="total-value">{{ cart.total_items }} шт.</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">Общая стоимость:</span>
+                        <span class="total-value">{{ cart.total_price|floatformat:0 }} BYN</span>
+                    </div>
+                </div>
+                
+                <div class="security-info">
+                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                    <span class="security-info-text">Безопасная оплата</span>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Payment method selection
+    const paymentRadios = document.querySelectorAll('.payment-radio');
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            paymentMethods.forEach(method => {
+                method.classList.remove('selected');
+            });
+            if (this.checked) {
+                this.closest('.payment-method').classList.add('selected');
+            }
+        });
+    });
+    
+    // Simple submit: server will clear cart and redirect to cart page
+    
+    // Phone number formatting for Belarus
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function() {
+        let value = this.value.replace(/\D/g, '');
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                value = '+375 (' + value;
+            } else if (value.length <= 5) {
+                value = '+375 (' + value.slice(3);
+            } else if (value.length <= 8) {
+                value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5);
+            } else if (value.length <= 10) {
+                value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8);
+            } else {
+                value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8, 10) + '-' + value.slice(10, 12);
+            }
+        }
+        this.value = value;
+    });
+    
+    // Set minimum date for delivery
+    const deliveryDate = document.getElementById('delivery_date');
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    deliveryDate.min = tomorrow.toISOString().split('T')[0];
+    
+    // Initialize first payment method as active
+    document.querySelector('.payment-radio:checked').closest('.payment-method').classList.add('selected');
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}

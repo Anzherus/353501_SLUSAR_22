@@ -1,0 +1,177 @@
+{% extends "clinic/base.html" %}
+
+{% block title %}Админ-панель - Косметологический Центр{% endblock %}
+
+{% block content %}
+<section class="profile-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/profile-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Админ-панель</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Управление системой и всеми данными</p>
+    </div>
+</section>
+
+<section class="profile-content">
+    <div class="container">
+        <div class="grid" style="grid-template-columns: 300px 1fr; gap: 3rem;">
+            <div>
+                <div class="card" style="padding: 1.5rem; text-align: center; position: sticky; top: 1rem;">
+                    <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid var(--primary);">
+                        <i class="fas fa-user-shield" style="font-size: 3rem; color: #666;"></i>
+                    </div>
+
+                    <h3 style="margin-bottom: 0.5rem;">
+                        {% if user.first_name or user.last_name %}
+                            {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">{{ user.email }}</p>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <p><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}</p>
+                        {% if user.last_login %}
+                        <p><i class="fas fa-clock" style="color: var(--primary);"></i> Последний вход: {{ user.last_login|date:"d.m.Y H:i" }}</p>
+                        {% endif %}
+                    </div>
+
+                    <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline">Django Admin</a>
+                        <a href="{% url 'statistics' %}" class="btn btn-outline">Статистика</a>
+                        <a href="{% url 'manage_appointments' %}" class="btn btn-outline">Управление записями</a>
+                        <a href="{% url 'manage_promos' %}" class="btn btn-outline">Управление промокодами</a>
+                        <a href="{% url 'password_change' %}" class="btn btn-outline">Сменить пароль</a>
+                        <a href="{% url 'logout' %}" class="btn btn-outline" style="color: var(--danger);">Выйти</a>
+                    </nav>
+                </div>
+            </div>
+
+            <div>
+                <!-- Статистика -->
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Статистика системы</h2>
+                    
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div class="stat-card" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <i class="fas fa-users fa-2x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                            <h3 style="margin: 0;">{{ total_clients }}</h3>
+                            <p style="margin: 0; color: #666;">Клиентов</p>
+                        </div>
+                        
+                        <div class="stat-card" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <i class="fas fa-user-md fa-2x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                            <h3 style="margin: 0;">{{ total_doctors }}</h3>
+                            <p style="margin: 0; color: #666;">Врачей</p>
+                        </div>
+                        
+                        <div class="stat-card" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <i class="fas fa-calendar-check fa-2x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                            <h3 style="margin: 0;">{{ total_appointments }}</h3>
+                            <p style="margin: 0; color: #666;">Записей</p>
+                        </div>
+                        
+                        <div class="stat-card" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <i class="fas fa-star fa-2x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                            <h3 style="margin: 0;">{{ total_reviews }}</h3>
+                            <p style="margin: 0; color: #666;">Отзывов</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Административные функции -->
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Административные функции</h2>
+
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline">
+                            <i class="fas fa-cogs"></i> Django Admin
+                        </a>
+                        <a href="{% url 'statistics' %}" class="btn btn-outline">
+                            <i class="fas fa-chart-bar"></i> Статистика
+                        </a>
+                        <a href="{% url 'manage_appointments' %}" class="btn btn-outline">
+                            <i class="fas fa-calendar-alt"></i> Управление записями
+                        </a>
+                        <a href="{% url 'manage_promos' %}" class="btn btn-outline">
+                            <i class="fas fa-tags"></i> Управление промокодами
+                        </a>
+                        <a href="{% url 'news_create' %}" class="btn btn-outline">
+                            <i class="fas fa-newspaper"></i> Создать новость
+                        </a>
+                        <a href="{% url 'vacancies' %}" class="btn btn-outline">
+                            <i class="fas fa-briefcase"></i> Управление вакансиями
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Новые функции -->
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Новые функции</h2>
+
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a href="{% url 'products' %}" class="btn btn-outline">
+                            <i class="fas fa-shopping-bag"></i> Управление товарами
+                        </a>
+                        <a href="{% url 'faq' %}" class="btn btn-outline">
+                            <i class="fas fa-question-circle"></i> FAQ
+                        </a>
+                        <a href="{% url 'privacy_policy' %}" class="btn btn-outline">
+                            <i class="fas fa-shield-alt"></i> Политика конфиденциальности
+                        </a>
+                        <a href="{% url 'about' %}" class="btn btn-outline">
+                            <i class="fas fa-info-circle"></i> О компании
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Персональные данные -->
+                <div class="card" style="padding: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Персональные данные</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label for="id_first_name">Имя</label>
+                                <input type="text" id="id_first_name" name="first_name" class="form-control" value="{{ user.first_name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_last_name">Фамилия</label>
+                                <input type="text" id="id_last_name" name="last_name" class="form-control" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_email">Email</label>
+                            <input type="email" id="id_email" name="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
+
+                        <button type="submit" class="btn">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анимация статистических карточек
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -4,66 +4,537 @@
 {% block title %}О нас - Косметологический Центр{% endblock %}
 
 {% block content %}
+<!-- Заголовок на всю ширину -->
 <section class="about-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/about-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
-    <div class="container">
-        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">О нашем центре</h1>
-        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Профессиональный подход к красоте и здоровью вашей кожи</p>
+    <div class="container-fluid">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">О нашем <strong>центре</strong></h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Профессиональный подход к <em>красоте</em> и <b>здоровью</b> вашей кожи</p>
     </div>
 </section>
 
 <section class="about-content">
-    <div class="container">
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
-            <div>
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Наша история</h2>
-                <p style="margin-bottom: 1.5rem;">Косметологический центр «Эстетика» был основан в 2010 году с целью предоставления высококачественных косметологических услуг с использованием современных технологий и препаратов.</p>
-                <p style="margin-bottom: 1.5rem;">За годы работы мы помогли тысячам клиентов обрести уверенность в себе и решить различные проблемы с кожей.</p>
-                <p>Наша миссия — сочетание медицинского подхода с эстетическими решениями для достижения наилучших результатов.</p>
+    <div class="container-fluid px-4">
+        {% if company_info %}
+            <!-- Company logo -->
+            <div class="text-center mb-5">
+                <img src="{{ company_info.logo.url }}" alt="{{ company_info.name }}" style="max-height: 150px; width: auto;">
             </div>
-            <div>
-                <img src="{% static 'images/Centr_Cosmetologii.png' %}" alt="Центр косметологии" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            
+            <!-- Company video - НА ВСЮ ШИРИНУ -->
+            {% if company_info.video_url or company_info.video_file %}
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-body text-center p-4">
+                            <h3 class="mb-4">Видео о нашей компании</h3>
+                            <div class="ratio ratio-16x9">
+                                {% if company_info.video_file %}
+                                    <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                                        <source src="{{ company_info.video_file.url }}" type="video/mp4">
+                                        Ваш браузер не поддерживает видео тег.
+                                    </video>
+                                {% elif company_info.video_url %}
+                                    <iframe src="{{ company_info.video_url }}" allowfullscreen></iframe>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Voice message below video -->
+                            <div class="voice-message mt-4">
+                                <h4 class="voice-message-title">
+                                    <i class="fas fa-microphone" aria-hidden="true"></i>
+                                    Голосовое сообщение от директора
+                                </h4>
+                                <div class="audio-player">
+                                    <audio controls preload="metadata" class="voice-audio">
+                                        <source src="/media/company/golos/Sasha Malkovich - Yoga Power.mp3" type="audio/mpeg">
+                                        Ваш браузер не поддерживает аудио элемент.
+                                    </audio>
+                                </div>
+                                <p class="voice-message-description">
+                                    Послушайте приветственное сообщение от директора нашего центра
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+            {% endif %}
+            
+            <!-- Красивый grid с информацией о компании -->
+            <div class="company-grid-container">
+                <div class="company-grid">
+                    <!-- Левая колонка - Описание компании -->
+                    <div class="grid-card">
+                        <div class="card-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h2>О компании</h2>
+                        <div class="card-content">
+                            {{ company_info.description|linebreaks }}
+                        </div>
+                    </div>
 
-        <div style="margin-top: 4rem;">
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Наши принципы</h2>
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                <div class="card" style="padding: 2rem; text-align: center;">
-                    <i class="fas fa-heartbeat" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                    <h3>Безопасность</h3>
-                    <p>Все процедуры выполняются сертифицированными специалистами с медицинским образованием</p>
-                </div>
-                <div class="card" style="padding: 2rem; text-align: center;">
-                    <i class="fas fa-flask" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                    <h3>Инновации</h3>
-                    <p>Используем только проверенные и эффективные методики и препараты</p>
-                </div>
-                <div class="card" style="padding: 2rem; text-align: center;">
-                    <i class="fas fa-user-md" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                    <h3>Индивидуальный подход</h3>
-                    <p>Для каждого клиента разрабатывается персональная программа ухода</p>
+                    <!-- Правая колонка - История компании -->
+                    <div class="grid-card">
+                        <div class="card-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h2>Наша история</h2>
+                        <div class="card-content">
+                            {{ company_info.history|linebreaks }}
+                        </div>
+                    </div>
+
+                    <!-- Левая колонка - Реквизиты -->
+                    <div class="grid-card">
+                        <div class="card-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h2>Реквизиты</h2>
+                        <div class="card-content">
+                            {{ company_info.requisites|linebreaks }}
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка - Наша миссия -->
+                    <div class="grid-card mission-card">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h2>Наша миссия</h2>
+                        <div class="card-content">
+                            <p>Мы стремимся к тому, чтобы каждый клиент чувствовал себя уверенно и комфортно в своей коже, используя передовые технологии и индивидуальный подход.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            
+            <!-- Сертификат с красивой обводкой -->
+            {% if company_info.certificate %}
+            <div class="certificate-section">
+                <div class="certificate-grid">
+                    <!-- Левая сторона - Текст о сертификатах -->
+                    <div class="certificate-info">
+                        <div class="info-content">
+                            <h2>Наши сертификаты</h2>
+                            <p>Мы гордимся нашими достижениями и профессиональными сертификатами, которые подтверждают высокое качество наших услуг.</p>
+                            <div class="certificate-features">
+                                <div class="feature">
+                                    <i class="fas fa-award"></i>
+                                    <span>Международные стандарты</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Профессиональное образование</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Гарантия качества</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <div style="margin-top: 4rem; background-color: var(--light); padding: 3rem; border-radius: 10px;">
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Наши реквизиты</h2>
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div>
-                    <h3 style="margin-bottom: 1rem;">Юридическая информация</h3>
-                    <p><strong>Название:</strong> ООО "Эстетика"</p>
-                    <p><strong>ИНН:</strong> 1234567890</p>
-                    <p><strong>ОГРН:</strong> 1234567890123</p>
-                    <p><strong>Юридический адрес:</strong> г. Минск, ул. Примерная, д. 123</p>
+                    <!-- Правая сторона - Фото сертификата с обводкой -->
+                    <div class="certificate-visual">
+                        <div class="certificate-frame-cool">
+                            <div class="frame-border">
+                                <div class="frame-content">
+                                    <img src="{{ company_info.certificate.url }}" alt="Сертификат" class="certificate-img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 style="margin-bottom: 1rem;">Лицензии и сертификаты</h3>
-                    <p>Лицензия на осуществление медицинской деятельности № ЛО-77-01-012345</p>
-                    <p>Сертификаты соответствия на все используемые препараты</p>
-                    <p>Дипломы и сертификаты наших специалистов</p>
+            </div>
+            {% endif %}
+            
+        {% else %}
+            <!-- Placeholder if no company information available -->
+            <div class="container">
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+                    <div>
+                        <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Наша история</h2>
+                        <p style="margin-bottom: 1.5rem;">Косметологический центр «Эстетика» был основан в 2010 году с целью предоставления высококачественных косметологических услуг с использованием современных технологий и препаратов.</p>
+                        <p style="margin-bottom: 1.5rem;">За годы работы мы помогли тысячам клиентов обрести уверенность в себе и решить различные проблемы с кожей.</p>
+                        <p>Наша миссия — сочетание медицинского подхода с эстетическими решениями для достижения наилучших результатов.</p>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/Centr_Cosmetologii.png' %}" alt="Центр косметологии" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Принципы работы -->
+        <div class="principles-section">
+            <div class="container">
+                <h2 class="section-title">Наши принципы</h2>
+                <div class="principles-grid">
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h3>Безопасность</h3>
+                        <p>Все процедуры выполняются сертифицированными специалистами с медицинским образованием</p>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3>Инновации</h3>
+                        <p>Используем только проверенные и эффективные методики и препараты</p>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h3>Индивидуальный подход</h3>
+                        <p>Для каждого клиента разрабатывается персональная программа ухода</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Стили для красивого grid и обводки -->
+<style>
+/* Сетка информации о компании */
+.company-grid-container {
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+}
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+}
+
+.grid-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.grid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.grid-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #8e44ad, #9b59b6);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: #8e44ad;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.grid-card h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.card-content {
+    color: #555;
+    line-height: 1.6;
+}
+
+.mission-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Секция сертификата */
+.certificate-section {
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+}
+
+.certificate-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.certificate-info h2 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.certificate-info p {
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.certificate-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(142, 68, 173, 0.05);
+    border-radius: 10px;
+    border-left: 4px solid #8e44ad;
+}
+
+.feature i {
+    color: #8e44ad;
+    font-size: 1.2rem;
+    width: 20px;
+}
+
+.feature span {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Крутая обводка для сертификата */
+.certificate-frame-cool {
+    position: relative;
+    padding: 25px;
+    background: linear-gradient(45deg, 
+        #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, 
+        #feca57, #ff9ff3, #54a0ff, #5f27cd);
+    background-size: 400% 400%;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    animation: gradientFlow 8s ease infinite;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.frame-border {
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.frame-border::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 2px dashed rgba(142, 68, 173, 0.3);
+    border-radius: 15px;
+    pointer-events: none;
+}
+
+.frame-content {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.certificate-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.certificate-img:hover {
+    transform: scale(1.02);
+}
+
+/* Секция принципов */
+.principles-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 4rem 0;
+    margin-top: 3rem;
+}
+
+.section-title {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
+
+.principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.principle-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+
+.principle-card:hover {
+    transform: translateY(-10px);
+}
+
+.principle-icon {
+    font-size: 3rem;
+    color: #8e44ad;
+    margin-bottom: 1.5rem;
+}
+
+.principle-card h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.principle-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .company-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .certificate-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .certificate-info {
+        text-align: center;
+    }
+    
+    .certificate-features {
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .company-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .certificate-frame-cool {
+        padding: 15px;
+    }
+    
+    .frame-border {
+        padding: 15px;
+    }
+    
+    .principles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .company-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .certificate-info h2 {
+        font-size: 1.8rem;
+    }
+}
+</style>
+
+<!-- Остальные стили остаются без изменений -->
+<style>
+.voice-message {
+    background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(155, 89, 182, 0.1));
+    border: 1px solid rgba(142, 68, 173, 0.2);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.voice-message-title {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1.3rem;
+}
+
+.audio-player {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.voice-audio {
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .voice-message {
+        padding: 1.5rem;
+    }
+    
+    .voice-message-title {
+        font-size: 1.1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .voice-audio {
+        height: 45px;
+    }
+}
+</style>
+
+<link rel="stylesheet" href="{% static 'css/theme.css' %}"> 
+
 {% endblock %}

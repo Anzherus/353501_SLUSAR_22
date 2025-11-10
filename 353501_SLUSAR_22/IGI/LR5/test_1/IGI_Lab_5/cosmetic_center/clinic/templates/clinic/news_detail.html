@@ -1,40 +1,596 @@
 {% extends 'clinic/base.html' %}
+{% load static %}
 
-{% block title %}{{ news.title }}{% endblock %}
+{% block title %}{{ news.title }} - Новости - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}{{ news.content|truncatewords:20|striptags }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <article class="card">
-                {% if news.image %}
-                <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h1 class="card-title">{{ news.title }}</h1>
-                    <p class="text-muted">
-                        <small>
-                            Опубликовано: {{ news.created_at|date:"d.m.Y H:i" }} | 
-                            Автор: {{ news.author.get_full_name }}
-                        </small>
-                    </p>
-                    <div class="card-text">
+<!-- Breadcrumb navigation -->
+<nav aria-label="Хлебные крошки" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}" aria-label="Главная страница">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                Главная
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'news_list' %}" aria-label="Список новостей">Новости</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ news.title|truncatechars:30 }}</li>
+    </ol>
+</nav>
+
+<!-- News article section -->
+<section class="news-article-section" aria-labelledby="article-heading">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <article class="news-article" itemscope itemtype="http://schema.org/NewsArticle">
+                    <!-- Article header -->
+                    <header class="article-header">
+                        <h1 id="article-heading" class="article-title" itemprop="headline">{{ news.title }}</h1>
+                        
+                        <div class="article-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                <time datetime="{{ news.created_at|date:'Y-m-d H:i' }}" itemprop="datePublished">
+                                    {{ news.created_at|date:"d.m.Y H:i" }}
+                                </time>
+                            </div>
+                            
+                            <div class="meta-item">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                                <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                    <span itemprop="name">{{ news.author.get_full_name }}</span>
+                                </span>
+                            </div>
+                            
+                            <div class="meta-item">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                                <span>Просмотров: <span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    <!-- Article image -->
+                    {% if news.image %}
+                    <figure class="article-image">
+                        <img src="{{ news.image.url }}" 
+                             alt="{{ news.title }}" 
+                             class="img-fluid"
+                             itemprop="image"
+                             loading="lazy">
+                        <figcaption class="visually-hidden">Изображение к статье: {{ news.title }}</figcaption>
+                    </figure>
+                    {% endif %}
+                    
+                    <!-- Article content -->
+                    <div class="article-content" itemprop="articleBody">
                         {{ news.content|linebreaks }}
                     </div>
-
+                    
+                    <!-- Article footer -->
+                    <footer class="article-footer">
+                        <div class="article-tags">
+                            <span class="tag-label">Теги:</span>
+                            <span class="tag">Косметология</span>
+                            <span class="tag">Красота</span>
+                            <span class="tag">Здоровье</span>
+                        </div>
+                        
+                        <div class="article-actions">
+                            <button class="btn btn-outline-primary share-btn" onclick="shareArticle()" aria-label="Поделиться статьей">
+                                <i class="fas fa-share-alt" aria-hidden="true"></i>
+                                Поделиться
+                            </button>
+                            
+                            <button class="btn btn-outline-secondary print-btn" onclick="printArticle()" aria-label="Распечатать статью">
+                                <i class="fas fa-print" aria-hidden="true"></i>
+                                Печать
+                            </button>
+                        </div>
+                    </footer>
+                    
+                    <!-- Admin actions -->
                     {% if user.is_staff %}
-                    <div class="mt-4">
-                        <a href="{% url 'news_edit' news.id %}" class="btn btn-primary">Редактировать</a>
-                        <a href="{% url 'news_delete' news.id %}" class="btn btn-danger">Удалить</a>
+                    <div class="admin-actions">
+                        <h3>Административные действия</h3>
+                        <div class="admin-buttons">
+                            <a href="{% url 'news_edit' news.id %}" 
+                               class="btn btn-primary"
+                               aria-label="Редактировать статью">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                Редактировать
+                            </a>
+                            <a href="{% url 'news_delete' news.id %}" 
+                               class="btn btn-danger"
+                               aria-label="Удалить статью"
+                               onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                Удалить
+                            </a>
+                        </div>
                     </div>
                     {% endif %}
-                </div>
-            </article>
-
-            <div class="mt-4">
-                <a href="{% url 'news_list' %}" class="btn btn-secondary">← Назад к списку новостей</a>
+                </article>
+                
+                <!-- Navigation -->
+                <nav class="article-navigation" aria-label="Навигация по статьям">
+                    <a href="{% url 'news_list' %}" 
+                       class="btn btn-secondary back-btn"
+                       aria-label="Вернуться к списку новостей">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Назад к списку новостей
+                    </a>
+                </nav>
+                
+                <!-- Related articles -->
+                <aside class="related-articles" aria-labelledby="related-heading">
+                    <h2 id="related-heading">Похожие статьи</h2>
+                    <div class="related-grid">
+                        <!-- Placeholder for related articles -->
+                        <div class="related-item">
+                            <div class="related-image">
+                                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                            </div>
+                            <div class="related-content">
+                                <h3>Советы по уходу за кожей</h3>
+                                <p>Полезные рекомендации от наших специалистов</p>
+                                <time datetime="2024-01-15">15.01.2024</time>
+                            </div>
+                        </div>
+                        
+                        <div class="related-item">
+                            <div class="related-image">
+                                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                            </div>
+                            <div class="related-content">
+                                <h3>Новые процедуры в нашем центре</h3>
+                                <p>Ознакомьтесь с новыми услугами</p>
+                                <time datetime="2024-01-10">10.01.2024</time>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </div>
     </div>
-</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Article functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Increment view count (simulate)
+    const viewCount = document.querySelector('.view-count');
+    if (viewCount) {
+        let count = parseInt(localStorage.getItem('article_views_{{ news.id }}') || '0');
+        count++;
+        localStorage.setItem('article_views_{{ news.id }}', count);
+        viewCount.textContent = count;
+    }
+    
+    // Reading progress indicator
+    const progressBar = document.createElement('div');
+    progressBar.className = 'reading-progress';
+    progressBar.innerHTML = '<div class="progress-fill"></div>';
+    document.body.appendChild(progressBar);
+    
+    window.addEventListener('scroll', function() {
+        const article = document.querySelector('.news-article');
+        if (article) {
+            const articleTop = article.offsetTop;
+            const articleHeight = article.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.pageYOffset;
+            
+            const progress = Math.min(100, Math.max(0, 
+                ((scrollTop - articleTop + windowHeight) / articleHeight) * 100
+            ));
+            
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+    });
+});
+
+// Share article functionality
+function shareArticle() {
+    const title = document.querySelector('.article-title').textContent;
+    const url = window.location.href;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        });
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Ссылка скопирована в буфер обмена!', 'success');
+        });
+    }
+}
+
+// Print article functionality
+function printArticle() {
+    const printWindow = window.open('', '_blank');
+    const article = document.querySelector('.news-article');
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${article.querySelector('.article-title').textContent}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #8e44ad; }
+                    .article-meta { margin: 20px 0; color: #666; }
+                    .article-content { line-height: 1.6; }
+                    .article-image img { max-width: 100%; height: auto; }
+                </style>
+            </head>
+            <body>
+                ${article.innerHTML}
+            </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.print();
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* News article */
+.news-article {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.article-header {
+    padding: 2rem 2rem 1rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.article-title {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.article-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meta-item i {
+    color: var(--primary);
+}
+
+.article-image {
+    margin: 0;
+    text-align: center;
+}
+
+.article-image img {
+    width: 50%;
+    height: 50%;
+    max-height: 400px;
+    object-fit: cover;
+    float: left;
+}
+
+.article-content {
+    padding: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--dark);
+}
+
+.article-content p {
+    margin-bottom: 1.5rem;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+    color: var(--primary);
+    margin: 2rem 0 1rem;
+}
+
+.article-content ul,
+.article-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.article-content li {
+    margin-bottom: 0.5rem;
+}
+
+.article-footer {
+    padding: 1.5rem 2rem;
+    background: var(--light);
+    border-top: 1px solid var(--gray-200);
+}
+
+.article-tags {
+    margin-bottom: 1rem;
+}
+
+.tag-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-right: 0.5rem;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.article-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.share-btn,
+.print-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Admin actions */
+.admin-actions {
+    padding: 2rem;
+    background: rgba(142, 68, 173, 0.1);
+    border-top: 1px solid var(--gray-200);
+}
+
+.admin-actions h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.admin-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Article navigation */
+.article-navigation {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Related articles */
+.related-articles {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.related-articles h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.related-item {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.related-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.related-image {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.related-content h3 {
+    color: var(--primary);
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+.related-content p {
+    color: var(--gray-600);
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.related-content time {
+    color: var(--gray-500);
+    font-size: 0.8rem;
+}
+
+/* Reading progress */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(142, 68, 173, 0.2);
+    z-index: 1000;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .article-header {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+    
+    .article-title {
+        font-size: 1.5rem;
+    }
+    
+    .article-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .article-content {
+        padding: 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .article-footer {
+        padding: 1rem 1.5rem;
+    }
+    
+    .article-actions {
+        flex-direction: column;
+    }
+    
+    .admin-actions {
+        padding: 1.5rem;
+    }
+    
+    .admin-buttons {
+        flex-direction: column;
+    }
+    
+    .related-articles {
+        padding: 1.5rem;
+    }
+    
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .related-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .related-image {
+        align-self: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .article-header {
+        padding: 1rem;
+    }
+    
+    .article-content {
+        padding: 1rem;
+    }
+    
+    .article-footer {
+        padding: 1rem;
+    }
+    
+    .related-articles {
+        padding: 1rem;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
 {% endblock %} 

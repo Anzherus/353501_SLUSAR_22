@@ -1,0 +1,295 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Витрина форм — Эстетика{% endblock %}
+
+{% block content %}
+<section class="forms-showcase" aria-labelledby="forms-heading">
+    <div class="container">
+        <h1 id="forms-heading">Витрина форм</h1>
+        <p>На этой странице собраны примеры всех основных элементов форм, их атрибутов и приёмов доступности.</p>
+
+        <h2>Текстовые поля (type="text")</h2>
+        <!-- Пример одной формы с различными полями. novalidate отключает HTML5-валидацию для демонстрации. -->
+        <form action="#" method="post" novalidate>
+            {% csrf_token %}
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div>
+                    <label for="f_text_value">Со значением (value)</label>
+                    <input id="f_text_value" type="text" name="t_value" value="Начальное значение">
+                </div>
+                <div>
+                    <label for="f_text_placeholder">С подсказкой (placeholder)</label>
+                    <input id="f_text_placeholder" type="text" name="t_placeholder" placeholder="Введите текст...">
+                </div>
+                <div>
+                    <label for="f_text_lengths">Мин/Макс длина</label>
+                    <input id="f_text_lengths" type="text" name="t_lengths" minlength="3" maxlength="12" placeholder="3–12 символов">
+                </div>
+                <div>
+                    <label for="f_text_size">Size (видимая ширина)</label>
+                    <input id="f_text_size" type="text" name="t_size" size="12" placeholder="size=12">
+                </div>
+                <div>
+                    <label for="f_text_required">Обязательное (required)</label>
+                    <input id="f_text_required" type="text" name="t_required" required aria-required="true" placeholder="Обязательное поле">
+                </div>
+                <div>
+                    <label for="f_text_pattern">Паттерн (только A–Z)</label>
+                    <input id="f_text_pattern" type="text" name="t_pattern" pattern="^[A-Za-z]+$" title="Только латинские буквы" placeholder="Только буквы A–Z">
+                </div>
+                <div>
+                    <label for="f_text_readonly">Только чтение (readonly)</label>
+                    <input id="f_text_readonly" type="text" name="t_readonly" value="Только чтение" readonly>
+                </div>
+                <div>
+                    <label for="f_text_disabled">Отключено (disabled)</label>
+                    <input id="f_text_disabled" type="text" name="t_disabled" value="Отключено" disabled>
+                </div>
+                <div>
+                    <label for="f_text_ac">Автозаполнение (autocomplete)</label>
+                    <input id="f_text_ac" type="text" name="t_ac" autocomplete="name" placeholder="autocomplete=name">
+                </div>
+                <div>
+                    <label for="f_text_af">Автофокус (autofocus)</label>
+                    <input id="f_text_af" type="text" name="t_af" autofocus placeholder="Фокус при загрузке">
+                </div>
+            </div>
+        </form>
+
+        <h2>Специализированные поля</h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+            <div>
+                <label for="f_email">Email</label>
+                <input id="f_email" type="email" name="email" placeholder="user@example.com" required aria-required="true">
+            </div>
+            <div>
+                <label for="f_url">URL</label>
+                <input id="f_url" type="url" name="url" placeholder="https://example.com">
+            </div>
+            <div>
+                <label for="f_tel">Телефон (pattern)</label>
+                <input id="f_tel" type="tel" name="tel" placeholder="+375 (29) 123-45-67" pattern="^\+375\s\(\d{2}\)\s\d{3}-\d{2}-\d{2}$" title="Format: +375 (XX) XXX-XX-XX">
+            </div>
+            <div>
+                <label for="f_search">Поиск</label>
+                <input id="f_search" type="search" name="query" placeholder="Поиск...">
+            </div>
+        </div>
+
+        <h2>Многострочное поле (textarea)</h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+            <div>
+                <label for="f_ta_basic">Базовое</label>
+                <textarea id="f_ta_basic" rows="4" placeholder="Ваше сообщение..."></textarea>
+            </div>
+            <div>
+                <label for="f_ta_cols_rows">Rows/Cols</label>
+                <textarea id="f_ta_cols_rows" rows="4" cols="30" placeholder="rows=4, cols=30"></textarea>
+            </div>
+            <div>
+                <label for="f_ta_wrap">Wrap=hard</label>
+                <textarea id="f_ta_wrap" rows="4" wrap="hard" placeholder="Переносы сохраняются при отправке"></textarea>
+            </div>
+        </div>
+
+        <h2>Выпадающие списки и переключатели</h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+            <div>
+                <label for="f_select">Обычный select</label>
+                <select id="f_select" name="topic" required aria-required="true">
+                    <option value="" disabled selected>Выберите тему</option>
+                    <option value="consultation">Консультация</option>
+                    <option value="pricing">Цены</option>
+                    <option value="feedback">Обратная связь</option>
+                </select>
+            </div>
+            <div>
+                <label for="f_select_multiple">Множественный выбор</label>
+                <select id="f_select_multiple" name="topics" multiple size="4">
+                    <option value="consultation">Консультация</option>
+                    <option value="pricing">Цены</option>
+                    <option value="feedback">Обратная связь</option>
+                    <option value="other">Другое</option>
+                </select>
+            </div>
+            <div>
+                <fieldset>
+                    <legend>Флажки (checkbox)</legend>
+                    <label><input type="checkbox" name="news"> Подписаться на новости</label>
+                    <label><input type="checkbox" name="agree" required aria-required="true"> Я согласен(а) *</label>
+                </fieldset>
+            </div>
+            <div>
+                <fieldset>
+                    <legend>Переключатели (radio)</legend>
+                    <label><input type="radio" name="gender" value="m"> Мужской</label>
+                    <label><input type="radio" name="gender" value="f"> Женский</label>
+                    <label><input type="radio" name="gender" value="o"> Другой</label>
+                </fieldset>
+            </div>
+        </div>
+
+        <h2>Дополнительно: варианты полей и атрибутов</h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+            <div>
+                <label for="f_username">Имя пользователя (ограничения)</label>
+                <input id="f_username" type="text" name="username" minlength="3" maxlength="20" pattern="^[A-Za-z0-9_]+$" title="3–20 символов: латиница, цифры, подчёркивание" placeholder="user_name" autocomplete="username">
+            </div>
+            <div>
+                <label for="f_number_step">Число с шагом 0.5</label>
+                <input id="f_number_step" type="number" name="price" min="0" max="100" step="0.5" value="10.5">
+            </div>
+            <div>
+                <label for="f_email_multiple">Email (несколько)</label>
+                <input id="f_email_multiple" type="email" name="emails" multiple placeholder="user1@example.com, user2@example.com">
+            </div>
+            <div>
+                <label for="f_url_pattern">URL (паттерн http/https)</label>
+                <input id="f_url_pattern" type="url" name="homepage" pattern="^https?:\/\/.*$" title="Должен начинаться с http:// или https://" placeholder="https://example.com">
+            </div>
+            <div>
+                <label for="f_tel_inputmode">Телефон (inputmode)</label>
+                <input id="f_tel_inputmode" type="tel" inputmode="tel" name="tel2" pattern="^[+0-9()\-\s]{6,}$" placeholder="+375 (__) ___-__-__">
+            </div>
+            <div>
+                <label for="f_file_multi">Файлы (несколько, accept)</label>
+                <input id="f_file_multi" type="file" name="docs" accept=".pdf,.doc,.docx,image/*" multiple>
+            </div>
+            <div>
+                <label for="f_file_capture">Камера/микрофон (capture)</label>
+                <input id="f_file_capture" type="file" name="capture" accept="image/*,video/*,audio/*" capture>
+            </div>
+            <div>
+                <label for="f_output_range">Output + range</label>
+                <input id="f_output_range" type="range" min="0" max="10" value="5" oninput="o1.value=this.value">
+                <output id="o1">5</output>
+            </div>
+            <div>
+                <label for="f_select_optgroup">Select с группами</label>
+                <select id="f_select_optgroup">
+                    <optgroup label="Контакты">
+                        <option>Email</option>
+                        <option>Телефон</option>
+                    </optgroup>
+                    <optgroup label="Другое">
+                        <option>URL</option>
+                        <option>Поиск</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+
+        <h2>Группировка полей (fieldset/legend) и подсказки</h2>
+        <form action="#" method="post" novalidate>
+            {% csrf_token %}
+            <fieldset aria-describedby="group-hint">
+                <legend>Контактные данные *</legend>
+                <small id="group-hint">Поля отмеченные * обязательны</small>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top:.5rem;">
+                    <div>
+                        <label for="g_name">Имя *</label>
+                        <input id="g_name" name="g_name" type="text" required aria-required="true" aria-describedby="g_name_hint">
+                        <small id="g_name_hint">Введите полное имя</small>
+                    </div>
+                    <div>
+                        <label for="g_email">Email *</label>
+                        <input id="g_email" name="g_email" type="email" required aria-required="true">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <h2>Валидация и ошибки (aria-invalid, role=alert)</h2>
+        <form action="#" method="post" novalidate aria-describedby="error-summary" aria-live="polite">
+            {% csrf_token %}
+            <div id="error-summary" role="alert" style="margin-bottom:.5rem; color: var(--danger);">
+                Пример: поля ниже помечены как невалидные.
+            </div>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div>
+                    <label for="err_email">Email (ошибка)</label>
+                    <input id="err_email" type="email" aria-invalid="true" aria-describedby="err_email_msg" placeholder="user@...">
+                    <small id="err_email_msg" role="alert" style="color: var(--danger);">Некорректный email</small>
+                </div>
+                <div>
+                    <label for="err_tel">Телефон (ошибка)</label>
+                    <input id="err_tel" type="tel" aria-invalid="true" aria-describedby="err_tel_msg" placeholder="+375 (...) ...-..-..">
+                    <small id="err_tel_msg" role="alert" style="color: var(--danger);">Введите телефон в правильном формате</small>
+                </div>
+            </div>
+        </form>
+
+        <h2>Автозаполнение (autocomplete) расширенные токены</h2>
+        <form action="#" method="post" autocomplete="on">
+            {% csrf_token %}
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div>
+                    <label for="ac_name">Имя (given-name/family-name)</label>
+                    <input id="ac_name" name="given_name" type="text" autocomplete="given-name" placeholder="Имя">
+                    <input name="family_name" type="text" autocomplete="family-name" placeholder="Фамилия" style="margin-top:.5rem;">
+                </div>
+                <div>
+                    <label for="ac_address">Адрес (строки)</label>
+                    <input id="ac_address" name="address1" type="text" autocomplete="address-line1" placeholder="Улица, дом">
+                    <input name="address2" type="text" autocomplete="address-line2" placeholder="Квартира/офис" style="margin-top:.5rem;">
+                </div>
+                <div>
+                    <label for="ac_cc">Платёжные данные (демо)</label>
+                    <input id="ac_cc" name="cc-number" type="text" autocomplete="cc-number" placeholder="Номер карты">
+                    <input name="cc-exp" type="text" autocomplete="cc-exp" placeholder="MM/YY" style="margin-top:.5rem;">
+                </div>
+            </div>
+        </form>
+
+        <h2>Разные типы форм</h2>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+            <form action="/" method="get">
+                <label for="q">GET-поиск</label>
+                <input id="q" name="q" type="search" placeholder="Запрос...">
+            </form>
+            <form action="#" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="up">Загрузка файла</label>
+                <input id="up" name="up" type="file" accept="image/*">
+                <button type="submit" class="btn btn-primary" style="margin-top:.5rem;">Отправить</button>
+            </form>
+            <form action="#" method="post" autocomplete="off" novalidate>
+                {% csrf_token %}
+                <label for="nv">Форма без автозаполнения и валидации</label>
+                <input id="nv" type="text" placeholder="Без автозаполнения">
+            </form>
+        </div>
+
+        <h2>Доступность (ARIA)</h2>
+        <p>Используйте явные подписи (label for/id). Связывайте подсказки через aria-describedby. Избегайте tabindex &gt; 0.</p>
+        <div>
+            <label for="a_name">Полное имя *</label>
+            <input id="a_name" type="text" required aria-required="true" aria-describedby="a_name_hint">
+            <small id="a_name_hint">Введите имя и фамилию.</small>
+        </div>
+    </div>
+    <div>
+        <button>
+            привет
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.forms-showcase label { display:block; margin:.25rem 0; font-weight:600; }
+.forms-showcase input, .forms-showcase select, .forms-showcase textarea {
+    width: 100%; padding: .5rem .75rem; border: 2px solid var(--gray-300);
+    border-radius: 6px; font-size: .95rem;
+}
+.forms-showcase input:focus, .forms-showcase select:focus, .forms-showcase textarea:focus {
+    outline: none; border-color: var(--primary);
+}
+.forms-showcase fieldset { border: 1px solid var(--gray-200); border-radius: 6px; padding: .75rem; }
+.forms-showcase legend { font-weight:700; }
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}
+

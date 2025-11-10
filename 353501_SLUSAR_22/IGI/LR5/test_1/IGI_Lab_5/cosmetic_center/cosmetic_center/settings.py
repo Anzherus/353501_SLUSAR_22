@@ -68,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'clinic.context_processors.cart_items_count',
+                'clinic.context_processors.banners',
             ],
         },
     },
@@ -124,7 +126,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-    BASE_DIR / 'cosmetic_center' / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 

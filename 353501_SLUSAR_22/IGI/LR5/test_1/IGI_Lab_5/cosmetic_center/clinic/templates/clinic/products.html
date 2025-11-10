@@ -1,0 +1,165 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Товары - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block content %}
+<!-- Products section -->
+<section class="products-section" aria-labelledby="products-heading">
+    <div class="container">
+        <header class="products-header">
+            <h1 id="products-heading" class="products-title">
+                <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                Наши товары
+            </h1>
+            <p class="products-subtitle">Качественные косметологические товары для ухода за кожей</p>
+        </header>
+        
+        <!-- Filters and search -->
+        <div class="products-filters">
+            <form method="get" class="filters-form">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="search" class="filter-label">Поиск:</label>
+                        <input type="text" name="search" id="search" class="filter-input" placeholder="Поиск товаров..." value="{{ search_query }}">
+                    </div>
+                    <div class="filter-group">
+                        <label for="category" class="filter-label">Категория:</label>
+                        <select name="category" id="category" class="filter-select">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == category_id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort" class="filter-label">Сортировка:</label>
+                        <select name="sort" id="sort" class="filter-select">
+                            <option value="">По умолчанию</option>
+                            <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>По названию (А-Я)</option>
+                            <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>По названию (Я-А)</option>
+                            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>По цене (возрастание)</option>
+                            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>По цене (убывание)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="filter-btn">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                            Найти
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Products grid -->
+<section class="products-grid-section">
+    <div class="container">
+        <!-- CSRF token for AJAX requests -->
+        {% csrf_token %}
+        
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card" data-product-id="{{ product.id }}">
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                    {% else %}
+                        <div class="product-placeholder">
+                            <i class="fas fa-image" aria-hidden="true"></i>
+                        </div>
+                    {% endif %}
+                    <div class="product-overlay">
+                        <a href="{% url 'product_detail' product.id %}" class="product-link">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-category">{{ product.category.name }}</div>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <p class="product-description">
+                        {{ product.short_description|default:product.description|truncatechars:120 }}
+                    </p>
+                    
+                    <div class="product-price-info">
+                        <div class="product-price">{{ product.price|floatformat:0 }} BYN</div>
+                        <div class="product-stock">
+                            {% if product.stock_quantity > 10 %}
+                                <span class="stock-ok">
+                                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                    В наличии
+                                </span>
+                            {% elif product.stock_quantity > 0 %}
+                                <span class="stock-warning">
+                                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                    Мало ({{ product.stock_quantity }} шт.)
+                                </span>
+                            {% else %}
+                                <span class="stock-error">
+                                    <i class="fas fa-times-circle" aria-hidden="true"></i>
+                                    Нет в наличии
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            Подробнее
+                        </a>
+                        {% if user.is_authenticated and product.stock_quantity > 0 %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary add-to-cart-btn">
+                                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                    В корзину
+                                </button>
+                            </form>
+                        {% elif not user.is_authenticated %}
+                            <a href="{% url 'login' %}" class="btn btn-secondary">
+                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                                Войти
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                                Нет в наличии
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-products">
+                <div class="empty-icon">
+                    <i class="fas fa-box-open" aria-hidden="true"></i>
+                </div>
+                <h3>Товары не найдены</h3>
+                <p>Попробуйте изменить параметры поиска</p>
+                <a href="{% url 'products' %}" class="btn btn-primary">
+                    <i class="fas fa-refresh" aria-hidden="true"></i>
+                    Сбросить фильтры
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products-enhanced.css' %}">
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript убран - используются обычные формы -->
+{% endblock %}

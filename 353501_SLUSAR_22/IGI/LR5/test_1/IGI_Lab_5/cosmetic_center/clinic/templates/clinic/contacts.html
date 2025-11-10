@@ -1,112 +1,973 @@
 ﻿{% extends "clinic/base.html" %}
+{% load static %}
 
-{% block title %}Контакты - Косметологический Центр{% endblock %}
+{% block title %}Контакты - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Контактная информация косметологического центра «Эстетика». Адрес, телефоны, часы работы, форма обратной связи и наша команда специалистов.{% endblock %}
 
 {% block content %}
-<section class="contacts-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/contacts-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+
     <div class="container">
-        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Наши контакты</h1>
-        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Мы всегда рады ответить на ваши вопросы и помочь с выбором услуг</p>
+        <header class="header-content">
+            <h1 id="contacts-heading">
+                <i class="fas fa-address-book" aria-hidden="true"></i>
+                Наши <strong>контакты</strong>
+            </h1>
+            <p class="header-subtitle">Мы всегда рады ответить на ваши <em>вопросы</em> и помочь с <b>выбором</b> услуг</p>
+        </header>
     </div>
 </section>
 
-<section class="contacts-content">
+<!-- Main contacts content -->
+<section class="contacts-content" aria-labelledby="main-content-heading">
     <div class="container">
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
-            <div>
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Как нас найти</h2>
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 0.5rem;"></i> Адрес</h3>
-                    <p>г. Минск, ул. Примерная, д. 123</p>
-                    <p>Бизнес центр "Эстетика", 4 этаж</p>
+        <h2 id="main-content-heading" class="visually-hidden">Контактная информация и форма обратной связи</h2>
+        
+        <div class="contacts-layout">
+            <!-- Contact information -->
+            <aside class="contact-info" aria-labelledby="contact-info-heading">
+                <h3 id="contact-info-heading">Как нас найти</h3>
+                
+                <div class="info-section">
+                    <h4 class="info-title">
+                        <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                        Адрес
+                    </h4>
+                    <address class="info-content">
+                        г. Минск, ул. Примерная, д. 123<br>
+                        Бизнес центр "Эстетика", 4 этаж<br>
+                        <a href="https://maps.google.com/?q=Минск,ул.Примерная,123" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="map-link">
+                            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                            Показать на карте
+                        </a>
+                    </address>
                 </div>
 
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i> Часы работы</h3>
-                    <p>Пн-Пт: 9:00 - 21:00</p>
-                    <p>Сб-Вс: 10:00 - 18:00</p>
+                <div class="info-section">
+                    <h4 class="info-title">
+                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        Часы работы
+                    </h4>
+                    <div class="info-content">
+                        <div class="schedule-item">
+                            <span class="schedule-days">Пн-Пт:</span>
+                            <time datetime="09:00/21:00">9:00 - 21:00</time>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="schedule-days">Сб-Вс:</span>
+                            <time datetime="10:00/18:00">10:00 - 18:00</time>
+                        </div>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-phone-alt" style="color: var(--primary); margin-right: 0.5rem;"></i> Телефоны</h3>
-                    <p><a href="tel:+375291234567" style="color: inherit; text-decoration: none;">+375 (29) 123-45-67</a> - администратор</p>
-                    <p><a href="tel:+375291234568" style="color: inherit; text-decoration: none;">+375 (29) 123-45-68</a> - запись на прием</p>
+                <div class="info-section">
+                    <h4 class="info-title">
+                        <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                        Телефоны
+                    </h4>
+                    <div class="info-content">
+                        <div class="phone-item">
+                            <a href="tel:+375291234567" class="phone-link">
+                                <i class="fas fa-phone" aria-hidden="true"></i>
+                                +375 (29) 123-45-67
+                            </a>
+                            <span class="phone-description">- администратор</span>
+                        </div>
+                        <div class="phone-item">
+                            <a href="tel:+375291234568" class="phone-link">
+                                <i class="fas fa-phone" aria-hidden="true"></i>
+                                +375 (29) 123-45-68
+                            </a>
+                            <span class="phone-description">- запись на прием</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 0.5rem;"></i> Email</h3>
-                    <p><a href="mailto:info@estetika.by" style="color: inherit; text-decoration: none;">info@estetika.by</a> - общие вопросы</p>
-                    <p><a href="mailto:appointments@estetika.by" style="color: inherit; text-decoration: none;">appointments@estetika.by</a> - запись на прием</p>
+                <div class="info-section">
+                    <h4 class="info-title">
+                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                        Email
+                    </h4>
+                    <div class="info-content">
+                        <div class="email-item">
+                            <a href="mailto:info@estetika.by" class="email-link">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                info@estetika.by
+                            </a>
+                            <span class="email-description">- общие вопросы</span>
+                        </div>
+                        <div class="email-item">
+                            <a href="mailto:appointments@estetika.by" class="email-link">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                appointments@estetika.by
+                            </a>
+                            <span class="email-description">- запись на прием</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Форма обратной связи</h2>
-                <form method="post" style="background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <!-- Social media -->
+                <div class="info-section">
+                    <h4 class="info-title">
+                        <i class="fas fa-share-alt" aria-hidden="true"></i>
+                        Социальные сети
+                    </h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Telegram">
+                            <i class="fab fa-telegram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Contact form -->
+            <div class="contact-form-container">
+                <h3>Форма обратной связи</h3>
+                <p class="form-description">Оставьте сообщение, и мы свяжемся с вами в ближайшее время</p>
+                
+                <form method="post" class="contact-form" id="contactForm">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <label for="name">Ваше имя</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Ваше имя *</label>
+                            <input type="text" 
+                                   id="name" 
+                                   name="name" 
+                                   class="form-control" 
+                                   required
+                                   aria-describedby="name_help">
+                            <small id="name_help" class="form-text">Как к вам обращаться</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   class="form-control" 
+                                   required
+                                   aria-describedby="email_help">
+                            <small id="email_help" class="form-text">Для ответа на ваше сообщение</small>
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" required>
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="tel" 
+                               id="phone" 
+                               name="phone" 
+                               class="form-control" 
+                               placeholder="+375 (29) 123-45-67"
+                               aria-describedby="phone_help">
+                        <small id="phone_help" class="form-text">Для быстрой связи (необязательно)</small>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="phone">Телефон</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" pattern="\+375\s\(\d{2}\)\s\d{3}-\d{2}-\d{2}" placeholder="+375 (29) 123-45-67" required>
+                        <label for="subject" class="form-label">Тема сообщения</label>
+                        <select id="subject" name="subject" class="form-control" aria-describedby="subject_help">
+                            <option value="">Выберите тему</option>
+                            <option value="general">Общие вопросы</option>
+                            <option value="appointment">Запись на прием</option>
+                            <option value="services">Вопросы об услугах</option>
+                            <option value="prices">Цены и стоимость</option>
+                            <option value="complaint">Жалоба или предложение</option>
+                            <option value="other">Другое</option>
+                        </select>
+                        <small id="subject_help" class="form-text">Поможет нам быстрее ответить</small>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="message">Сообщение</label>
-                        <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+                        <label for="message" class="form-label">Сообщение *</label>
+                        <textarea id="message" 
+                                  name="message" 
+                                  class="form-control" 
+                                  rows="5" 
+                                  required
+                                  placeholder="Опишите ваш вопрос или пожелание..."
+                                  aria-describedby="message_help"></textarea>
+                        <small id="message_help" class="form-text">Чем подробнее, тем лучше мы сможем помочь</small>
                     </div>
-                    <button type="submit" class="btn" style="width: 100%;">Отправить сообщение</button>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" 
+                                   id="newsletter" 
+                                   name="newsletter" 
+                                   class="form-checkbox">
+                            <span class="checkmark"></span>
+                            Подписаться на новости и специальные предложения
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" 
+                                   id="privacy_agreement" 
+                                   name="privacy_agreement" 
+                                   class="form-checkbox"
+                                   required>
+                            <span class="checkmark"></span>
+                            Я согласен с <a href="{% url 'privacy_policy' %}" target="_blank">политикой конфиденциальности</a> *
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary submit-btn">
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        Отправить сообщение
+                    </button>
                 </form>
             </div>
         </div>
 
-        <div style="margin-bottom: 3rem;">
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Наша команда</h2>
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+        <!-- Team section -->
+        <section class="team-section" aria-labelledby="team-heading">
+            <h2 id="team-heading">Наша команда</h2>
+            <p class="team-subtitle">Познакомьтесь с нашими специалистами</p>
+            
+            <div class="team-grid">
                 {% for employee in employees %}
-                <div class="card" style="text-align: center; padding: 1.5rem;">
-                    {% if employee.photo %}
-                    <img src="{{ employee.photo.url }}" alt="{{ employee.name }}" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem; border: 3px solid var(--primary);">
-                    {% else %}
-                    <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; border: 3px solid var(--primary);">
-                        <i class="fas fa-user" style="font-size: 3rem; color: #ccc;"></i>
+                <article class="team-member" itemscope itemtype="http://schema.org/Person">
+                    <div class="member-photo">
+                        {% if employee.photo %}
+                            <img src="{{ employee.photo.url }}" 
+                                 alt="Фото {{ employee.name }}" 
+                                 itemprop="image"
+                                 loading="lazy">
+                        {% else %}
+                            <div class="photo-placeholder">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                            </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    <h3>{{ employee.name }}</h3>
-                    <p style="color: var(--primary); font-weight: 500; margin-bottom: 0.5rem;">{{ employee.position }}</p>
-                    <p style="margin-bottom: 0.5rem;"><i class="fas fa-phone-alt" style="color: var(--primary);"></i> {{ employee.phone }}</p>
-                    <p><i class="fas fa-envelope" style="color: var(--primary);"></i> {{ employee.email }}</p>
+                    
+                    <div class="member-info">
+                        <h3 class="member-name" itemprop="name">{{ employee.name }}</h3>
+                        <p class="member-position" itemprop="jobTitle">{{ employee.position }}</p>
+                        
+                        <div class="member-contacts">
+                            <a href="tel:{{ employee.phone }}" class="contact-link">
+                                <i class="fas fa-phone" aria-hidden="true"></i>
+                                <span itemprop="telephone">{{ employee.phone }}</span>
+                            </a>
+                            <a href="mailto:{{ employee.email }}" class="contact-link">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                <span itemprop="email">{{ employee.email }}</span>
+                            </a>
+                        </div>
+                        
+                        {% if employee.description %}
+                        <p class="member-description">{{ employee.description }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+                {% empty %}
+                <div class="empty-team">
+                    <div class="empty-icon">
+                        <i class="fas fa-users" aria-hidden="true"></i>
+                    </div>
+                    <h3>Информация о команде</h3>
+                    <p>Информация о наших специалистах будет добавлена в ближайшее время</p>
                 </div>
                 {% endfor %}
             </div>
-        </div>
+        </section>
 
-        <div>
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Мы на карте</h2>
-            <div style="height: 400px; background-color: #f0f0f0; border-radius: 10px; overflow: hidden;">
-                <!-- Здесь будет карта -->
+        <!-- Map section -->
+        <section class="map-section" aria-labelledby="map-heading">
+            <h2 id="map-heading">Мы на карте</h2>
+            <p class="map-subtitle">Найдите нас легко и быстро</p>
+            
+            <div class="map-container">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2348.123456789012!2d27.56789123456789!3d53.90123456789012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTPCsDU0JzA0LjQiTiAyN8KwMzQnMDguNiJF!5e0!3m2!1sru!2sby!4v1234567890123!5m2!1sru!2sby"
-                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        title="Карта расположения косметологического центра «Эстетика»"
+                        aria-label="Интерактивная карта с расположением центра">
+                </iframe>
             </div>
-        </div>
+            
+            <div class="map-info">
+                <div class="map-details">
+                    <h3>Как добраться</h3>
+                    <ul>
+                        <li><strong>На метро:</strong> станция "Площадь Ленина", 5 минут пешком</li>
+                        <li><strong>На автобусе:</strong> остановка "Центр", автобусы №1, 3, 5</li>
+                        <li><strong>На автомобиле:</strong> парковка во дворе здания</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Маска для телефона
-        const phoneInput = document.getElementById('phone');
-        phoneInput.addEventListener('input', function(e) {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);
-            e.target.value = !x[2] ? x[1] : '+375 (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+// Contact form functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    const phoneInput = document.getElementById('phone');
+    
+    // Phone number formatting
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = '+375 (' + value;
+                } else if (value.length <= 5) {
+                    value = '+375 (' + value.slice(3);
+                } else if (value.length <= 8) {
+                    value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5);
+                } else if (value.length <= 10) {
+                    value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8);
+                } else {
+                    value = '+375 (' + value.slice(3, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8, 10) + '-' + value.slice(10, 12);
+                }
+            }
+            this.value = value;
+        });
+    }
+    
+    // Form validation
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Check privacy agreement
+            const privacyAgreement = document.getElementById('privacy_agreement');
+            if (!privacyAgreement.checked) {
+                e.preventDefault();
+                showNotification('Необходимо согласиться с политикой конфиденциальности', 'error');
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Отправка...';
+            submitBtn.disabled = true;
+        });
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
     });
+});
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
 </script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* Contacts header */
+.contacts-header {
+    background: linear-gradient(135deg, rgba(142, 68, 173, 0.9), rgba(155, 89, 182, 0.9)), 
+                url('{% static "images/contacts-bg.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    color: var(--white);
+    padding: 4rem 0;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+/* Contacts layout */
+.contacts-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+/* Contact info */
+.contact-info {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-info h3 {
+    color: var(--primary);
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.info-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.info-title {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.info-content {
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+.map-link {
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.map-link:hover {
+    text-decoration: underline;
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.schedule-days {
+    font-weight: 600;
+}
+
+.phone-item,
+.email-item {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.phone-link,
+.email-link {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.phone-link:hover,
+.email-link:hover {
+    text-decoration: underline;
+}
+
+.phone-description,
+.email-description {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+}
+
+/* Contact form */
+.contact-form-container {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-form-container h3 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.form-description {
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--gray-300);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.form-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray-300);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.form-checkbox:checked + .checkmark {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-checkbox:checked + .checkmark::after {
+    content: '✓';
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Team section */
+.team-section {
+    margin-bottom: 4rem;
+}
+
+.team-section h2 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.team-subtitle {
+    text-align: center;
+    color: var(--gray-600);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.team-member {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.member-photo {
+    margin-bottom: 1.5rem;
+}
+
+.member-photo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+}
+
+.photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 3px solid var(--primary);
+}
+
+.photo-placeholder i {
+    font-size: 3rem;
+    color: var(--gray-400);
+}
+
+.member-name {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.member-position {
+    color: var(--primary);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.member-contacts {
+    margin-bottom: 1rem;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--gray-600);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+}
+
+.contact-link:hover {
+    color: var(--primary);
+}
+
+.member-description {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.empty-team {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    grid-column: 1 / -1;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--gray-400);
+    margin-bottom: 2rem;
+}
+
+.empty-team h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.empty-team p {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+}
+
+/* Map section */
+.map-section {
+    margin-bottom: 2rem;
+}
+
+.map-section h2 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.map-subtitle {
+    text-align: center;
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.map-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.map-info {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+.map-details h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.map-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.map-details li {
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.map-details li::before {
+    content: '•';
+    color: var(--primary);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .contacts-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-info,
+    .contact-form-container {
+        padding: 1.5rem;
+    }
+    
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .contacts-header {
+        padding: 3rem 0;
+    }
+    
+    .header-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .contact-info,
+    .contact-form-container {
+        padding: 1rem;
+    }
+    
+    .team-member {
+        padding: 1.5rem;
+    }
+    
+    .member-photo img,
+    .photo-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .map-info {
+        padding: 1.5rem;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+
 {% endblock %}

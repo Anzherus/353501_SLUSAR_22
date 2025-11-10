@@ -1,0 +1,200 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Корзина покупок - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Ваша корзина покупок в косметологическом центре «Эстетика». Управляйте количеством товаров и оформляйте заказ.{% endblock %}
+
+{% block content %}
+
+<!-- Cart section -->
+<section class="cart-section" aria-labelledby="cart-heading">
+    <div class="container">
+        <div class="cart-container">
+            <header class="cart-header">
+                <h1 id="cart-heading" class="cart-title">
+                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                    Корзина покупок
+                </h1>
+                <p class="cart-subtitle">Управляйте количеством товаров и оформляйте заказ</p>
+            </header>
+            
+            {% if cart_items %}
+                <div class="cart-content">
+                    <!-- CSRF token for AJAX requests -->
+                    {% csrf_token %}
+                    
+                    <!-- Cart items as table -->
+                    <div class="cart-items">
+                        <table class="cart-table" role="table">
+                            <thead>
+                                <tr>
+                                    <th id="h-product" scope="col">Товар</th>
+                                    <th id="h-category" scope="col">Категория</th>
+                                    <th id="h-price" scope="col">Цена</th>
+                                    <th id="h-quantity" scope="col">Количество</th>
+                                    <th id="h-total" scope="col">Итого</th>
+                                    <th id="h-actions" scope="col">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr class="cart-item" data-item-id="{{ item.id }}" itemscope itemtype="http://schema.org/OrderItem">
+                                    <th scope="row" headers="h-product">
+                                        <div class="cart-item-image">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" itemprop="image">
+                                            {% else %}
+                                                <div class="image-placeholder">
+                                                    <i class="fas fa-image" aria-hidden="true"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="cart-item-info">
+                                            <h3 class="cart-item-name" itemprop="name">{{ item.product.name }}</h3>
+                                        </div>
+                                    </th>
+                                    <td headers="h-category">
+                                        <div class="cart-item-category">{{ item.product.category.name }}</div>
+                                    </td>
+                                    <td headers="h-price">
+                                        <div class="cart-item-price" itemprop="price">{{ item.product.price|floatformat:0 }} BYN</div>
+                                    </td>
+                                     <td headers="h-quantity">
+                                         <div class="quantity-controls">
+                                             <!-- Форма для уменьшения количества -->
+                                             {% if item.quantity > 1 %}
+                                             <form method="post" action="{% url 'cart' %}" style="display: inline;">
+                                                 {% csrf_token %}
+                                                 <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                 <input type="hidden" name="quantity" value="{{ item.quantity|add:-1 }}">
+                                                 <button type="submit" name="update_quantity" class="quantity-btn decrease" aria-label="Уменьшить количество">
+                                                     <i class="fas fa-minus" aria-hidden="true"></i>
+                                                 </button>
+                                             </form>
+                                             {% else %}
+                                             <button type="button" class="quantity-btn decrease disabled" disabled aria-label="Нельзя уменьшить">
+                                                 <i class="fas fa-minus" aria-hidden="true"></i>
+                                             </button>
+                                             {% endif %}
+                                             
+                                             <!-- Поле ввода количества -->
+                                             <span class="quantity-display">{{ item.quantity }}</span>
+                                             
+                                             <!-- Форма для увеличения количества -->
+                                             {% if item.quantity < item.product.stock_quantity %}
+                                             <form method="post" action="{% url 'cart' %}" style="display: inline;">
+                                                 {% csrf_token %}
+                                                 <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                 <input type="hidden" name="quantity" value="{{ item.quantity|add:1 }}">
+                                                 <button type="submit" name="update_quantity" class="quantity-btn increase" aria-label="Увеличить количество">
+                                                     <i class="fas fa-plus" aria-hidden="true"></i>
+                                                 </button>
+                                             </form>
+                                             {% else %}
+                                             <button type="button" class="quantity-btn increase disabled" disabled aria-label="Нельзя увеличить">
+                                                 <i class="fas fa-plus" aria-hidden="true"></i>
+                                             </button>
+                                             {% endif %}
+                                         </div>
+                                        {% if item.quantity > item.product.stock_quantity %}
+                                            <div class="stock-error">
+                                                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                                Недостаточно товара на складе
+                                            </div>
+                                        {% elif item.product.stock_quantity <= 5 %}
+                                            <div class="stock-warning">
+                                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                                Мало товара на складе
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td headers="h-total">
+                                        <div class="cart-item-total" itemprop="price">{{ item.total_price|floatformat:0 }} BYN</div>
+                                    </td>
+                                     <td headers="h-actions">
+                                         <div class="cart-item-actions">
+                                             <form method="post" action="{% url 'cart' %}">
+                                                 {% csrf_token %}
+                                                 <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                 <button type="submit" name="remove_item" class="remove-btn" aria-label="Удалить товар из корзины">
+                                                     <i class="fas fa-trash" aria-hidden="true"></i>
+                                                 </button>
+                                             </form>
+                                         </div>
+                                     </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Cart summary -->
+                    <aside class="cart-summary">
+                        <h2 class="summary-title">Сводка заказа</h2>
+                        
+                        <div class="summary-row">
+                            <span class="summary-label">Товаров в корзине:</span>
+                            <span class="summary-value" id="totalItems">{{ cart.total_items }}</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span class="summary-label">Общая стоимость:</span>
+                            <span class="summary-value" id="totalPrice">{{ cart.total_price|floatformat:0 }} BYN</span>
+                        </div>
+                        
+                        <button class="checkout-btn" onclick="proceedToCheckout()" aria-label="Перейти к оформлению заказа">
+                            <i class="fas fa-credit-card" aria-hidden="true"></i>
+                            Оформить заказ
+                        </button>
+                        
+                        <div class="cart-actions">
+                            <a href="{% url 'products' %}" class="btn btn-outline-primary" aria-label="Продолжить покупки">
+                                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                                Продолжить покупки
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            {% else %}
+                <!-- Empty cart state -->
+                <div class="empty-cart">
+                    <div class="empty-cart-content">
+                        <i class="fas fa-shopping-cart empty-cart-icon" aria-hidden="true"></i>
+                        <h2 class="empty-cart-title">Ваша корзина пуста</h2>
+                        <p class="empty-cart-text">
+                            Добавьте товары в корзину, чтобы оформить заказ.<br>
+                            У нас есть множество качественных косметологических товаров!
+                        </p>
+                        
+                        <div class="empty-cart-actions">
+                            <a href="{% url 'products' %}" class="empty-cart-btn" aria-label="Перейти к каталогу товаров">
+                                <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                                Перейти к товарам
+                            </a>
+                            <a href="{% url 'services' %}" class="empty-cart-btn secondary" aria-label="Посмотреть услуги">
+                                <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                                Посмотреть услуги
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Простая функция для перехода к оплате
+function proceedToCheckout() {
+    window.location.href = "{% url 'payment' %}";
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

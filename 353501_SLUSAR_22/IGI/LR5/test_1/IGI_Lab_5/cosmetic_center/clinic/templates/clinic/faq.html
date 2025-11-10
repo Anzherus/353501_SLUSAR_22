@@ -1,0 +1,777 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}FAQ - Часто задаваемые вопросы - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Часто задаваемые вопросы о косметологических услугах, процедурах, записи на прием и работе центра «Эстетика».{% endblock %}
+
+{% block content %}
+
+<!-- FAQ section -->
+<section class="faq-section" aria-labelledby="faq-heading">
+    <div class="container">
+        <header class="faq-header">
+            <h1 id="faq-heading">
+                <i class="fas fa-question-circle" aria-hidden="true"></i>
+                Часто задаваемые вопросы
+            </h1>
+            <p class="faq-subtitle">Найдите ответы на популярные вопросы о наших услугах</p>
+        </header>
+        
+        <!-- Search and filter -->
+        <div class="faq-controls">
+            <div class="search-box">
+                <div class="search-input-group">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" 
+                           id="faqSearch" 
+                           placeholder="Поиск по вопросам..." 
+                           class="search-input"
+                           aria-label="Поиск по вопросам">
+                </div>
+            </div>
+            
+            {% if categories %}
+            <div class="category-filters">
+                <span class="filter-label">Категории:</span>
+                <div class="filter-buttons">
+                    <button type="button" 
+                            class="filter-btn active" 
+                            data-category="all"
+                            onclick="filterByCategory('all')"
+                            aria-label="Показать все вопросы">
+                        Все
+                    </button>
+                    {% for category in categories %}
+                    <button type="button" 
+                            class="filter-btn" 
+                            data-category="{{ category }}"
+                            onclick="filterByCategory('{{ category }}')"
+                            aria-label="Показать вопросы категории {{ category }}">
+                        {{ category }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- FAQ accordion -->
+        <div class="faq-accordion" id="faqAccordion" role="tablist" aria-multiselectable="true">
+            {% for faq in faqs %}
+            <article class="faq-item" 
+                     data-category="{{ faq.category|default:'Общие' }}" 
+                     data-question="{{ faq.question|lower }}"
+                     itemscope 
+                     itemtype="https://schema.org/Question">
+                <header class="faq-header-item">
+                    <h2 class="faq-question" itemprop="name">
+                        <button class="faq-toggle" 
+                                type="button" 
+                                onclick="toggleFAQ('collapse{{ faq.id }}')"
+                                aria-expanded="false" 
+                                aria-controls="collapse{{ faq.id }}"
+                                aria-label="Развернуть вопрос: {{ faq.question }}">
+                            <span class="question-text">{{ faq.question }}</span>
+                            <div class="question-meta">
+                                {% if faq.category %}
+                                    <span class="category-badge">{{ faq.category }}</span>
+                                {% endif %}
+                                <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
+                            </div>
+                        </button>
+                    </h2>
+                </header>
+                
+                <div id="collapse{{ faq.id }}" 
+                     class="faq-answer" 
+                     aria-labelledby="heading{{ faq.id }}" 
+                     itemscope 
+                     itemtype="https://schema.org/Answer">
+                    <div class="faq-content">
+                        <div class="answer-text" itemprop="text">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                        
+                        <footer class="faq-footer">
+                            <div class="faq-meta">
+                                <time datetime="{{ faq.created_at|date:'Y-m-d' }}" 
+                                      class="faq-date"
+                                      itemprop="dateCreated">
+                                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                    Добавлено: {{ faq.created_at|date:"d.m.Y" }}
+                                </time>
+                                
+                                <div class="faq-actions">
+                                    <button class="action-btn" 
+                                            onclick="copyQuestion('{{ faq.question|escapejs }}')"
+                                            aria-label="Копировать вопрос">
+                                        <i class="fas fa-copy" aria-hidden="true"></i>
+                                        Копировать
+                                    </button>
+                                    
+                                    <button class="action-btn" 
+                                            onclick="shareQuestion('{{ faq.question|escapejs }}', '{{ faq.answer|striptags|escapejs }}')"
+                                            aria-label="Поделиться вопросом">
+                                        <i class="fas fa-share-alt" aria-hidden="true"></i>
+                                        Поделиться
+                                    </button>
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="empty-faq">
+                <div class="empty-icon">
+                    <i class="fas fa-question-circle" aria-hidden="true"></i>
+                </div>
+                <h2>Вопросы не найдены</h2>
+                <p>Пока нет часто задаваемых вопросов. Мы работаем над добавлением полезной информации.</p>
+                <a href="{% url 'contacts' %}" class="btn btn-primary">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    Задать вопрос
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Contact section -->
+        <aside class="faq-contact">
+            <div class="contact-card">
+                <h3>Не нашли ответ на свой вопрос?</h3>
+                <p>Наши специалисты готовы помочь вам с любыми вопросами</p>
+                <div class="contact-actions">
+                    <a href="{% url 'contacts' %}" class="btn btn-primary">
+                        <i class="fas fa-phone" aria-hidden="true"></i>
+                        Связаться с нами
+                    </a>
+                    <a href="{% url 'services' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                        Наши услуги
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// FAQ functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('faqSearch');
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.question-text').textContent.toLowerCase();
+                const answer = item.querySelector('.answer-text').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Update visible count
+            updateVisibleCount();
+        });
+    }
+    
+    // Accordion animation
+    const accordionButtons = document.querySelectorAll('.faq-toggle');
+    accordionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const icon = this.querySelector('.toggle-icon');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            
+            // Rotate icon
+            if (isExpanded) {
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                icon.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+    
+    // Initialize visible count
+    updateVisibleCount();
+});
+
+// Filter by category
+function filterByCategory(category) {
+    const faqItems = document.querySelectorAll('.faq-item');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    // Update active button
+    filterButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.category === category) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Show/hide items
+    faqItems.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    updateVisibleCount();
+}
+
+// Update visible count
+function updateVisibleCount() {
+    const visibleItems = document.querySelectorAll('.faq-item[style*="block"], .faq-item:not([style*="none"])');
+    const countElement = document.querySelector('.visible-count');
+    
+    if (countElement) {
+        countElement.textContent = visibleItems.length;
+    }
+}
+
+// Copy question to clipboard
+function copyQuestion(question) {
+    navigator.clipboard.writeText(question).then(() => {
+        showNotification('Вопрос скопирован в буфер обмена!', 'success');
+    }).catch(() => {
+        showNotification('Ошибка копирования', 'error');
+    });
+}
+
+// Share question
+function shareQuestion(question, answer) {
+    const text = `Вопрос: ${question}\n\nОтвет: ${answer}`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'FAQ - Косметологический центр «Эстетика»',
+            text: text
+        });
+    } else {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Вопрос и ответ скопированы в буфер обмена!', 'success');
+        });
+    }
+}
+
+// Toggle FAQ answer
+function toggleFAQ(targetId) {
+    const target = document.getElementById(targetId);
+    const button = document.querySelector(`[aria-controls="${targetId}"]`);
+    const icon = button.querySelector('.toggle-icon');
+    
+    if (!target || !button) return;
+    
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    
+    if (isExpanded) {
+        // Close
+        target.style.maxHeight = '0';
+        target.style.opacity = '0';
+        button.setAttribute('aria-expanded', 'false');
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        // Open
+        target.style.maxHeight = target.scrollHeight + 'px';
+        target.style.opacity = '1';
+        button.setAttribute('aria-expanded', 'true');
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+// Show notification (if not already defined)
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* FAQ header */
+.faq-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.faq-header h1 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.faq-subtitle {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+}
+
+/* FAQ controls */
+.faq-controls {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.search-box {
+    margin-bottom: 1.5rem;
+}
+
+.search-input-group {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+    z-index: 2;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid var(--gray-300);
+    border-radius: 25px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+}
+
+.category-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-600);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+/* FAQ accordion */
+.faq-accordion {
+    margin-bottom: 3rem;
+}
+
+.faq-item {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.faq-header-item {
+    margin: 0;
+}
+
+.faq-toggle {
+    width: 100%;
+    padding: 1.5rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.faq-toggle:hover {
+    background: var(--light);
+}
+
+.question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.question-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.category-badge {
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.toggle-icon {
+    color: var(--primary);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    border-top: 1px solid var(--gray-200);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.faq-content {
+    padding: 1.5rem;
+}
+
+.answer-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.faq-footer {
+    border-top: 1px solid var(--gray-100);
+    padding-top: 1rem;
+}
+
+.faq-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.faq-date {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.faq-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-600);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+/* Empty state */
+.empty-faq {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--gray-400);
+    margin-bottom: 2rem;
+}
+
+.empty-faq h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.empty-faq p {
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* Contact section */
+.faq-contact {
+    margin-top: 3rem;
+}
+
+.contact-card {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--white);
+    padding: 3rem;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.contact-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.contact-card p {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.contact-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.contact-actions .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+.contact-actions .btn-primary {
+    background: var(--white);
+    color: var(--primary);
+    border-color: var(--white);
+}
+
+.contact-actions .btn-primary:hover {
+    background: var(--light);
+    color: var(--primary);
+}
+
+.contact-actions .btn-outline-primary {
+    background: transparent;
+    color: var(--white);
+    border-color: var(--white);
+}
+
+.contact-actions .btn-outline-primary:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .faq-controls {
+        padding: 1.5rem;
+    }
+    
+    .category-filters {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+    
+    .faq-toggle {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .question-text {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .question-meta {
+        align-self: flex-end;
+    }
+    
+    .faq-content {
+        padding: 1rem;
+    }
+    
+    .faq-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .contact-card {
+        padding: 2rem;
+    }
+    
+    .contact-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-actions .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .faq-header h1 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .search-input-group {
+        max-width: 100%;
+    }
+    
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

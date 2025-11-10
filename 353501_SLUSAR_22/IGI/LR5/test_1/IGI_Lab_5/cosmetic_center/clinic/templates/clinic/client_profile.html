@@ -1,49 +1,161 @@
 {% extends "clinic/base.html" %}
+
+{% block title %}Личный кабинет - Косметологический Центр{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-    <h2 class="mb-4">Личный кабинет клиента</h2>
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Персональная информация</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>ФИО:</b> {{ user.get_full_name }}</li>
-                <li class="list-group-item"><b>Email:</b> {{ user.email }}</li>
-                <li class="list-group-item"><b>Телефон:</b> {{ client.phone }}</li>
-                <li class="list-group-item"><b>Дата рождения:</b> {{ client.birth_date|date:"d.m.Y" }}</li>
-                <li class="list-group-item"><b>Пол:</b> {{ client.get_gender_display }}</li>
-            </ul>
-        </div>
+<section class="profile-header" style="background: linear-gradient(rgba(142, 68, 173, 0.8), rgba(155, 89, 182, 0.8)), url('/static/images/profile-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem 0; text-align: center; margin-bottom: 3rem;">
+    <div class="container">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Личный кабинет</h1>
+        <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Управление вашей учетной записью и персональными данными</p>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">История записей</h5>
-            {% if appointments %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Услуга</th>
-                            <th>Врач</th>
-                            <th>Дата и время</th>
-                            <th>Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for a in appointments %}
-                        <tr>
-                            <td>{{ a.service.name }}</td>
-                            <td>{{ a.doctor.user.get_full_name }}</td>
-                            <td>{{ a.date_time|date:"d.m.Y H:i" }}</td>
-                            <td>{{ a.get_status_display }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+</section>
+
+<section class="profile-content">
+    <div class="container">
+        <div class="grid" style="grid-template-columns: 300px 1fr; gap: 3rem;">
+            <div>
+                <div class="card" style="padding: 1.5rem; text-align: center; position: sticky; top: 1rem;">
+                    <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 3px solid var(--primary);">
+                        <i class="fas fa-user" style="font-size: 3rem; color: #666;"></i>
+                    </div>
+
+                    <h3 style="margin-bottom: 0.5rem;">
+                        {% if user.first_name or user.last_name %}
+                            {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">{{ user.email }}</p>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <p><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}</p>
+                        {% if user.last_login %}
+                        <p><i class="fas fa-clock" style="color: var(--primary);"></i> Последний вход: {{ user.last_login|date:"d.m.Y H:i" }}</p>
+                        {% endif %}
+                    </div>
+
+                    <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="{% url 'my_appointments' %}" class="btn btn-outline">Мои записи</a>
+                        <a href="{% url 'cart' %}" class="btn btn-outline">
+                            Корзина
+                            {% if cart_items_count > 0 %}
+                                <span class="badge bg-primary ms-1">{{ cart_items_count }}</span>
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'all_reviews' %}" class="btn btn-outline">Отзывы</a>
+                        <a href="{% url 'faq' %}" class="btn btn-outline">FAQ</a>
+                        <a href="{% url 'vacancies' %}" class="btn btn-outline">Вакансии</a>
+                        <a href="{% url 'password_change' %}" class="btn btn-outline">Сменить пароль</a>
+                        <a href="{% url 'logout' %}" class="btn btn-outline" style="color: var(--danger);">Выйти</a>
+                    </nav>
+                </div>
             </div>
-            {% else %}
-            <p class="text-muted">Нет записей.</p>
-            {% endif %}
+
+            <div>
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Персональные данные</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label for="id_first_name">Имя</label>
+                                <input type="text" id="id_first_name" name="first_name" class="form-control" value="{{ user.first_name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_last_name">Фамилия</label>
+                                <input type="text" id="id_last_name" name="last_name" class="form-control" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_email">Email</label>
+                            <input type="email" id="id_email" name="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_phone">Телефон</label>
+                            <input type="tel" id="id_phone" name="phone" class="form-control" pattern="\+375\s\(\d{2}\)\s\d{3}-\d{2}-\d{2}" placeholder="+375 (29) 123-45-67" value="{{ client.phone }}">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_birth_date">Дата рождения</label>
+                            <input type="date" id="id_birth_date" name="birth_date" class="form-control" value="{{ client.birth_date|date:'Y-m-d' }}">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_gender">Пол</label>
+                            <select id="id_gender" name="gender" class="form-control">
+                                <option value="M" {% if client.gender == 'M' %}selected{% endif %}>Мужской</option>
+                                <option value="F" {% if client.gender == 'F' %}selected{% endif %}>Женский</option>
+                                <option value="O" {% if client.gender == 'O' %}selected{% endif %}>Другой</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="id_address">Адрес</label>
+                            <textarea id="id_address" name="address" class="form-control" rows="3" placeholder="Введите ваш адрес">{{ client.address }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn">Сохранить изменения</button>
+                    </form>
+                </div>
+
+                <!-- Новые функции -->
+                <div class="card" style="padding: 2rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Дополнительные функции</h2>
+
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a href="{% url 'products' %}" class="btn btn-outline">
+                            <i class="fas fa-shopping-bag"></i> Каталог товаров
+                        </a>
+                        <a href="{% url 'news_list' %}" class="btn btn-outline">
+                            <i class="fas fa-newspaper"></i> Новости
+                        </a>
+                        <a href="{% url 'privacy_policy' %}" class="btn btn-outline">
+                            <i class="fas fa-shield-alt"></i> Политика конфиденциальности
+                        </a>
+                        <a href="{% url 'about' %}" class="btn btn-outline">
+                            <i class="fas fa-info-circle"></i> О компании
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-{% endblock %} 
+</section>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Маска для телефона
+        const phoneInput = document.getElementById('id_phone');
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            e.target.value = !x[2] ? x[1] : '+375 (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+        });
+
+        // Валидация даты рождения (18+)
+        const birthDateInput = document.getElementById('id_birth_date');
+        birthDateInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                alert('Вы должны быть старше 18 лет для регистрации в системе.');
+                this.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

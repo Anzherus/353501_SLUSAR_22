@@ -1,158 +1,265 @@
 {% extends "clinic/base.html" %}
+{% load static %}
 
-{% block title %}Главная - Косметологический Центр{% endblock %}
+{% block title %}Главная - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Добро пожаловать в косметологический центр «Эстетика»! Профессиональные косметологические услуги, современное оборудование, квалифицированные специалисты. Запись на прием онлайн.{% endblock %}
+
+{% block meta_keywords %}косметология, красота, уход за кожей, косметолог, эстетика, процедуры, услуги, запись на прием{% endblock %}
 
 {% block content %}
-<section class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/hero-bg.jpg'); background-size: cover; background-position: center; color: white; padding: 5rem 0; text-align: center; margin-bottom: 3rem;">
-    <div class="container">
-        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Красота и здоровье вашей кожи</h1>
-        <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 2rem;">Профессиональный уход за кожей от ведущих специалистов с медицинским образованием</p>
-        <a href="{% url 'services' %}" class="btn" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Наши услуги</a>
-    </div>
-</section>
-
-<section class="features">
-    <div class="container">
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-            <div class="card" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-certificate" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <h3>Квалифицированные специалисты</h3>
-                <p>Все наши врачи имеют высшее медицинское образование и регулярно повышают квалификацию</p>
-            </div>
-
-            <div class="card" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <h3>Безопасность</h3>
-                <p>Используем только сертифицированные препараты и стерильные инструменты</p>
-            </div>
-
-            <div class="card" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-heart" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <h3>Индивидуальный подход</h3>
-                <p>Персональные программы ухода за кожей для каждого клиента</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="popular-services" style="margin: 4rem 0;">
-    <div class="container">
-        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Популярные услуги</h2>
-
-        <div class="grid">
-            {% for service in popular_services %}
-            <div class="card">
-                {% if service.image %}
-                <img src="{{ service.image.url }}" alt="{{ service.name }}" class="card-img">
-                {% else %}
-                <div style="height: 200px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-spa" style="font-size: 3rem; color: #ccc;"></i>
+<!-- Прелоадер -->
+<div class="preloader">
+    <div class="preloader-content">
+        <div class="face-animation-container">
+            <div class="face-outline">
+                <!-- Кисточка -->
+                <div class="brush">
+                    <div class="brush-handle"></div>
+                    <div class="brush-head"></div>
+                    <div class="brush-bristles"></div>
                 </div>
-                {% endif %}
-                <div class="card-body">
-                    <h3 class="card-title">{{ service.name }}</h3>
-                    <p class="card-text">{{ service.short_description|default:service.description|truncatechars:100 }}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: bold; color: var(--primary);">{{ service.price }} руб.</span>
-                        <a href="{% url 'service-detail' service.id %}" class="btn">Подробнее</a>
+                
+                <!-- Черты лица -->
+                <div class="eyes">
+                    <div class="eye eye-left">
+                        <div class="eye-pupil"></div>
+                    </div>
+                    <div class="eye eye-right">
+                        <div class="eye-pupil"></div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="{% url 'services' %}" class="btn">Все услуги</a>
-        </div>
-    </div>
-</section>
-
-<section class="testimonials" style="background-color: var(--light); padding: 4rem 0;">
-    <div class="container">
-        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Отзывы наших клиентов</h2>
-
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-            {% for review in latest_reviews %}
-            <div class="card">
-                <div class="card-body">
-                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                        <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                            <i class="fas fa-user" style="font-size: 1.5rem; color: #666;"></i>
-                        </div>
-                        <div>
-                            <h4 style="margin: 0;">{{ review.client_name }}</h4>
-                            <div style="color: var(--warning);">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= review.rating %}
-                                        <i class="fas fa-star"></i>
-                                    {% else %}
-                                        <i class="far fa-star"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <p class="card-text">{{ review.text }}</p>
-                    <small style="color: #999; display: block; margin-top: 1rem;">{{ review.created_at|date:"d.m.Y" }}</small>
+                
+                <div class="eyebrows">
+                    <div class="eyebrow eyebrow-left"></div>
+                    <div class="eyebrow eyebrow-right"></div>
+                </div>
+                
+                <div class="nose">
+                    <div class="nose-bridge"></div>
+                    <div class="nose-tip"></div>
+                </div>
+                
+                <div class="lips">
+                    <div class="lip-upper"></div>
+                    <div class="lip-lower"></div>
+                </div>
+                
+                <div class="cheeks">
+                    <div class="cheek cheek-left"></div>
+                    <div class="cheek cheek-right"></div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Последняя новость -->
-{% if latest_news %}
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">Последняя новость</h2>
-                <div class="row">
-                    {% if latest_news.image %}
-                    <div class="col-md-4">
-                        <img src="{{ latest_news.image.url }}" class="img-fluid rounded" alt="{{ latest_news.title }}">
-                    </div>
-                    {% endif %}
-                    <div class="col">
-                        <h3>{{ latest_news.title }}</h3>
-                        <p class="text-muted">
-                            <small>Опубликовано: {{ latest_news.created_at|date:"d.m.Y H:i" }}</small>
-                        </p>
-                        <p>{{ latest_news.content|truncatewords:50 }}</p>
-                        <a href="{% url 'news_detail' latest_news.id %}" class="btn btn-primary">Читать далее</a>
-                        <a href="{% url 'news_list' %}" class="btn btn-secondary">Все новости</a>
-                    </div>
-                </div>
+            
+            <div class="company-title">
+                Косметологический Центр<br>
+                <span class="company-subtitle">«Эстетика»</span>
             </div>
         </div>
+        <h1 class="preloader-title">Добро пожаловать!</h1>
+        <p class="preloader-subtitle">Загружаем для вас лучшие косметологические услуги...</p>
     </div>
 </div>
-{% endif %}
 
-<!-- Календарь записи -->
-<section class="booking-calendar" style="margin: 4rem 0;">
+<!-- Hero section -->
+<section class="hero-section" aria-labelledby="hero-heading">
     <div class="container">
-        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Записаться на приём</h2>
+        <div class="hero-content">
+            <h1 id="hero-heading">Добро пожаловать в косметологический центр <strong>«Эстетика»</strong></h1>
+            <p class="hero-subtitle">Профессиональные <em>косметологические услуги</em> от <b>квалифицированных</b> специалистов<br>
+            <i>Современные технологии</i> и <strong>инновационные методы</strong> лечения</p>
+            <div class="hero-cta">
+                <a href="{% url 'services' %}" class="btn btn-primary btn-lg" aria-label="Посмотреть услуги">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                    Наши услуги
+                </a>
+                <a href="{% url 'contacts' %}" class="btn btn-outline-light btn-lg" aria-label="Связаться с нами">
+                    <i class="fas fa-phone" aria-hidden="true"></i>
+                    Записаться
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Баннеры перемещены после секции партнеров -->
+
+<!-- Services section -->
+<section class="services-section" aria-labelledby="services-heading">
+    <div class="container">
+        <header class="section-header">
+            <h2 id="services-heading" class="section-title">Наши <strong>услуги</strong></h2>
+            <p class="section-subtitle">Широкий спектр <em>косметологических процедур</em> для <b>красоты</b> и здоровья вашей кожи<br>
+            <i>Индивидуальный подход</i> к каждому клиенту с использованием <strong>передовых технологий</strong></p>
+        </header>
         
+        <div class="services-grid">
+            {% for service in services %}
+                <article class="service-card" itemscope itemtype="http://schema.org/Service">
+                    <div class="service-icon">
+                        <i class="fas fa-spa" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="service-title" itemprop="name">{{ service.name }}</h3>
+                    <p class="service-description" itemprop="description">{{ service.description|truncatewords:20 }}</p>
+                    <div class="service-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        <span itemprop="price">{{ service.price|floatformat:0 }}</span> <abbr title="Белорусский рубль">BYN</abbr>
+                    </div>
+                    <a href="{% url 'service-detail' service.id %}" class="service-btn" aria-label="Подробнее о {{ service.name }}">
+                        Подробнее
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </article>
+            {% empty %}
+                <div class="no-services">
+                    <p>Услуги временно недоступны. Пожалуйста, обратитесь к администратору.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="services-cta">
+            <a href="{% url 'services' %}" class="btn btn-outline-primary" aria-label="Посмотреть все услуги">
+                <i class="fas fa-list" aria-hidden="true"></i>
+                Все услуги
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- News section -->
+<section class="news-section" aria-labelledby="news-heading">
+    <div class="container">
+        <header class="section-header">
+            <h2 id="news-heading" class="section-title">Последние новости</h2>
+            <p class="section-subtitle">Актуальные новости и статьи о косметологии и красоте</p>
+        </header>
+        
+        <div class="news-grid">
+            {% for news in latest_news %}
+                <article class="news-card" itemscope itemtype="http://schema.org/NewsArticle">
+                    {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-image" itemprop="image">
+                    {% endif %}
+                    <div class="news-content">
+                        <div class="news-meta">
+                            <div class="news-date">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                <time datetime="{{ news.created_at|date:'Y-m-d' }}" itemprop="datePublished">
+                                    {{ news.created_at|date:"d.m.Y" }}
+                                </time>
+                            </div>
+                            <div class="news-category">Новости</div>
+                        </div>
+                        <h3 class="news-title" itemprop="headline">{{ news.title }}</h3>
+                        <p class="news-excerpt" itemprop="description">{{ news.content|truncatewords:25 }}</p>
+                        <a href="{% url 'news_detail' news.id %}" class="news-link" aria-label="Читать {{ news.title }}">
+                            Читать далее
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="no-news">
+                    <p>Новости временно недоступны.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="news-cta">
+            <a href="{% url 'news_list' %}" class="btn btn-outline-primary" aria-label="Посмотреть все новости">
+                <i class="fas fa-newspaper" aria-hidden="true"></i>
+                Все новости
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews section -->
+<section class="reviews-section" aria-labelledby="reviews-heading">
+    <div class="container">
+        <header class="section-header">
+            <h2 id="reviews-heading" class="section-title">Отзывы наших клиентов</h2>
+            <p class="section-subtitle">Что говорят о нас наши довольные клиенты</p>
+        </header>
+        
+        <div class="reviews-grid">
+            {% for review in latest_reviews %}
+                <article class="review-card" itemscope itemtype="http://schema.org/Review">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                {% if review.user.profile.avatar %}
+                                    <img src="{{ review.user.profile.avatar.url }}" alt="Аватар {{ review.user.get_full_name|default:review.user.username }}" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        <i class="fas fa-user" aria-hidden="true"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="reviewer-details">
+                                <h3 class="reviewer-name" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                    <span itemprop="name">
+                                        {% if review.user.first_name and review.user.last_name %}
+                                            {{ review.user.first_name }} {{ review.user.last_name }}
+                                        {% else %}
+                                            {{ review.user.username }}
+                                        {% endif %}
+                                    </span>
+                                </h3>
+                                <div class="review-rating" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                    <div class="stars">
+                                        {% for i in "12345" %}
+                                            <i class="fas fa-star {% if forloop.counter <= review.rating %}active{% endif %}" aria-hidden="true"></i>
+                                        {% endfor %}
+                                    </div>
+                                    <meta itemprop="ratingValue" content="{{ review.rating }}">
+                                    <meta itemprop="bestRating" content="5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <p class="review-text" itemprop="reviewBody">{{ review.text|truncatewords:30 }}</p>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="no-reviews">
+                    <p>Отзывы временно недоступны.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="reviews-cta">
+            <a href="{% url 'all_reviews' %}" class="btn btn-outline-primary" aria-label="Посмотреть все отзывы">
+                <i class="fas fa-comments" aria-hidden="true"></i>
+                Все отзывы
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Appointment booking section -->
+<section class="booking-calendar" aria-labelledby="booking-heading">
+    <div class="container">
+        <h2 id="booking-heading" class="section-title">Записаться на приём</h2>
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title mb-4">Доступные даты для записи</h3>
-                <div class="row">
+                <h3 class="card-title">Доступные даты для записи</h3>
+                <p class="booking-description">Выберите удобную дату для записи на консультацию или процедуру.</p>
+                <div class="available-dates">
                     {% for date in available_dates %}
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="date-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
-                            <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">
-                                {{ date|date:"d" }}
-                            </div>
-                            <div style="color: #666;">
-                                {{ date|date:"F" }}
-                            </div>
-                            <div style="color: #999; font-size: 0.9rem;">
-                                {{ date|date:"l" }}
-                            </div>
-                            <a href="{% url 'services' %}" class="btn btn-sm btn-outline-primary mt-2">Записаться</a>
+                    <div class="date-card">
+                        <div class="date-info">
+                            <div class="date-day">{{ date|date:"d" }}</div>
+                            <div class="date-month">{{ date|date:"F" }}</div>
+                            <div class="date-weekday">{{ date|date:"l" }}</div>
                         </div>
+                        <a href="{% url 'services' %}" class="btn btn-sm btn-outline-primary" aria-label="Записаться на {{ date|date:'d F Y' }}">
+                            Записаться
+                        </a>
+                    </div>
+                    {% empty %}
+                    <div class="no-dates">
+                        <p>Нет доступных дат для записи. Пожалуйста, обратитесь к администратору.</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -160,4 +267,362 @@
         </div>
     </div>
 </section>
+
+<!-- Анимация лица для демонстрации -->
+<section class="face-demo-section" aria-labelledby="face-demo-heading">
+    <div class="container">
+        <h2 id="face-demo-heading" class="section-title">Наша работа в действии</h2>
+        <p class="section-subtitle">Посмотрите, как мы создаем красоту - анимированная демонстрация косметологических процедур</p>
+        
+        <div class="animation-controls">
+            <button class="btn btn-primary" onclick="restartAnimation()" id="restartBtn">
+                <i class="fas fa-redo" aria-hidden="true"></i>
+                Запустить анимацию заново
+            </button>
+            <button class="btn btn-secondary" onclick="showLoader()" id="showLoaderBtn" style="margin-left: 1rem;">
+                <i class="fas fa-spinner" aria-hidden="true"></i>
+                Показать лоадер
+            </button>
+            <button class="btn btn-outline" onclick="hideLoader()" id="hideLoaderBtn" style="margin-left: 1rem;">
+                <i class="fas fa-times" aria-hidden="true"></i>
+                Скрыть лоадер
+            </button>
+        </div>
+        
+        <div class="face-animation-container" id="demoAnimation">
+            <div class="face-outline">
+                <!-- Кисточка -->
+                <div class="brush">
+                    <div class="brush-handle"></div>
+                    <div class="brush-head"></div>
+                    <div class="brush-bristles"></div>
+                </div>
+                
+                <!-- Черты лица -->
+                <div class="eyes">
+                    <div class="eye eye-left">
+                        <div class="eye-pupil"></div>
+                    </div>
+                    <div class="eye eye-right">
+                        <div class="eye-pupil"></div>
+                    </div>
+                </div>
+                
+                <div class="eyebrows">
+                    <div class="eyebrow eyebrow-left"></div>
+                    <div class="eyebrow eyebrow-right"></div>
+                </div>
+                
+                <div class="nose">
+                    <div class="nose-bridge"></div>
+                    <div class="nose-tip"></div>
+                </div>
+                
+                <div class="lips">
+                    <div class="lip-upper"></div>
+                    <div class="lip-lower"></div>
+                </div>
+                
+                <div class="cheeks">
+                    <div class="cheek cheek-left"></div>
+                    <div class="cheek cheek-right"></div>
+                </div>
+            </div>
+            
+            <div class="company-title">
+                Результат<br>
+                <span class="company-subtitle">профессиональной работы</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Partners section -->
+{% if partners %}
+<section class="partners-section" aria-labelledby="partners-heading">
+    <div class="container">
+        <h2 id="partners-heading" class="section-title">Наши партнеры</h2>
+        <p class="partners-description">Мы сотрудничаем с ведущими производителями косметических средств и оборудования.</p>
+        <div class="partners-grid">
+            <!-- Partner 1: L'Oréal Paris -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.loreal-paris.ru/" target="_blank" rel="noopener noreferrer" aria-label="Сайт L'Oréal Paris">
+                        <img src="/media/partners/L'Oréal_Paris.jpg" alt="Логотип L'Oréal Paris" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>L'Oréal Paris</strong></h3>
+                <p class="partner-description" itemprop="description">Ведущий мировой бренд <em>косметики</em> и <b>ухода за кожей</b></p>
+                <a href="https://www.loreal-paris.ru/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт L'Oréal Paris">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+            
+            <!-- Partner 2: Estée Lauder -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.esteelauder.com/" target="_blank" rel="noopener noreferrer" aria-label="Сайт Estée Lauder">
+                        <img src="/media/partners/Estée_Lauder.jpg" alt="Логотип Estée Lauder" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>Estée Lauder</strong></h3>
+                <p class="partner-description" itemprop="description">Премиальная <i>косметика</i> для <strong>профессионального</strong> ухода</p>
+                <a href="https://www.esteelauder.com/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт Estée Lauder">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+            
+            <!-- Partner 3: Clinique -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.clinique.com/" target="_blank" rel="noopener noreferrer" aria-label="Сайт Clinique">
+                        <img src="/media/partners/Clinique.jpg" alt="Логотип Clinique" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>Clinique</strong></h3>
+                <p class="partner-description" itemprop="description">Дерматологически <em>протестированная</em> <b>косметика</b></p>
+                <a href="https://www.clinique.com/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт Clinique">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+            
+            <!-- Partner 4: La Roche-Posay -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.laroche-posay.ru/" target="_blank" rel="noopener noreferrer" aria-label="Сайт La Roche-Posay">
+                        <img src="/media/partners/La_Roche-Posay.jpg" alt="Логотип La Roche-Posay" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>La Roche-Posay</strong></h3>
+                <p class="partner-description" itemprop="description">Французская <i>аптечная</i> косметика для <strong>чувствительной</strong> кожи</p>
+                <a href="https://www.laroche-posay.ru/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт La Roche-Posay">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+            
+            <!-- Partner 5: Vichy -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.vichy.ru/" target="_blank" rel="noopener noreferrer" aria-label="Сайт Vichy">
+                        <img src="/media/partners/Vichy.jpg" alt="Логотип Vichy" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>Vichy</strong></h3>
+                <p class="partner-description" itemprop="description">Термальная <em>вода</em> и <b>уходовая</b> косметика</p>
+                <a href="https://www.vichy.ru/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт Vichy">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+            
+            <!-- Partner 6: Avene -->
+            <article class="partner-card" itemscope itemtype="http://schema.org/Organization">
+                <div class="partner-logo">
+                    <a href="https://www.avene.ru/" target="_blank" rel="noopener noreferrer" aria-label="Сайт Avene">
+                        <img src="/media/partners/Avene.jpg" alt="Логотип Avene" itemprop="logo">
+                    </a>
+                </div>
+                <h3 class="partner-name" itemprop="name"><strong>Avene</strong></h3>
+                <p class="partner-description" itemprop="description">Мягкий <i>уход</i> для <strong>чувствительной</strong> и атопичной кожи</p>
+                <a href="https://www.avene.ru/" class="partner-link" target="_blank" rel="noopener noreferrer" aria-label="Сайт Avene">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Сайт партнера
+                </a>
+            </article>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!-- Banners section (after partners) -->
+<section class="banners-section" aria-label="Баннеры">
+    <div class="container">
+        <div class="banners-grid">
+            <img src="/media/banners/test_banner.jpg" alt="Баннер 1" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+            <img src="/media/banners/test_banner2.jpg" alt="Баннер 2" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+            <img src="/media/banners/test_banner3.jpg" alt="Баннер 3" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+    
+        </div>
+    </div>
+</section>
+<!-- Extra photos at the end of main page -->
+<section class="extra-photos" aria-label="Фото">
+    <div class="container">
+        <img src="/media/foto/test_banner.jpg" alt="Фото 1" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+        <img src="/media/foto/test_banner2.jpg" alt="Фото 2" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+        <img src="/media/foto/test_banner3.jpg" alt="Фото 3" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+    </div>
+</section>
+<!-- Inspirational quote -->
+<section class="inspiration-quote" aria-label="Цитата дня">
+    <div class="container" style="margin: 30px auto;">
+        <blockquote style="font-size: 1.2rem; line-height: 1.6; font-style: italic; color: var(--gray-700); text-align: center; margin: 0 auto; max-width: 900px;">
+            «Нет некрасивых женщин — есть женщины, которые не знают, что они красивы»
+        </blockquote>
+        <div style="text-align: center; margin-top: 0.5rem; color: var(--gray-600);">
+            — Эсте Лаудер
+        </div>
+        <q style="font-size: 1.2rem; line-height: 1.6; font-style: italic; color: var(--gray-700); text-align: center; margin: 0 auto; max-width: 900px;">
+             q тоже есть
+        </q>
+    </div>
+</section>
+<section>
+    <code>
+        test code)
+    </code>
+    <br>
+    <var>
+        index
+    </var>
+    <br>
+    <samp>
+        вывод работы программы
+    </samp>
+    <br>
+    <kbd>
+        то что пишет пользователь
+    </kbd>
+    <br>
+    <p>Цитата на французском языке: <q lang="fr">Ce que femme veut, Dieu le veut</q>.</p>  
+<p>Цитата на немецком: <q lang="de">Der Mensch, versuche die Gotter nicht</q>.</p>  
+<p>Цитата на английском: <q lang="en">То be or not to be</q>.</p>
+
+
+
+
+<style>
+    p {    font-size: 1.5em; /* Размер текста */    }   
+ q:lang(de) {    quotes: "\201E" "\201C";     }   
+ q:lang(en) {    quotes: "\201C" "\201D";    }   
+ q:lang(fr), q:lang(ru) { quotes: "\00AB" "\00BB";    }
+     
+ </style>
+ 
+</section>
+
+
 {% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/pure-css-animation.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/loader-control.js' %}"></script>
+<script>
+// Функция для перезапуска анимации
+function restartAnimation() {
+    const container = document.getElementById('demoAnimation');
+    const button = document.getElementById('restartBtn');
+    
+    if (!container) return;
+    
+    // Отключаем кнопку на время анимации
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Анимация запущена...';
+    
+    // Полностью сбрасываем анимацию - убираем все классы и стили
+    container.classList.remove('playing');
+    container.style.animation = 'none';
+    container.offsetHeight; // Принудительно перерисовываем
+    
+    // Сбрасываем все анимированные элементы внутри
+    const animatedElements = container.querySelectorAll('.brush, .eye, .eyebrow, .nose, .lips, .cheek');
+    animatedElements.forEach(el => {
+        el.style.animation = 'none';
+        el.style.transform = '';
+        el.style.opacity = '';
+    });
+    
+    // Небольшая задержка для полного сброса
+    setTimeout(() => {
+        // Восстанавливаем CSS анимации
+        container.style.animation = '';
+        animatedElements.forEach(el => {
+            el.style.animation = '';
+        });
+        
+        // Запускаем анимацию заново
+        container.classList.add('playing');
+        
+        // Включаем кнопку обратно через 8 секунд (время полной анимации)
+        setTimeout(() => {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-redo" aria-hidden="true"></i> Запустить анимацию заново';
+        }, 8000);
+    }, 200);
+}
+
+// Функция для показа лоадера под анимацией
+function showLoader() {
+    const animationSection = document.querySelector('.face-demo-section');
+    const container = document.querySelector('.container');
+    
+    // Создаем лоадер если его нет
+    let loader = document.getElementById('pageLoader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'pageLoader';
+        loader.className = 'page-loader';
+        loader.innerHTML = `
+            <div class="loader-content">
+                <div class="loader-bars">
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                </div>
+                <div class="loader-stack">
+                    <div class="loader-stack-bar"></div>
+                    <div class="loader-stack-bar"></div>
+                    <div class="loader-stack-bar"></div>
+                    <div class="loader-stack-bar"></div>
+                    <div class="loader-stack-bar"></div>
+                </div>
+                <h3 class="loader-text">Загружаем лучшие услуги...</h3>
+            </div>
+        `;
+        
+        // Добавляем лоадер после анимации
+        animationSection.appendChild(loader);
+    }
+    
+    // Показываем лоадер
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+}
+
+// Функция для скрытия лоадера
+function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Автоматический запуск анимации при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('demoAnimation');
+    if (container) {
+        // Запускаем анимацию через небольшую задержку
+        setTimeout(() => {
+            container.classList.add('playing');
+        }, 500);
+    }
+});
+</script>
+{% endblock %}
+
+
+
+
+

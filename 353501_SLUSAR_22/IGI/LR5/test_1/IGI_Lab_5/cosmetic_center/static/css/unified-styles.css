@@ -1,0 +1,420 @@
+/* ========================================
+   ЕДИНЫЙ ФАЙЛ СТИЛЕЙ - КОСМЕТОЛОГИЧЕСКИЙ ЦЕНТР «ЭСТЕТИКА»
+   Оптимизированный, без дубликатов, с пояснениями
+   ======================================== */
+
+/* ========================================
+   1. ПОДКЛЮЧЕНИЕ ШРИФТОВ
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+/* ========================================
+   2. CSS ПЕРЕМЕННЫЕ (Цвета, шрифты, тени)
+   ======================================== */
+:root {
+    /* Основные цвета бренда */
+    --primary: #ff69b4;              /* Розовый - основной цвет */
+    --primary-dark: #ff1493;         /* Темно-розовый */
+    --secondary: #6c2269;            /* Фиолетовый */
+    --secondary-dark: #ba55d3;       /* Темно-фиолетовый */
+    --accent: #ffb6c1;               /* Светло-розовый акцент */
+    --accent-light: #ffc0cb;         /* Очень светлый розовый */
+    --gold: #ffd700;                 /* Золотой */
+    --coral: #ff6b6b;                /* Коралловый */
+    --teal: #dda0dd;                 /* Сливовый */
+    --lavender: #d8bfd8;             /* Лавандовый */
+    
+    /* Цвета текста */
+    --text-primary: #1e3144;         /* Основной текст */
+    --text-secondary: #34495e;       /* Вторичный текст */
+    --text-light: #7f8c8d;           /* Светлый текст */
+    --text-white: #ffffff;           /* Белый текст */
+    
+    /* Цвета фона */
+    --bg-primary: #ffffff;           /* Белый фон */
+    --bg-secondary: #f8f9fa;         /* Светло-серый фон */
+    --bg-light: #f1f3f4;             /* Очень светлый фон */
+    --bg-gradient: linear-gradient(135deg, #b43baf 0%, #da70d6 50%, #dda0dd 100%);
+    --bg-cosmetic: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 50%, #d8bfd8 100%);
+    
+    /* Тени */
+    --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 20px rgba(0,0,0,0.12);
+    --shadow-heavy: 0 8px 30px rgba(0,0,0,0.16);
+    --shadow-cosmetic: 0 10px 40px rgba(255, 105, 180, 0.15);
+    
+    /* Радиусы скругления */
+    --border-radius: 15px;
+    --border-radius-large: 25px;
+    --border-radius-small: 8px;
+    
+    /* Шрифты */
+    --font-primary: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-secondary: 'Playfair Display', 'Times New Roman', serif;
+    --font-alternative: 'Source Sans Pro', 'Arial', sans-serif;
+}
+
+/* ========================================
+   3. БАЗОВЫЕ СТИЛИ И СБРОС
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;          /* Включаем padding и border в размеры элемента */
+}
+
+html {
+    scroll-behavior: smooth;         /* Плавная прокрутка по якорям */
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.7;                /* Комфортная высота строки */
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    overflow-x: hidden;              /* Убираем горизонтальную прокрутку */
+}
+
+/* ========================================
+   4. ТИПОГРАФИКА
+   ======================================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-transform: uppercase;       /* Заглавные буквы */
+    letter-spacing: 0.02em;          /* Межбуквенный интервал */
+}
+
+h2 { font-size: 2.5rem; font-weight: 600; }
+h3 { font-size: 2rem; font-weight: 500; }
+h4 { font-size: 1.5rem; font-weight: 500; }
+h5 { font-size: 1.25rem; font-weight: 500; }
+h6 { font-size: 1.1rem; font-weight: 500; }
+
+p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+/* Первая буква абзаца (буквица) */
+.article p:first-of-type::first-letter {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    float: left;
+    line-height: 1;
+    margin: 0.1em 0.1em 0 0;
+}
+
+/* Первая строка абзаца */
+.article p:first-of-type::first-line {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+/* ========================================
+   5. ССЫЛКИ (Псевдоклассы для ссылок)
+   ======================================== */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:link { color: var(--primary); }           /* Не посещенная ссылка */
+a:visited { color: var(--secondary); }      /* Посещенная ссылка */
+a:hover { 
+    color: var(--primary-dark); 
+    text-decoration: underline;
+}
+a:active { color: var(--coral); }          /* Активная (при клике) */
+a:focus { 
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   6. КОНТЕЙНЕРЫ И LAYOUT
+   ======================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ========================================
+   7. КНОПКИ
+   ======================================== */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    box-shadow: var(--shadow-light);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========================================
+   8. ФОРМЫ (Псевдоклассы для форм)
+   ======================================== */
+input, textarea, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    border: 2px solid var(--bg-light);
+    border-radius: var(--border-radius-small);
+    transition: all 0.3s ease;
+}
+
+/* Обязательные поля */
+input:required, textarea:required {
+    border-left: 3px solid var(--primary);
+}
+
+/* Необязательные поля */
+input:optional, textarea:optional {
+    border-left: 3px solid var(--lavender);
+}
+
+/* Заблокированные поля */
+input:disabled, textarea:disabled, select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-light);
+}
+
+/* Невалидные поля */
+input:invalid, textarea:invalid {
+    border-color: var(--coral);
+}
+
+/* Валидные поля */
+input:valid, textarea:valid {
+    border-color: #32cd32;
+}
+
+/* Чекбоксы и радио */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    accent-color: var(--primary);
+}
+
+/* Фокус на полях */
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+/* ========================================
+   9. СПИСКИ
+   ======================================== */
+ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+/* Кастомные маркеры списка */
+.custom-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.custom-list li::before {
+    content: "🌸 ";
+    margin-right: 0.5rem;
+}
+
+/* Первый и последний элементы списка */
+.styled-list li:first-child {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.styled-list li:last-child {
+    border-bottom: none;
+}
+
+/* N-й элемент */
+.styled-list li:nth-child(odd) {
+    background: var(--bg-secondary);
+}
+
+.styled-list li:nth-child(even) {
+    background: var(--bg-primary);
+}
+
+/* ========================================
+   10. ТАБЛИЦЫ
+   ======================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;       /* Объединяем границы */
+    border-spacing: 0;
+    margin-bottom: 2rem;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-light);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+caption {
+    caption-side: top;               /* Заголовок сверху */
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+th, td {
+    padding: 1rem;
+    text-align: center;              /* Горизонтальное выравнивание */
+    vertical-align: middle;          /* Вертикальное выравнивание */
+    border-bottom: 1px solid var(--bg-light);
+}
+
+th {
+    background: var(--bg-gradient);
+    color: var(--text-white);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Чередующиеся строки */
+tr:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+tr:hover {
+    background: var(--accent-light);
+}
+
+/* Пустые ячейки */
+td:empty::before {
+    content: "—";
+    color: var(--text-light);
+}
+
+/* ========================================
+   11. ЦИТАТЫ И ПСЕВДОЭЛЕМЕНТЫ
+   ======================================== */
+blockquote {
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--border-radius-small);
+    font-style: italic;
+    position: relative;
+}
+
+/* Кавычки в зависимости от языка */
+blockquote:lang(ru)::before {
+    content: "«";
+    font-size: 3rem;
+    color: var(--primary);
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+}
+
+blockquote:lang(ru)::after {
+    content: "»";
+    font-size: 3rem;
+    color: var(--primary);
+    position: absolute;
+    bottom: -1rem;
+    right: 0.5rem;
+}
+
+blockquote:lang(en)::before {
+    content: "\201C";  /* Левая двойная кавычка */
+    font-size: 3rem;
+    color: var(--primary);
+}
+
+blockquote:lang(en)::after {
+    content: "\201D";  /* Правая двойная кавычка */
+    font-size: 3rem;
+    color: var(--primary);
+}
+
+/* ========================================
+   12. ВЫДЕЛЕНИЕ ТЕКСТА
+   ======================================== */
+::selection {
+    background: var(--primary);
+    color: var(--text-white);
+}
+
+::-moz-selection {
+    background: var(--primary);
+    color: var(--text-white);
+}
+
+/* ========================================
+   13. КУРСОРЫ
+   ======================================== */
+.btn, button, a { cursor: pointer; }
+.btn:disabled, button:disabled { cursor: not-allowed; }
+input[type="text"], textarea { cursor: text; }
+.draggable { cursor: move; }
+.help-text { cursor: help; }
+
+/* ========================================
+   14. МЕДИА-ЗАПРОСЫ (Адаптивность)
+   ======================================== */
+
+/* Планшеты */
+@media (max-width: 768px) {
+    .container { padding: 0 1rem; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.75rem; }
+}
+
+/* Мобильные устройства */
+@media (max-width: 480px) {
+    .container { padding: 0 0.75rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+}
+
+/* Высота экрана */
+@media (max-height: 600px) {
+    h1 { font-size: 2rem; }
+    .hero-section { min-height: 400px; }
+}

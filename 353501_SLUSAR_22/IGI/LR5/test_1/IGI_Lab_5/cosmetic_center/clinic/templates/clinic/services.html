@@ -57,7 +57,7 @@
                 {% endif %}
                 <div class="card-body">
                     <h3 class="card-title">{{ service.name }}</h3>
-                    <p class="card-text">{{ service.short_description }}</p>
+                    <p class="card-text">{{ service.description|truncatechars:100 }}</p>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
                         <div>
                             <span style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">{{ service.price }} руб.</span>
@@ -75,7 +75,7 @@
             {% endfor %}
         </div>
 
-        <!-- Пагинация -->
+        <!-- Pagination -->
         {% if is_paginated %}
         <div style="display: flex; justify-content: center; margin-top: 2rem;">
             <div class="pagination">

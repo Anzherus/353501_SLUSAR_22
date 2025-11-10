@@ -1,0 +1,1067 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Вакансии - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Открытые вакансии в косметологическом центре «Эстетика». Присоединяйтесь к нашей команде профессионалов. Косметологи, администраторы, медсестры.{% endblock %}
+
+{% block content %}
+
+
+<!-- Vacancies section -->
+<section class="vacancies-section" aria-labelledby="vacancies-heading">
+    <div class="container">
+        <header class="vacancies-header">
+            <h1 id="vacancies-heading">
+                <i class="fas fa-briefcase" aria-hidden="true"></i>
+                Вакансии
+            </h1>
+            <p class="vacancies-subtitle">Присоединяйтесь к нашей команде профессионалов</p>
+        </header>
+        
+        <!-- Search and filter section -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <div class="search-input-group">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" id="vacancySearch" placeholder="Поиск по названию или описанию вакансии..." aria-label="Поиск вакансий">
+                    <button type="button" class="clear-search" onclick="clearSearch()" aria-label="Очистить поиск">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="departmentFilter">Отдел:</label>
+                    <select id="departmentFilter" aria-label="Фильтр по отделу">
+                        <option value="">Все отделы</option>
+                        <option value="cosmetology">Косметология</option>
+                        <option value="administration">Администрация</option>
+                        <option value="medical">Медицинский</option>
+                        <option value="marketing">Маркетинг</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="experienceFilter">Опыт работы:</label>
+                    <select id="experienceFilter" aria-label="Фильтр по опыту работы">
+                        <option value="">Любой опыт</option>
+                        <option value="no-experience">Без опыта</option>
+                        <option value="1-3-years">1-3 года</option>
+                        <option value="3-5-years">3-5 лет</option>
+                        <option value="5-plus-years">5+ лет</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="employmentTypeFilter">Тип занятости:</label>
+                    <select id="employmentTypeFilter" aria-label="Фильтр по типу занятости">
+                        <option value="">Любой тип</option>
+                        <option value="full-time">Полная занятость</option>
+                        <option value="part-time">Частичная занятость</option>
+                        <option value="contract">Договор</option>
+                        <option value="internship">Стажировка</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vacancies list -->
+        <div class="vacancies-list" id="vacanciesList">
+            {% if vacancies %}
+        {% for vacancy in vacancies %}
+                    <article class="vacancy-card" 
+                             data-department="{{ vacancy.department|lower }}" 
+                             data-experience="{{ vacancy.experience_level|lower }}"
+                             data-employment="{{ vacancy.employment_type|lower }}"
+                             itemscope itemtype="http://schema.org/JobPosting">
+                        <header class="vacancy-header">
+                            <div class="vacancy-title-section">
+                                <h2 itemprop="title">{{ vacancy.title }}</h2>
+                                <div class="vacancy-meta">
+                                    <span class="department-badge" itemprop="jobBenefits">{{ vacancy.department }}</span>
+                                    <span class="employment-type" itemprop="employmentType">{{ vacancy.get_employment_type_display }}</span>
+                                    <span class="experience-level" itemprop="experienceRequirements">{{ vacancy.get_experience_level_display }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="vacancy-salary">
+                                {% if vacancy.salary_min and vacancy.salary_max %}
+                                    <div class="salary-range" itemprop="baseSalary" itemscope itemtype="http://schema.org/MonetaryAmount">
+                                        <span itemprop="currency" content="BYN">{{ vacancy.salary_min|floatformat:0 }} - {{ vacancy.salary_max|floatformat:0 }} BYN</span>
+                                    </div>
+                                {% elif vacancy.salary_min %}
+                                    <div class="salary-range" itemprop="baseSalary" itemscope itemtype="http://schema.org/MonetaryAmount">
+                                        <span itemprop="currency" content="BYN">от {{ vacancy.salary_min|floatformat:0 }} BYN</span>
+                                    </div>
+                                {% elif vacancy.salary_max %}
+                                    <div class="salary-range" itemprop="baseSalary" itemscope itemtype="http://schema.org/MonetaryAmount">
+                                        <span itemprop="currency" content="BYN">до {{ vacancy.salary_max|floatformat:0 }} BYN</span>
+                                    </div>
+                                {% else %}
+                                    <div class="salary-range">По договоренности</div>
+                            {% endif %}
+                            </div>
+                        </header>
+                        
+                        <div class="vacancy-content">
+                            <div class="vacancy-description" itemprop="description">
+                                <p>{{ vacancy.description|truncatewords:30 }}</p>
+                            </div>
+                            
+                            <div class="vacancy-requirements">
+                                <h3>Требования:</h3>
+                                <ul>
+                                    {% for requirement in vacancy.requirements_list|slice:":5" %}
+                                        <li>{{ requirement }}</li>
+                                    {% endfor %}
+                                    {% if vacancy.requirements_list|length > 5 %}
+                                        <li class="more-requirements">И еще {{ vacancy.requirements_list|length|add:"-5" }} требований...</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            
+                            <div class="vacancy-benefits">
+                                <h3>Мы предлагаем:</h3>
+                                <ul>
+                                    {% for benefit in vacancy.benefits_list|slice:":3" %}
+                                        <li>{{ benefit }}</li>
+                                    {% endfor %}
+                                    {% if vacancy.benefits_list|length > 3 %}
+                                        <li class="more-benefits">И еще {{ vacancy.benefits_list|length|add:"-3" }} преимуществ...</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <footer class="vacancy-footer">
+                            <div class="vacancy-info">
+                                <div class="vacancy-location" itemprop="jobLocation" itemscope itemtype="http://schema.org/Place">
+                                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                    <span itemprop="address">г. Минск, ул. Примерная, д. 123</span>
+                                </div>
+                                
+                                <div class="vacancy-date">
+                                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                    <time datetime="{{ vacancy.created_at|date:'Y-m-d' }}" itemprop="datePosted">
+                                        Опубликовано: {{ vacancy.created_at|date:"d.m.Y" }}
+                                    </time>
+                                </div>
+                                
+                                {% if vacancy.deadline %}
+                                    <div class="vacancy-deadline">
+                                        <i class="fas fa-clock" aria-hidden="true"></i>
+                                        <time datetime="{{ vacancy.deadline|date:'Y-m-d' }}">
+                                            До: {{ vacancy.deadline|date:"d.m.Y" }}
+                                        </time>
+                        </div>
+                                {% endif %}
+                    </div>
+                            
+                            <div class="vacancy-actions">
+                                <button class="btn btn-primary" onclick="showVacancyDetails('{{ vacancy.id }}')" aria-label="Подробнее о вакансии {{ vacancy.title|escape }}">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                    Подробнее
+                                </button>
+                                
+                                <button class="btn btn-outline-primary" onclick="applyForVacancy('{{ vacancy.id }}')" aria-label="Подать заявку на вакансию {{ vacancy.title|escape }}">
+                                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                    Подать заявку
+                                </button>
+                                
+                                <button class="btn btn-outline-secondary" onclick="shareVacancy('{{ vacancy.id }}')" aria-label="Поделиться вакансией {{ vacancy.title|escape }}">
+                                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                                    Поделиться
+                                </button>
+                            </div>
+                        </footer>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <div class="no-vacancies">
+                    <div class="no-vacancies-content">
+                        <i class="fas fa-briefcase" aria-hidden="true"></i>
+                        <h2>Нет открытых вакансий</h2>
+                        <p>В данный момент у нас нет открытых вакансий, но мы всегда рады талантливым специалистам!</p>
+                        <p>Отправьте нам свое резюме, и мы свяжемся с вами при появлении подходящих вакансий.</p>
+                        
+                        <div class="no-vacancies-actions">
+                            <button class="btn btn-primary" onclick="sendResume()" aria-label="Отправить резюме">
+                                <i class="fas fa-file-upload" aria-hidden="true"></i>
+                                Отправить резюме
+                            </button>
+                            
+                            <a href="{% url 'contacts' %}" class="btn btn-outline-primary" aria-label="Связаться с нами">
+                                <i class="fas fa-phone" aria-hidden="true"></i>
+                                Связаться с нами
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Vacancy details modal -->
+        <div class="modal fade" id="vacancyModal" tabindex="-1" aria-labelledby="vacancyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="vacancyModalLabel">Детали вакансии</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body" id="vacancyModalBody">
+                        <!-- Vacancy details will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" id="applyFromModal">Подать заявку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Application form modal -->
+        <div class="modal fade" id="applicationModal" tabindex="-1" aria-labelledby="applicationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="applicationModalLabel">Подача заявки</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="applicationForm" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="applicantName">ФИО *</label>
+                                        <input type="text" class="form-control" id="applicantName" name="name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="applicantPhone">Телефон *</label>
+                                        <input type="tel" class="form-control" id="applicantPhone" name="phone" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="applicantEmail">Email *</label>
+                                        <input type="email" class="form-control" id="applicantEmail" name="email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="applicantExperience">Опыт работы</label>
+                                        <select class="form-control" id="applicantExperience" name="experience">
+                                            <option value="">Выберите опыт</option>
+                                            <option value="no-experience">Без опыта</option>
+                                            <option value="1-3-years">1-3 года</option>
+                                            <option value="3-5-years">3-5 лет</option>
+                                            <option value="5-plus-years">5+ лет</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="applicantResume">Резюме (PDF, DOC, DOCX)</label>
+                                <input type="file" class="form-control" id="applicantResume" name="resume" accept=".pdf,.doc,.docx">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="applicantCoverLetter">Сопроводительное письмо</label>
+                                <textarea class="form-control" id="applicantCoverLetter" name="cover_letter" rows="4" placeholder="Расскажите о себе, своих навыках и мотивации..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="privacyAgreement" name="privacy_agreement" required>
+                                    <label class="form-check-label" for="privacyAgreement">
+                                        Я согласен с <a href="{% url 'privacy_policy' %}" target="_blank">политикой конфиденциальности</a> *
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" onclick="submitApplication()">Отправить заявку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Vacancy search and filtering
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('vacancySearch');
+    const departmentFilter = document.getElementById('departmentFilter');
+    const experienceFilter = document.getElementById('experienceFilter');
+    const employmentFilter = document.getElementById('employmentTypeFilter');
+    const vacancyCards = document.querySelectorAll('.vacancy-card');
+    
+    function filterVacancies() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const departmentValue = departmentFilter.value;
+        const experienceValue = experienceFilter.value;
+        const employmentValue = employmentFilter.value;
+        
+        vacancyCards.forEach(card => {
+            const title = card.querySelector('h2').textContent.toLowerCase();
+            const description = card.querySelector('.vacancy-description p').textContent.toLowerCase();
+            const department = card.dataset.department;
+            const experience = card.dataset.experience;
+            const employment = card.dataset.employment;
+            
+            const matchesSearch = searchTerm === '' || 
+                title.includes(searchTerm) || 
+                description.includes(searchTerm);
+            
+            const matchesDepartment = departmentValue === '' || department === departmentValue;
+            const matchesExperience = experienceValue === '' || experience === experienceValue;
+            const matchesEmployment = employmentValue === '' || employment === employmentValue;
+            
+            if (matchesSearch && matchesDepartment && matchesExperience && matchesEmployment) {
+                card.style.display = 'block';
+                card.classList.add('fade-in');
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('fade-in');
+            }
+        });
+        
+        // Show no results message if needed
+        const visibleCards = Array.from(vacancyCards).filter(card => card.style.display !== 'none');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        
+        if (visibleCards.length === 0 && vacancyCards.length > 0) {
+            if (!noResultsMessage) {
+                const message = document.createElement('div');
+                message.id = 'noResultsMessage';
+                message.className = 'no-results';
+                message.innerHTML = `
+                    <div class="no-results-content">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <h3>Ничего не найдено</h3>
+                        <p>Попробуйте изменить параметры поиска или фильтры</p>
+                        <button class="btn btn-outline-primary" onclick="clearAllFilters()">Сбросить фильтры</button>
+                    </div>
+                `;
+                document.getElementById('vacanciesList').appendChild(message);
+            }
+        } else if (noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
+    
+    // Event listeners
+    searchInput.addEventListener('input', filterVacancies);
+    departmentFilter.addEventListener('change', filterVacancies);
+    experienceFilter.addEventListener('change', filterVacancies);
+    employmentFilter.addEventListener('change', filterVacancies);
+    
+    // Clear search function
+    window.clearSearch = function() {
+        searchInput.value = '';
+        filterVacancies();
+    };
+    
+    // Clear all filters function
+    window.clearAllFilters = function() {
+        searchInput.value = '';
+        departmentFilter.value = '';
+        experienceFilter.value = '';
+        employmentFilter.value = '';
+        filterVacancies();
+    };
+});
+
+// Show vacancy details
+function showVacancyDetails(vacancyId) {
+    // This would typically fetch data from the server
+    // For now, we'll show a placeholder
+    const modalBody = document.getElementById('vacancyModalBody');
+    modalBody.innerHTML = `
+        <div class="vacancy-details">
+            <h3>Детальная информация о вакансии</h3>
+            <p>Здесь будет отображаться полная информация о вакансии, включая:</p>
+            <ul>
+                <li>Подробное описание обязанностей</li>
+                <li>Полный список требований</li>
+                <li>Все преимущества работы</li>
+                <li>Условия работы</li>
+                <li>Процесс отбора</li>
+            </ul>
+            <p><strong>ID вакансии:</strong> ${vacancyId}</p>
+</div>
+    `;
+    
+    const modal = new bootstrap.Modal(document.getElementById('vacancyModal'));
+    modal.show();
+}
+
+// Apply for vacancy
+function applyForVacancy(vacancyId) {
+    const modal = new bootstrap.Modal(document.getElementById('applicationModal'));
+    modal.show();
+    
+    // Store vacancy ID for form submission
+    document.getElementById('applicationForm').dataset.vacancyId = vacancyId;
+}
+
+// Submit application
+function submitApplication() {
+    const form = document.getElementById('applicationForm');
+    const formData = new FormData(form);
+    const vacancyId = form.dataset.vacancyId;
+    
+    // Add vacancy ID to form data
+    formData.append('vacancy_id', vacancyId);
+    
+    // Basic validation
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('#applicationModal .btn-primary');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+    submitBtn.disabled = true;
+    
+    // Simulate form submission
+    setTimeout(() => {
+        showNotification('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.', 'success');
+        
+        // Reset form
+        form.reset();
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('applicationModal'));
+        modal.hide();
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 2000);
+}
+
+// Share vacancy
+function shareVacancy(vacancyId) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Вакансия в косметологическом центре «Эстетика»',
+            text: 'Посмотрите эту интересную вакансию!',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showNotification('Ссылка скопирована в буфер обмена!', 'success');
+        }).catch(err => {
+            console.log('Error copying to clipboard:', err);
+            showNotification('Не удалось скопировать ссылку', 'error');
+        });
+    }
+}
+
+// Send resume (for no vacancies case)
+function sendResume() {
+    const modal = new bootstrap.Modal(document.getElementById('applicationModal'));
+    modal.show();
+    
+    // Clear vacancy ID for general resume submission
+    document.getElementById('applicationForm').dataset.vacancyId = '';
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* Vacancies header */
+.vacancies-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.vacancies-header h1 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.vacancies-subtitle {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+}
+
+/* Search and filter section */
+.search-filter-section {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    margin-bottom: 1.5rem;
+}
+
+.search-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-500);
+    z-index: 2;
+}
+
+.search-input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.clear-search {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--gray-500);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: color 0.3s ease;
+}
+
+.clear-search:hover {
+    color: var(--primary);
+}
+
+.filter-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.filter-group select {
+    padding: 0.5rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Vacancies list */
+.vacancies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.vacancy-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.vacancy-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.vacancy-card.fade-in {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Vacancy header */
+.vacancy-header {
+    background: linear-gradient(135deg, var(--primary), #9b59b6);
+    color: var(--white);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.vacancy-title-section h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.vacancy-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.department-badge,
+.employment-type,
+.experience-level {
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.vacancy-salary {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.salary-range {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Vacancy content */
+.vacancy-content {
+    padding: 2rem;
+}
+
+.vacancy-description {
+    margin-bottom: 1.5rem;
+}
+
+.vacancy-description p {
+    color: var(--gray-700);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.vacancy-requirements,
+.vacancy-benefits {
+    margin-bottom: 1.5rem;
+}
+
+.vacancy-requirements h3,
+.vacancy-benefits h3 {
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vacancy-requirements h3::before {
+    content: '✓';
+    background: var(--success);
+    color: var(--white);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.vacancy-benefits h3::before {
+    content: '★';
+    background: var(--warning);
+    color: var(--white);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.vacancy-requirements ul,
+.vacancy-benefits ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.vacancy-requirements li,
+.vacancy-benefits li {
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+}
+
+.more-requirements,
+.more-benefits {
+    font-style: italic;
+    color: var(--gray-500);
+}
+
+/* Vacancy footer */
+.vacancy-footer {
+    background: var(--light);
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.vacancy-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vacancy-location,
+.vacancy-date,
+.vacancy-deadline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--gray-600);
+}
+
+.vacancy-location i,
+.vacancy-date i,
+.vacancy-deadline i {
+    color: var(--primary);
+    width: 16px;
+    text-align: center;
+}
+
+.vacancy-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.vacancy-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* No vacancies state */
+.no-vacancies {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.no-vacancies-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.no-vacancies-content i {
+    font-size: 4rem;
+    color: var(--gray-400);
+    margin-bottom: 1.5rem;
+}
+
+.no-vacancies-content h2 {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+}
+
+.no-vacancies-content p {
+    color: var(--gray-500);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.no-vacancies-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.no-vacancies-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* No results state */
+.no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.no-results-content i {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+}
+
+.no-results-content h3 {
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.no-results-content p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: var(--primary);
+    color: var(--white);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.form-control {
+    border: 2px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .vacancies-header h1 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .search-filter-section {
+        padding: 1.5rem;
+    }
+    
+    .filter-controls {
+        grid-template-columns: 1fr;
+    }
+    
+    .vacancy-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .vacancy-salary {
+        text-align: center;
+    }
+    
+    .vacancy-content {
+        padding: 1.5rem;
+    }
+    
+    .vacancy-footer {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .vacancy-actions {
+        justify-content: center;
+    }
+    
+    .vacancy-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .no-vacancies-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .no-vacancies-actions .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .vacancy-header {
+        padding: 1.5rem;
+    }
+    
+    .vacancy-content {
+        padding: 1rem;
+    }
+    
+    .vacancy-footer {
+        padding: 1rem;
+    }
+    
+    .vacancy-meta {
+        justify-content: center;
+    }
+    
+    .vacancy-actions {
+        flex-direction: column;
+    }
+}
+</style>
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

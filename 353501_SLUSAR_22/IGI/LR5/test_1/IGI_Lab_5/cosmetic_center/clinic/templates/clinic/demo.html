@@ -1,0 +1,289 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Демонстрация CSS техник - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Демонстрация всех CSS техник, используемых на сайте косметологического центра.{% endblock %}
+
+{% block content %}
+<!-- Демонстрация селекторов и псевдоклассов -->
+<section class="demo-section">
+    <div class="container">
+        <h1 class="section-title">Демонстрация CSS техник</h1>
+        
+        <!-- Селекторы атрибутов -->
+        <div class="demo-block">
+            <h2>Селекторы атрибутов</h2>
+            <div class="form-demo">
+                <input type="text" placeholder="Обычное поле">
+                <input type="email" placeholder="Email поле">
+                <input type="tel" placeholder="Телефон">
+                <input type="checkbox" id="check1">
+                <label for="check1">Чекбокс</label>
+                <input type="radio" id="radio1" name="radio">
+                <label for="radio1">Радио кнопка</label>
+            </div>
+        </div>
+        
+        <!-- Псевдоклассы для ссылок -->
+        <div class="demo-block">
+            <h2>Псевдоклассы для ссылок</h2>
+            <div class="links-demo">
+                <a href="https://example.com" class="demo-link">Внешняя ссылка</a>
+                <a href="mailto:test@example.com" class="demo-link">Email ссылка</a>
+                <a href="tel:+375291234567" class="demo-link">Телефон</a>
+                <a href="document.pdf" class="demo-link">PDF документ</a>
+                <a href="#visited" class="visited-link">Посещенная ссылка</a>
+            </div>
+        </div>
+        
+        <!-- Псевдоэлементы -->
+        <div class="demo-block">
+            <h2>Псевдоэлементы</h2>
+            <div class="article-content">
+                <p>Это первый абзац статьи с выделенной первой буквой. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Второй абзац с обычным текстом. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <blockquote lang="ru">
+                    Это цитата на русском языке с правильными кавычками.
+                </blockquote>
+                <div class="quote">
+                    Это цитата с кастомными кавычками
+                </div>
+            </div>
+        </div>
+        
+        <!-- Списки с маркерами -->
+        <div class="demo-block">
+            <h2>Списки с юникод маркерами</h2>
+            <ul class="cosmetic-list-demo">
+                <li>Первая услуга косметологии</li>
+                <li>Вторая услуга косметологии</li>
+                <li>Третья услуга косметологии</li>
+                <li>Четвертая услуга косметологии</li>
+                <li>Пятая услуга косметологии</li>
+            </ul>
+        </div>
+        
+        <!-- Стили для форм -->
+        <div class="demo-block">
+            <h2>Стили для форм</h2>
+            <div class="form-styles-demo">
+                <input type="text" placeholder="Обычное поле" class="form-control">
+                <input type="text" placeholder="Обязательное поле" class="form-control" required>
+                <input type="text" placeholder="Необязательное поле" class="form-control">
+                <input type="number" min="1" max="10" value="5" class="form-control">
+                <input type="number" min="1" max="10" value="15" class="form-control">
+                <input type="checkbox" id="indeterminate" class="form-control">
+                <label for="indeterminate">Неопределенное состояние</label>
+            </div>
+        </div>
+        
+        <!-- Каталог товаров с Grid -->
+        <div class="demo-block">
+            <h2>Каталог товаров (CSS Grid)</h2>
+            <div class="catalog-grid">
+                <div class="catalog-item">
+                    <h3>Крем для лица</h3>
+                    <p>Увлажняющий крем для ежедневного ухода</p>
+                    <span class="price">150 BYN</span>
+                </div>
+                <div class="catalog-item">
+                    <h3>Сыворотка</h3>
+                    <p>Антивозрастная сыворотка с витаминами</p>
+                    <span class="price">200 BYN</span>
+                </div>
+                <div class="catalog-item">
+                    <h3>Маска для лица</h3>
+                    <p>Очищающая маска с глиной</p>
+                    <span class="price">120 BYN</span>
+                </div>
+                <div class="catalog-item">
+                    <h3>Тоник</h3>
+                    <p>Тонизирующий лосьон для лица</p>
+                    <span class="price">80 BYN</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Круглые блоки партнеров -->
+        <div class="demo-block">
+            <h2>Партнеры (круглые блоки)</h2>
+            <div class="partners-grid">
+                <div class="circle-partner">L'Oréal</div>
+                <div class="circle-partner">Clinique</div>
+                <div class="circle-partner">Estée Lauder</div>
+                <div class="circle-partner">Vichy</div>
+            </div>
+        </div>
+        
+        <!-- Позиционирование -->
+        <div class="demo-block">
+            <h2>Позиционирование</h2>
+            <div class="positioned-demo">
+                <div class="article-positioned">
+                    <h3>Последняя статья</h3>
+                    <p>Это пример статьи с позиционированием и декоративным фоном.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Трансформация логотипа -->
+        <div class="demo-block">
+            <h2>Трансформация логотипа</h2>
+            <div class="logo-demo">
+                <div class="logo-transform">
+                    <i class="fas fa-spa"></i>
+                    <span>Эстетика</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Сертификат -->
+        <div class="demo-block">
+            <h2>Сертификат</h2>
+            <div class="certificate-demo">
+                <h3 class="certificate-title">Сертификат качества</h3>
+                <p>Косметологический центр «Эстетика» сертифицирован в соответствии с международными стандартами качества.</p>
+            </div>
+        </div>
+        
+        <!-- Новости с overflow -->
+        <div class="demo-block">
+            <h2>Новости с overflow</h2>
+            <div class="news-overflow">
+                <h3>Последние новости</h3>
+                <div class="news-excerpt-overflow">
+                    Это очень длинный текст новости, который должен быть обрезан с помощью overflow и многоточия. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Многоколоночный текст -->
+        <div class="demo-block">
+            <h2>Многоколоночный текст</h2>
+            <div class="multicolumn-text">
+                <p>Это текст, который будет отображаться в несколько колонок. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Вторая колонка с дополнительной информацией. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+        </div>
+        
+        <!-- Flexbox контакты -->
+        <div class="demo-block">
+            <h2>Контакты (Flexbox)</h2>
+            <div class="contacts-flex">
+                <div class="contact-card-flex">
+                    <h3>Мария Иванова</h3>
+                    <p>Врач-косметолог</p>
+                    <p>📞 +375 29 123-45-67</p>
+                    <p>📧 maria@estetika.by</p>
+                </div>
+                <div class="contact-card-flex">
+                    <h3>Анна Петрова</h3>
+                    <p>Мастер эстетики</p>
+                    <p>📞 +375 29 234-56-78</p>
+                    <p>📧 anna@declarations.by</p>
+                </div>
+                <div class="contact-card-flex">
+                    <h3>Елена Сидорова</h3>
+                    <p>Специалист по уходу</p>
+                    <p>📞 +375 29 345-67-89</p>
+                    <p>📧 elena@estetika.by</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Плавающие блоки -->
+        <div class="demo-block">
+            <h2>Вакансии (плавающие блоки)</h2>
+            <div class="vacancies-float">
+                <div class="vacancy-float">
+                    <h3>Врач-косметолог</h3>
+                    <p>Требуется опытный врач-косметолог с медицинским образованием.</p>
+                </div>
+                <div class="vacancy-float">
+                    <h3>Мастер маникюра</h3>
+                    <p>Ищем мастера маникюра с опытом работы от 2 лет.</p>
+                </div>
+                <div class="vacancy-float">
+                    <h3>Администратор</h3>
+                    <p>Требуется администратор для работы с клиентами.</p>
+                </div>
+                <div class="vacancy-float">
+                    <h3>Маркетолог</h3>
+                    <p>Нужен маркетолог для продвижения услуг центра.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Таблица -->
+        <div class="demo-block">
+            <h2>Таблица</h2>
+            <table class="table-demo">
+                <thead>
+                    <tr>
+                        <th>Услуга</th>
+                        <th>Цена</th>
+                        <th>Длительность</th>
+                        <th>Специалист</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Чистка лица</td>
+                        <td>120 BYN</td>
+                        <td>60 мин</td>
+                        <td>Мария Иванова</td>
+                    </tr>
+                    <tr>
+                        <td>Массаж лица</td>
+                        <td>150 BYN</td>
+                        <td>45 мин</td>
+                        <td>Анна Петрова</td>
+                    </tr>
+                    <tr>
+                        <td>Маникюр</td>
+                        <td>80 BYN</td>
+                        <td>90 мин</td>
+                        <td>Елена Сидорова</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Демонстрация курсоров -->
+        <div class="demo-block">
+            <h2>Курсоры</h2>
+            <div class="cursors-demo">
+                <div class="clickable-demo">Клик (pointer)</div>
+                <div class="draggable-demo">Перетаскивание (move)</div>
+                <div class="text-selectable-demo">Выделение текста (text)</div>
+                <div class="not-allowed-demo">Запрещено (not-allowed)</div>
+            </div>
+        </div>
+        
+        <!-- Демонстрация шрифтов -->
+        <div class="demo-block">
+            <h2>Шрифты и текст</h2>
+            <div class="typography-demo">
+                <p class="caps-text">Текст капителью</p>
+                <p class="wide-spacing">Текст с широкими интервалами</p>
+                <p class="tight-spacing">Текст с узкими интервалами</p>
+                <p class="word-break">Оченьдлинноесловобезпробеловкотороебудетперенесено</p>
+                <p class="no-break">Текст без переноса с многоточием</p>
+                <div class="highlight-text">Текст для выделения мышкой</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/demo-enhanced.css' %}">
+<link rel="stylesheet" href="{% static 'css/beautiful-design.css' %}">
+{% endblock %}

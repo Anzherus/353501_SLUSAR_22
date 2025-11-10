@@ -1,0 +1,1439 @@
+{% extends "clinic/base.html" %}
+{% load static %}
+
+{% block title %}Отзывы - Косметологический Центр «Эстетика»{% endblock %}
+
+{% block meta_description %}Отзывы клиентов косметологического центра «Эстетика». Реальные истории наших клиентов о процедурах и услугах. Оставьте свой отзыв!{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb navigation -->
+<nav aria-label="Хлебные крошки" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}" aria-label="Главная страница">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                Главная
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Отзывы</li>
+    </ol>
+</nav>
+
+<!-- Reviews section -->
+<section class="reviews-section" aria-labelledby="reviews-heading">
+    <div class="container">
+        <header class="reviews-header">
+            <h1 id="reviews-heading">
+                <i class="fas fa-comments" aria-hidden="true"></i>
+                Отзывы наших клиентов
+            </h1>
+            <p class="reviews-subtitle">Реальные истории о красоте и здоровье</p>
+        </header>
+        
+        <!-- Reviews statistics -->
+        <div class="reviews-stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_reviews }}</div>
+                    <div class="stat-label">Всего отзывов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ average_rating|floatformat:1 }}</div>
+                    <div class="stat-label">Средняя оценка</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ five_star_reviews }}</div>
+                    <div class="stat-label">5-звездочных отзывов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ positive_reviews_percentage }}%</div>
+                    <div class="stat-label">Положительных отзывов</div>
+                </div>
+            </div>
+            
+            <!-- Rating breakdown -->
+            <div class="rating-breakdown">
+                <h3>Распределение оценок</h3>
+                <div class="rating-bars">
+                    {% for rating in rating_distribution %}
+                        <div class="rating-bar">
+                            <div class="rating-label">
+                                <span>{{ rating.rating }}</span>
+                                <i class="fas fa-star" aria-hidden="true"></i>
+                            </div>
+                            <div class="rating-progress">
+                                <div class="progress-bar" style="width: {{ rating.percentage }}%"></div>
+                            </div>
+                            <div class="rating-count">{{ rating.count }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add review button -->
+        <div class="add-review-section">
+            {% if user.is_authenticated %}
+                <button class="btn btn-primary btn-lg" onclick="showAddReviewForm()" aria-label="Добавить отзыв">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    Добавить отзыв
+                </button>
+            {% else %}
+                <div class="auth-required">
+                    <p>Чтобы оставить отзыв, необходимо войти в систему</p>
+                    <div class="auth-buttons">
+                        <a href="{% url 'login' %}" class="btn btn-primary" aria-label="Войти в систему">
+                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                            Войти
+                        </a>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-primary" aria-label="Зарегистрироваться">
+                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                            Регистрация
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Reviews filter and sort -->
+        <div class="reviews-controls">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label for="ratingFilter">Оценка:</label>
+                    <select id="ratingFilter" aria-label="Фильтр по оценке">
+                        <option value="">Все оценки</option>
+                        <option value="5">5 звезд</option>
+                        <option value="4">4 звезды</option>
+                        <option value="3">3 звезды</option>
+                        <option value="2">2 звезды</option>
+                        <option value="1">1 звезда</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="serviceFilter">Услуга:</label>
+                    <select id="serviceFilter" aria-label="Фильтр по услуге">
+                        <option value="">Все услуги</option>
+                        {% for service in services %}
+                            <option value="{{ service.id }}">{{ service.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sortOrder">Сортировка:</label>
+                    <select id="sortOrder" aria-label="Порядок сортировки">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                        <option value="highest">Сначала высокие оценки</option>
+                        <option value="lowest">Сначала низкие оценки</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <div class="search-input-group">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" id="reviewSearch" placeholder="Поиск по тексту отзыва..." aria-label="Поиск отзывов">
+                    <button type="button" class="clear-search" onclick="clearSearch()" aria-label="Очистить поиск">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reviews list -->
+        <div class="reviews-list" id="reviewsList">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <article class="review-card" 
+                             data-rating="{{ review.rating }}"
+                             data-service="{{ review.service.id|default:'' }}"
+                             data-date="{{ review.created_at|date:'Y-m-d' }}"
+                             itemscope itemtype="http://schema.org/Review">
+                        <header class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    {% if review.user.profile.avatar %}
+                                        <img src="{{ review.user.profile.avatar.url }}" alt="Аватар {{ review.user.get_full_name|default:review.user.username }}" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                    {% else %}
+                                        <div class="avatar-placeholder">
+                                            <i class="fas fa-user" aria-hidden="true"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="reviewer-details">
+                                    <h3 class="reviewer-name" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                        <span itemprop="name">
+                                            {% if review.user.first_name and review.user.last_name %}
+                                                {{ review.user.first_name }} {{ review.user.last_name }}
+                                            {% else %}
+                                                {{ review.user.username }}
+                                            {% endif %}
+                                        </span>
+                                    </h3>
+                                    
+                                    <div class="review-meta">
+                                        <div class="review-rating" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                            <div class="stars">
+                                                {% for i in "12345" %}
+                                                    <i class="fas fa-star {% if forloop.counter <= review.rating %}active{% endif %}" aria-hidden="true"></i>
+                                                {% endfor %}
+                                            </div>
+                                            <meta itemprop="ratingValue" content="{{ review.rating }}">
+                                            <meta itemprop="bestRating" content="5">
+                                        </div>
+                                        
+                                        <div class="review-date">
+                                            <time datetime="{{ review.created_at|date:'Y-m-d' }}" itemprop="datePublished">
+                                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                                {{ review.created_at|date:"d.m.Y" }}
+                                            </time>
+                                        </div>
+                                        
+                                        {% if review.service %}
+                                            <div class="review-service">
+                                                <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                                                <span itemprop="itemReviewed" itemscope itemtype="http://schema.org/Service">
+                                                    <span itemprop="name">{{ review.service.name }}</span>
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="review-actions">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="shareReview({{ review.id }})" aria-label="Поделиться отзывом">
+                                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                                </button>
+                                
+                                {% if user.is_authenticated and user == review.user %}
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editReview({{ review.id }})" aria-label="Редактировать отзыв">
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteReview({{ review.id }})" aria-label="Удалить отзыв">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </header>
+                        
+                        <div class="review-content">
+                            <div class="review-text" itemprop="reviewBody">
+                                {{ review.text|linebreaks }}
+                            </div>
+                            
+                            {% if review.photos %}
+                                <div class="review-photos">
+                                    <h4>Фотографии:</h4>
+                                    <div class="photos-grid">
+                                        {% for photo in review.photos.all %}
+                                            <div class="photo-item">
+                                                <img src="{{ photo.image.url }}" alt="Фото отзыва" onclick="openPhotoModal('{{ photo.image.url }}')" loading="lazy">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <footer class="review-footer">
+                            <div class="review-helpful">
+                                <button class="helpful-btn" onclick="markHelpful({{ review.id }})" aria-label="Отзыв полезен">
+                                    <i class="fas fa-thumbs-up" aria-hidden="true"></i>
+                                    <span>Полезно ({{ review.helpful_count }})</span>
+                                </button>
+                                
+                                <button class="helpful-btn" onclick="markNotHelpful({{ review.id }})" aria-label="Отзыв не полезен">
+                                    <i class="fas fa-thumbs-down" aria-hidden="true"></i>
+                                    <span>Не полезно ({{ review.not_helpful_count }})</span>
+                                </button>
+                            </div>
+                            
+                            <div class="review-reply">
+                                {% if review.reply %}
+                                    <div class="reply-content">
+                                        <h4>Ответ центра:</h4>
+                                        <p>{{ review.reply|linebreaks }}</p>
+                                        <div class="reply-date">
+                                            <time datetime="{{ review.reply_date|date:'Y-m-d' }}">
+                                                {{ review.reply_date|date:"d.m.Y H:i" }}
+                                            </time>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </footer>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">
+                    <div class="no-reviews-content">
+                        <i class="fas fa-comments" aria-hidden="true"></i>
+                        <h2>Пока нет отзывов</h2>
+                        <p>Станьте первым, кто поделится своим опытом!</p>
+                        
+                        {% if user.is_authenticated %}
+                            <button class="btn btn-primary" onclick="showAddReviewForm()" aria-label="Добавить первый отзыв">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                                Добавить отзыв
+                            </button>
+                        {% else %}
+                            <div class="auth-buttons">
+                                <a href="{% url 'login' %}" class="btn btn-primary" aria-label="Войти для добавления отзыва">
+                                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                                    Войти
+                                </a>
+                                <a href="{% url 'signup' %}" class="btn btn-outline-primary" aria-label="Зарегистрироваться для добавления отзыва">
+                                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                    Регистрация
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Add/Edit review modal -->
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">Добавить отзыв</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="reviewForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="reviewService">Услуга *</label>
+                                <select class="form-control" id="reviewService" name="service" required>
+                                    <option value="">Выберите услугу</option>
+                                    {% for service in services %}
+                                        <option value="{{ service.id }}">{{ service.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reviewRating">Оценка *</label>
+                                <div class="rating-input">
+                                    <div class="stars-input">
+                                        {% for i in "12345" %}
+                                            <i class="fas fa-star" data-rating="{{ forloop.counter }}" aria-hidden="true"></i>
+                                        {% endfor %}
+                                    </div>
+                                    <input type="hidden" id="reviewRating" name="rating" required>
+                                    <div class="rating-text">Выберите оценку</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reviewText">Текст отзыва *</label>
+                                <textarea class="form-control" id="reviewText" name="text" rows="5" required placeholder="Поделитесь своим опытом..."></textarea>
+                                <div class="char-count">
+                                    <span id="charCount">0</span> / 1000 символов
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reviewPhotos">Фотографии (до 5 штук)</label>
+                                <input type="file" class="form-control" id="reviewPhotos" name="photos" multiple accept="image/*">
+                                <div class="file-info">Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="publishAnonymously" name="anonymous">
+                                    <label class="form-check-label" for="publishAnonymously">
+                                        Опубликовать анонимно
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="privacyAgreement" name="privacy_agreement" required>
+                                    <label class="form-check-label" for="privacyAgreement">
+                                        Я согласен с <a href="{% url 'privacy_policy' %}" target="_blank">политикой конфиденциальности</a> *
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" onclick="submitReview()">Отправить отзыв</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Photo modal -->
+        <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="photoModalLabel">Просмотр фотографии</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="photoModalImage" src="" alt="Фотография отзыва" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Reviews functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Rating input functionality
+    const stars = document.querySelectorAll('.stars-input i');
+    const ratingInput = document.getElementById('reviewRating');
+    const ratingText = document.querySelector('.rating-text');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.dataset.rating;
+            ratingInput.value = rating;
+            
+            // Update visual stars
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+            
+            // Update rating text
+            const ratingTexts = ['', 'Ужасно', 'Плохо', 'Нормально', 'Хорошо', 'Отлично'];
+            ratingText.textContent = ratingTexts[rating];
+        });
+        
+        star.addEventListener('mouseenter', function() {
+            const rating = this.dataset.rating;
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('hover');
+                } else {
+                    s.classList.remove('hover');
+                }
+            });
+        });
+    });
+    
+    // Clear hover effect when mouse leaves
+    document.querySelector('.stars-input').addEventListener('mouseleave', function() {
+        stars.forEach(star => star.classList.remove('hover'));
+    });
+    
+    // Character count for textarea
+    const textarea = document.getElementById('reviewText');
+    const charCount = document.getElementById('charCount');
+    
+    textarea.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        
+        if (count > 1000) {
+            charCount.style.color = 'var(--danger)';
+        } else if (count > 800) {
+            charCount.style.color = 'var(--warning)';
+        } else {
+            charCount.style.color = 'var(--gray-600)';
+        }
+    });
+    
+    // Reviews filtering and sorting
+    const ratingFilter = document.getElementById('ratingFilter');
+    const serviceFilter = document.getElementById('serviceFilter');
+    const sortOrder = document.getElementById('sortOrder');
+    const searchInput = document.getElementById('reviewSearch');
+    const reviewCards = document.querySelectorAll('.review-card');
+    
+    function filterAndSortReviews() {
+        const ratingValue = ratingFilter.value;
+        const serviceValue = serviceFilter.value;
+        const sortValue = sortOrder.value;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        let filteredReviews = Array.from(reviewCards).filter(card => {
+            const rating = card.dataset.rating;
+            const service = card.dataset.service;
+            const text = card.querySelector('.review-text').textContent.toLowerCase();
+            
+            const matchesRating = !ratingValue || rating === ratingValue;
+            const matchesService = !serviceValue || service === serviceValue;
+            const matchesSearch = !searchTerm || text.includes(searchTerm);
+            
+            return matchesRating && matchesService && matchesSearch;
+        });
+        
+        // Sort reviews
+        filteredReviews.sort((a, b) => {
+            switch (sortValue) {
+                case 'newest':
+                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                case 'oldest':
+                    return new Date(a.dataset.date) - new Date(b.dataset.date);
+                case 'highest':
+                    return parseInt(b.dataset.rating) - parseInt(a.dataset.rating);
+                case 'lowest':
+                    return parseInt(a.dataset.rating) - parseInt(b.dataset.rating);
+                default:
+                    return 0;
+            }
+        });
+        
+        // Hide all reviews
+        reviewCards.forEach(card => {
+            card.style.display = 'none';
+        });
+        
+        // Show filtered reviews
+        filteredReviews.forEach(card => {
+            card.style.display = 'block';
+        });
+        
+        // Show no results message if needed
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        
+        if (filteredReviews.length === 0 && reviewCards.length > 0) {
+            if (!noResultsMessage) {
+                const message = document.createElement('div');
+                message.id = 'noResultsMessage';
+                message.className = 'no-results';
+                message.innerHTML = `
+                    <div class="no-results-content">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <h3>Отзывы не найдены</h3>
+                        <p>Попробуйте изменить параметры поиска или фильтры</p>
+                        <button class="btn btn-outline-primary" onclick="clearAllFilters()">Сбросить фильтры</button>
+                    </div>
+                `;
+                document.getElementById('reviewsList').appendChild(message);
+            }
+        } else if (noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
+    
+    // Event listeners
+    ratingFilter.addEventListener('change', filterAndSortReviews);
+    serviceFilter.addEventListener('change', filterAndSortReviews);
+    sortOrder.addEventListener('change', filterAndSortReviews);
+    searchInput.addEventListener('input', filterAndSortReviews);
+    
+    // Clear search function
+    window.clearSearch = function() {
+        searchInput.value = '';
+        filterAndSortReviews();
+    };
+    
+    // Clear all filters function
+    window.clearAllFilters = function() {
+        ratingFilter.value = '';
+        serviceFilter.value = '';
+        sortOrder.value = 'newest';
+        searchInput.value = '';
+        filterAndSortReviews();
+    };
+});
+
+// Show add review form
+function showAddReviewForm() {
+    const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+    modal.show();
+    
+    // Reset form
+    document.getElementById('reviewForm').reset();
+    document.getElementById('reviewRating').value = '';
+    document.querySelectorAll('.stars-input i').forEach(star => star.classList.remove('active'));
+    document.querySelector('.rating-text').textContent = 'Выберите оценку';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('charCount').style.color = 'var(--gray-600)';
+}
+
+// Submit review
+function submitReview() {
+    const form = document.getElementById('reviewForm');
+    const formData = new FormData(form);
+    
+    // Basic validation
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('#reviewModal .btn-primary');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+    submitBtn.disabled = true;
+    
+    // Simulate form submission
+    setTimeout(() => {
+        showNotification('Отзыв успешно отправлен! Спасибо за ваше мнение.', 'success');
+        
+        // Reset form
+        form.reset();
+        document.getElementById('reviewRating').value = '';
+        document.querySelectorAll('.stars-input i').forEach(star => star.classList.remove('active'));
+        document.querySelector('.rating-text').textContent = 'Выберите оценку';
+        document.getElementById('charCount').textContent = '0';
+        document.getElementById('charCount').style.color = 'var(--gray-600)';
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+        modal.hide();
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 2000);
+}
+
+// Share review
+function shareReview(reviewId) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Отзыв о косметологическом центре «Эстетика»',
+            text: 'Посмотрите этот отзыв!',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showNotification('Ссылка скопирована в буфер обмена!', 'success');
+        }).catch(err => {
+            console.log('Error copying to clipboard:', err);
+            showNotification('Не удалось скопировать ссылку', 'error');
+        });
+    }
+}
+
+// Edit review
+function editReview(reviewId) {
+    // This would typically load the review data and populate the form
+    showNotification('Функция редактирования отзыва будет доступна в ближайшее время', 'info');
+}
+
+// Delete review
+function deleteReview(reviewId) {
+    if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
+        // This would typically send a DELETE request to the server
+        showNotification('Отзыв удален', 'success');
+    }
+}
+
+// Mark review as helpful
+function markHelpful(reviewId) {
+    // This would typically send a request to the server
+    showNotification('Спасибо за вашу оценку!', 'success');
+}
+
+// Mark review as not helpful
+function markNotHelpful(reviewId) {
+    // This would typically send a request to the server
+    showNotification('Спасибо за вашу оценку!', 'success');
+}
+
+// Open photo modal
+function openPhotoModal(imageSrc) {
+    document.getElementById('photoModalImage').src = imageSrc;
+    const modal = new bootstrap.Modal(document.getElementById('photoModal'));
+    modal.show();
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background-color: var(--${type === 'error' ? 'danger' : type});
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Breadcrumb navigation */
+.breadcrumb-nav {
+    background: var(--light);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--gray-500);
+}
+
+.breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-600);
+}
+
+/* Reviews header */
+.reviews-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.reviews-header h1 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.reviews-subtitle {
+    color: var(--gray-600);
+    font-size: 1.1rem;
+}
+
+/* Reviews statistics */
+.reviews-stats {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.rating-breakdown h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.rating-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.rating-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rating-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 80px;
+    font-weight: 600;
+}
+
+.rating-label i {
+    color: var(--warning);
+}
+
+.rating-progress {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--warning), var(--primary));
+    transition: width 0.3s ease;
+}
+
+.rating-count {
+    min-width: 40px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--gray-600);
+}
+
+/* Add review section */
+.add-review-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-required {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-required p {
+    margin-bottom: 1rem;
+    color: var(--gray-600);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.auth-buttons .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Reviews controls */
+.reviews-controls {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.filter-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.filter-group select {
+    padding: 0.5rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.search-section {
+    margin-top: 1rem;
+}
+
+.search-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-500);
+    z-index: 2;
+}
+
+.search-input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.clear-search {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--gray-500);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: color 0.3s ease;
+}
+
+.clear-search:hover {
+    color: var(--primary);
+}
+
+/* Reviews list */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Review header */
+.review-header {
+    background: var(--light);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.reviewer-info {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+}
+
+.reviewer-avatar {
+    flex-shrink: 0;
+}
+
+.reviewer-avatar img,
+.avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    background: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.reviewer-details {
+    flex: 1;
+}
+
+.reviewer-name {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.review-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.125rem;
+}
+
+.stars i {
+    color: var(--gray-300);
+    font-size: 0.9rem;
+}
+
+.stars i.active {
+    color: var(--warning);
+}
+
+.review-date,
+.review-service {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+}
+
+.review-date i,
+.review-service i {
+    color: var(--primary);
+}
+
+.review-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.review-actions .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+}
+
+/* Review content */
+.review-content {
+    padding: 1.5rem;
+}
+
+.review-text {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.review-photos {
+    margin-top: 1rem;
+}
+
+.review-photos h4 {
+    color: var(--primary);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.photo-item {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Review footer */
+.review-footer {
+    background: var(--light);
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.review-helpful {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.helpful-btn {
+    background: none;
+    border: 1px solid var(--gray-300);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.helpful-btn:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.review-reply {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.reply-content {
+    background: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+}
+
+.reply-content h4 {
+    color: var(--primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.reply-content p {
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+.reply-date {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+}
+
+/* No reviews state */
+.no-reviews {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.no-reviews-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.no-reviews-content i {
+    font-size: 4rem;
+    color: var(--gray-400);
+    margin-bottom: 1.5rem;
+}
+
+.no-reviews-content h2 {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+}
+
+.no-reviews-content p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+}
+
+/* No results state */
+.no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.no-results-content i {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+}
+
+.no-results-content h3 {
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.no-results-content p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: var(--primary);
+    color: var(--white);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.form-control {
+    border: 2px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+}
+
+.rating-input {
+    text-align: center;
+}
+
+.stars-input {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stars-input i {
+    font-size: 2rem;
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.stars-input i.active,
+.stars-input i.hover {
+    color: var(--warning);
+}
+
+.rating-text {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-top: 0.25rem;
+}
+
+.file-info {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    margin-top: 0.25rem;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .reviews-header h1 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .filter-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .review-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .reviewer-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .review-meta {
+        align-items: center;
+    }
+    
+    .review-actions {
+        justify-content: center;
+    }
+    
+    .review-content {
+        padding: 1rem;
+    }
+    
+    .review-footer {
+        padding: 1rem;
+    }
+    
+    .photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .auth-buttons .btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .reviews-stats,
+    .reviews-controls {
+        padding: 1.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .rating-bars {
+        gap: 0.5rem;
+    }
+    
+    .rating-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+    }
+    
+    .rating-label {
+        justify-content: center;
+    }
+    
+    .rating-count {
+        text-align: center;
+    }
+    
+    .photos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .review-helpful {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .helpful-btn {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,353 @@
+/* ========================================
+   УЛУЧШЕННЫЙ ЛОАДЕР - КОСМЕТОЛОГИЧЕСКИЙ ЦЕНТР
+   Красивая анимация с плавными переходами
+   ======================================== */
+
+/* Основной контейнер лоадера - фиолетовый фон как на фото */
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #7B68EE 0%, #9370DB 50%, #8B7AB8 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.6s ease-out;
+    overflow: hidden;
+}
+
+/* Анимированный фон */
+.loader-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* Светящиеся круги на фоне */
+.loader-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+}
+
+.loader-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+/* Заголовок лоадера - улучшенная анимация */
+.loader-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff69b4;
+    text-align: center;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 12px rgba(255, 105, 180, 0.4);
+    animation: titlePulse 3s ease-in-out infinite;
+}
+
+/* Плавная пульсация заголовка */
+@keyframes titlePulse {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.03); 
+        opacity: 0.95;
+        text-shadow: 2px 2px 16px rgba(255, 105, 180, 0.6);
+    }
+}
+
+/* Контейнер для анимированных линий - вращение */
+.loader-bars {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 2rem;
+    animation: rotateLoader 2s linear infinite;
+}
+
+/* Вращение всего контейнера */
+@keyframes rotateLoader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Красивые четкие линии без размытия */
+.loader-bar {
+    position: absolute;
+    width: 12px;
+    height: 90px;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 0%;
+    border-radius: 6px;
+    box-shadow: 0 0 20px currentColor;
+}
+
+/* Зеленая линия */
+.loader-bar:nth-child(1) {
+    background: linear-gradient(180deg, rgba(50, 255, 126, 0.3) 0%, #32FF7E 100%);
+    color: #32FF7E;
+    transform: translate(-50%, 0) rotate(0deg);
+}
+
+/* Голубая линия */
+.loader-bar:nth-child(2) {
+    background: linear-gradient(180deg, rgba(24, 220, 255, 0.3) 0%, #18DCFF 100%);
+    color: #18DCFF;
+    transform: translate(-50%, 0) rotate(72deg);
+}
+
+/* Красная линия */
+.loader-bar:nth-child(3) {
+    background: linear-gradient(180deg, rgba(255, 71, 87, 0.3) 0%, #FF4757 100%);
+    color: #FF4757;
+    transform: translate(-50%, 0) rotate(144deg);
+}
+
+/* Оранжевая линия */
+.loader-bar:nth-child(4) {
+    background: linear-gradient(180deg, rgba(255, 168, 1, 0.3) 0%, #FFA801 100%);
+    color: #FFA801;
+    transform: translate(-50%, 0) rotate(216deg);
+}
+
+/* Розовая линия */
+.loader-bar:nth-child(5) {
+    background: linear-gradient(180deg, rgba(255, 159, 243, 0.3) 0%, #FF9FF3 100%);
+    color: #FF9FF3;
+    transform: translate(-50%, 0) rotate(288deg);
+}
+
+/* Стеклянные линии (альтернативный стиль) */
+.loader-stack {
+    position: relative;
+    width: 300px;
+    height: 60px;
+    margin: 2rem 0;
+}
+
+.loader-stack-bar {
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    left: 0;
+    animation: stackSlide 2s ease-in-out infinite;
+}
+
+.loader-stack-bar:nth-child(1) {
+    background: linear-gradient(90deg, #87CEEB, #4682B4);
+    top: 0;
+    animation-delay: 0s;
+}
+
+.loader-stack-bar:nth-child(2) {
+    background: linear-gradient(90deg, #98FB98, #32CD32);
+    top: 15px;
+    animation-delay: 0.2s;
+}
+
+.loader-stack-bar:nth-child(3) {
+    background: linear-gradient(90deg, #FFA500, #FF8C00);
+    top: 30px;
+    animation-delay: 0.4s;
+}
+
+.loader-stack-bar:nth-child(4) {
+    background: linear-gradient(90deg, #FF6B6B, #DC143C);
+    top: 45px;
+    animation-delay: 0.6s;
+}
+
+.loader-stack-bar:nth-child(5) {
+    background: linear-gradient(90deg, #FFB6C1, #FF69B4);
+    top: 60px;
+    animation-delay: 0.8s;
+}
+
+/* Анимация скольжения для стеклянных линий */
+@keyframes stackSlide {
+    0%, 100% {
+        transform: translateX(-100%);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+/* Текст загрузки */
+.loader-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    color: #666;
+    text-align: center;
+    margin-top: 1rem;
+    animation: textFade 2s ease-in-out infinite;
+}
+
+@keyframes textFade {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Прогресс бар */
+.loader-progress {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 105, 180, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.loader-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff69b4, #da70d6);
+    border-radius: 2px;
+    animation: progressFill 3s ease-in-out infinite;
+}
+
+@keyframes progressFill {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .loader-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .loader-bars {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .loader-bar {
+        width: 6px;
+        height: 30px;
+    }
+    
+    .loader-stack {
+        width: 250px;
+    }
+    
+    .loader-progress {
+        width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loader-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .loader-bars {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .loader-bar {
+        width: 5px;
+        height: 25px;
+    }
+    
+    .loader-stack {
+        width: 200px;
+    }
+    
+    .loader-progress {
+        width: 200px;
+    }
+}
+
+/* Эффекты при наведении */
+.loader-container:hover .loader-bar {
+    animation-duration: 0.8s;
+}
+
+.loader-container:hover .loader-stack-bar {
+    animation-duration: 1.5s;
+}
+
+/* Дополнительные эффекты */
+.loader-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    pointer-events: none;
+}
+
+/* Анимация появления */
+.loader-container.fade-in {
+    animation: loaderFadeIn 0.5s ease-out;
+}
+
+@keyframes loaderFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Анимация исчезновения */
+.loader-container.fade-out {
+    animation: loaderFadeOut 0.5s ease-in;
+}
+
+@keyframes loaderFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+}

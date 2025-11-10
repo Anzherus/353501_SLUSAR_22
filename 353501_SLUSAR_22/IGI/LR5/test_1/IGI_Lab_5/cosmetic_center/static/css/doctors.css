@@ -1,0 +1,191 @@
+/**
+ * CSS styles for Doctors page
+ * Contains all styles specific to the doctors page
+ */
+
+/* Doctors page specific styles */
+.doctors-page {
+    padding: 2rem 0;
+}
+
+.doctors-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--white);
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.doctors-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.doctors-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.doctor-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.doctor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(106, 27, 154, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.doctor-card:hover::before {
+    left: 100%;
+}
+
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary);
+}
+
+.doctor-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.5rem;
+    border: 4px solid var(--primary);
+    box-shadow: var(--shadow-light);
+}
+
+.doctor-name {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.doctor-specialization {
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.doctor-experience {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.doctor-description {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.doctor-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.doctor-btn {
+    background: var(--primary);
+    color: var(--white);
+    border: 2px solid var(--primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 48px;
+}
+
+.doctor-btn:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    color: var(--white);
+}
+
+.doctor-btn.secondary {
+    background: transparent;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.doctor-btn.secondary:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .doctors-title {
+        font-size: 2rem;
+    }
+    
+    .doctors-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .doctor-actions {
+        flex-direction: column;
+    }
+    
+    .doctor-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .doctors-page {
+        padding: 1rem 0;
+    }
+    
+    .doctors-header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .doctor-card {
+        padding: 1.5rem;
+    }
+    
+    .doctor-photo {
+        width: 100px;
+        height: 100px;
+    }
+}

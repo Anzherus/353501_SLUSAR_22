@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('forms/', views.forms_demo, name='forms_demo'),
     path('about/', views.about, name='about'),
     path('services/', views.services, name='services'),
     path('services/<int:pk>/', views.service_detail, name='service-detail'),
@@ -48,4 +49,15 @@ urlpatterns = [
     path('news/create/', views.news_create, name='news_create'),
     path('news/<int:news_id>/edit/', views.news_edit, name='news_edit'),
     path('news/<int:news_id>/delete/', views.news_delete, name='news_delete'),
+    # Новые URL-ы для товаров и корзины
+    path('products/', views.products, name='products'),
+    path('products/<int:pk>/', views.product_detail, name='product_detail'),
+    path('cart/', views.cart, name='cart'),
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('payment/', views.payment, name='payment'),
+    # Новые URL-ы для FAQ, вакансий и политики конфиденциальности
+    path('faq/', views.faq, name='faq'),
+    path('vacancies/', views.vacancies, name='vacancies'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('demo/', views.demo, name='demo'),
 ]
